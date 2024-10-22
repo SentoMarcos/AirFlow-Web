@@ -20,8 +20,8 @@ app.get('/', (req, res) => {
 });
 
 // Usa las rutas
-app.use('/usuarios', usuarioRutas);
-app.use('/', medicionRutas); 
+app.use('/usuarios', usuarioRoutes);
+app.use('/', medicionRoutes); 
 
 // Sincronizar la base de datos
 sequelize.sync().then(() => {
