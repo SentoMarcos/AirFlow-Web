@@ -22,7 +22,7 @@ const Usuario = sequelize.define('Usuario', {
   },
   telefono: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: true,
   },
   contrasenya: {
     type: DataTypes.STRING,
