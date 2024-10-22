@@ -10,11 +10,11 @@ COPY package*.json ./
 # Instalamos las dependencias del proyecto
 RUN npm install
 
-# Copiamos el resto del código fuente
+# Copiamos el resto del codigo fuente
 COPY . .
 
-# Exponemos el puerto en el que se ejecutará la aplicación
+# Exponemos el puerto en el que se ejecutar la aplicacion
 EXPOSE 3000
 
-# Comando para iniciar la aplicación
+# Comando para iniciar la aplicacion
 CMD ["npm", "start"]
