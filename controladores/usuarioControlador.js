@@ -34,11 +34,15 @@ exports.loginUsuario = async (req, res) => {
     const { email, contrasenya } = req.body;
     if (email && contrasenya) {
         try {
-            const usuario = await Usuario.findOne({ where: { email: email, contrasenya: contrasenya } });
+            const usuario = await Usuario.findOne({ where: { email: email, } });
             if (usuario) {
-                res.status(200).json(usuario);
+                if (usuario.contrasenya === contrasenya) {
+                    res.status(200).json(usuario); // Devuelve el usuario si la autenticación es exitosa
+                } else {
+                    res.status(401).json({ error: 'Contraseña incorrecta' }); // Contraseña incorrecta
+                }
             } else {
-                res.status(404).json({ error: 'Usuario no encontrado' });
+                res.status(404).json({ error: 'Usuario no encontrado' }); // Usuario no encontrado
             }
         } catch (error) {
             console.error("Error al obtener el usuario:", error);
