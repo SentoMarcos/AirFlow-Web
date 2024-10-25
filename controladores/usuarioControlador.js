@@ -1,5 +1,3 @@
-// File: controladores/usuarioControlador.js
-
 const Usuario = require('../modelos/usuario');
 
 // Obtener todos los usuarios
@@ -47,6 +45,48 @@ exports.loginUsuario = async (req, res) => {
         } catch (error) {
             console.error("Error al obtener el usuario:", error);
             res.status(500).json({ error: 'Error al obtener el usuario.' });
+        }
+    } else {
+        res.status(400).json({ error: 'Faltan parámetros obligatorios' });
+    }
+};
+
+// Editar usuario sin contraseña
+exports.editUsuario = async (req, res) => {
+    const { id, nombre, apellidos, email, telefono } = req.body;
+    if (id && nombre && email && telefono) {
+        try {
+            const usuario = await Usuario.findOne({ where: { id: id } });
+            if (usuario) {
+                await Usuario.update({ nombre, apellidos, email, telefono }, { where: { id: id } });
+                res.status(200).json({ message: 'Usuario actualizado correctamente' });
+            } else {
+                res.status(404).json({ error: 'Usuario no encontrado' });
+            }
+        } catch (error) {
+            console.error("Error al actualizar el usuario:", error);
+            res.status(500).json({ error: 'Error al actualizar el usuario.' });
+        }
+    } else {
+        res.status(400).json({ error: 'Faltan parámetros obligatorios' });
+    }
+};
+
+// Editar cambio de contraseña
+exports.editContrasenya = async (req, res) => {
+    const { id, contrasenya } = req.body;
+    if (id && contrasenya) {
+        try {
+            const usuario = await Usuario.findOne({ where: { id: id } });
+            if (usuario) {
+                await Usuario.update({ contrasenya: contrasenya }, { where: { id: id } });
+                res.status(200).json({ message: 'Contraseña actualizada correctamente' });
+            } else {
+                res.status(404).json({ error: 'Usuario no encontrado' });
+            }
+        } catch (error) {
+            console.error("Error al actualizar la contraseña:", error);
+            res.status(500).json({ error: 'Error al actualizar la contraseña.' });
         }
     } else {
         res.status(400).json({ error: 'Faltan parámetros obligatorios' });
