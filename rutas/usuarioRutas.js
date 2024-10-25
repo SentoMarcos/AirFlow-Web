@@ -6,5 +6,7 @@ const usuarioControlador = require('../controladores/usuarioControlador');
 router.get('/', usuarioControlador.getAllUsuarios); // Obtener todos los usuarios
 router.post('/', usuarioControlador.createUsuario); // Crear un nuevo usuario
 router.post('/login', usuarioControlador.loginUsuario); // Autenticar un usuario
+router.put('/editUsuario', usuarioControlador.editUsuario); // Editar un usuario
+router.put('/editContrasenya', usuarioControlador.editContrasenya); // Eliminar un usuario
 
 module.exports = router;
