@@ -31,7 +31,7 @@ const Usuario = sequelize.define('Usuario', {
   }
 }, {
   tableName: 'Usuarios', // Nombre de la tabla en la base de datos
-  timestamps: false, // Cambia a true si quieres agregar createdAt y updatedAt
+  timestamps: true, // Cambia a true si quieres agregar createdAt y updatedAt
 });
 
 // Exportar el modelo
