@@ -1,4 +1,4 @@
-document.getElementById("registroForm").addEventListener("submit", function(event){
+document.getElementById("registroForm").addEventListener("submit", function(event) {
     event.preventDefault();
 
     const nombre = document.getElementById("nombre").value;
@@ -15,23 +15,25 @@ document.getElementById("registroForm").addEventListener("submit", function(even
         contrasenya: contrasenya
     };
 
-    fetch('/usuarios/registro', {
+    fetch('http://127.0.0.1:3000/usuarios/registro', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify(registroData)
     })
-        .then(response => response.json())
-        .then(data => {
-            if (data.error) {
-                document.getElementById("error-message").textContent = data.error;
-            } else {
-                console.log("Usuario registrado con éxito");
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            document.getElementById("error-message").textContent = "Ocurrió un error al registrar el usuario.";
-        });
+    .then(response => response.json())
+    .then(data => {
+        if (data.error) {
+            document.getElementById("error-message").textContent = data.error;
+        } else {
+            console.log("Usuario registrado con éxito");
+            // Aquí puedes añadir cualquier acción que desees realizar después de un registro exitoso,
+            // como mostrar un mensaje, limpiar el formulario, etc.
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        document.getElementById("error-message").textContent = "Ocurrió un error al registrar el usuario.";
+    });
 });

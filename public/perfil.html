@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfil de Usuario</title>
+</head>
+<body>
+
+    <!-- Saludo con el nombre de usuario -->
+    <h1 id="greeting"></h1>
+
+    <!-- Tabla para mostrar los datos del usuario -->
+    <table border="1" id="userTable">
+        <thead>
+            <tr>
+                <th>Campo</th>
+                <th>Valor</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Los datos del usuario se insertarán aquí dinámicamente -->
+        </tbody>
+    </table>
+
+    <!-- Botón para editar los datos -->
+    <button id="editBtn">Editar</button>
+
+    <!-- Formulario para editar los datos (inicialmente oculto) -->
+    <div id="editForm" style="display: none;">
+        <h2>Editar Datos</h2>
+        <div>
+            <label for="userId"></label>
+            <input type="hidden" id="userId"> <!-- Campo oculto para el ID del usuario -->
+        </div>
+        <div>
+            <label for="editNombre">Nombre:</label>
+            <input type="text" id="editNombre" placeholder="Nombre">
+        </div>
+        <div>
+            <label for="editApellidos">Apellidos:</label>
+            <input type="text" id="editApellidos" placeholder="Apellidos">
+        </div>
+        <div>
+            <label for="editEmail">Correo:</label>
+            <input type="email" id="editEmail" placeholder="Correo">
+        </div>
+        <div>
+            <label for="editTelefono">Teléfono:</label>
+            <input type="tel" id="editTelefono" placeholder="Teléfono">
+        </div>
+        
+        <button id="saveBtn">Guardar Cambios</button>
+        <p id="message" style="color: green;"></p>
+    </div>
+
+    <script src="js/perfil.js"></script> <!-- Archivo JavaScript para cargar y editar los datos -->
+</body>
+</html>
