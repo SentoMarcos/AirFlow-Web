@@ -1,3 +1,14 @@
+/**
+ * @file index.js
+ * @description Archivo principal del servidor
+ * @requires express
+ * @requires cors
+ * @requires path
+ * @requires sequelize
+ * @requires usuarioRutas
+ * @type {e | (() => Express)}
+ */
+
 const express = require('express');
 const cors = require('cors');
 const path = require('path');

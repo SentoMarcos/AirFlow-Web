@@ -1,5 +1,15 @@
 const Usuario = require('../modelos/usuario');
+/**
+ * @module UsuarioController
+ */
 
+/**
+ * Obtener todos los usuarios.
+ * @function getAllUsuarios
+ * @async
+ * @param {Object} req - Objeto de solicitud de Express.
+ * @param {Object} res - Objeto de respuesta de Express.
+ */
 // Obtener todos los usuarios
 exports.getAllUsuarios = async (req, res) => {
     try {
@@ -10,6 +20,13 @@ exports.getAllUsuarios = async (req, res) => {
         res.status(500).json({ error: 'Error al obtener los usuarios.' });
     }
 };
+/**
+ * Crear un nuevo usuario.
+ * @function createUsuario
+ * @async
+ * @param {Object} req - Objeto de solicitud de Express.
+ * @param {Object} res - Objeto de respuesta de Express.
+ */
 // Crear un nuevo usuario
 exports.createUsuario = async (req, res) => {
     const { nombre, apellidos, email, telefono, contrasenya } = req.body;
@@ -45,7 +62,13 @@ exports.createUsuario = async (req, res) => {
     }
 };
 
-
+/**
+ * Autenticar un usuario.
+ * @function loginUsuario
+ * @async
+ * @param {Object} req - Objeto de solicitud de Express.
+ * @param {Object} res - Objeto de respuesta de Express.
+ */
 // Autenticar un usuario
 exports.loginUsuario = async (req, res) => {
     const { email, contrasenya } = req.body;
@@ -69,7 +92,13 @@ exports.loginUsuario = async (req, res) => {
         res.status(400).json({ error: 'Faltan parámetros obligatorios' });
     }
 };
-
+/**
+ * Editar usuario sin cambiar la contraseña.
+ * @function editUsuario
+ * @async
+ * @param {Object} req - Objeto de solicitud de Express.
+ * @param {Object} res - Objeto de respuesta de Express.
+ */
 // Editar usuario sin contraseña
 exports.editUsuario = async (req, res) => {
     const { id, nombre, apellidos, email, telefono } = req.body;
@@ -91,6 +120,13 @@ exports.editUsuario = async (req, res) => {
     }
 };
 
+/**
+ * Editar la contraseña del usuario.
+ * @function editContrasenya
+ * @async
+ * @param {Object} req - Objeto de solicitud de Express.
+ * @param {Object} res - Objeto de respuesta de Express.
+ */
 // Editar cambio de contraseña
 exports.editContrasenya = async (req, res) => {
     const { id, contrasenya } = req.body;
