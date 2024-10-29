@@ -1,3 +1,22 @@
+/**
+ * @file registro.js
+ * @description Este archivo contiene el código JavaScript necesario para registrar un usuario.
+ * @requires fetch
+ */
+
+/**
+ * @function registroForm
+ * @description Función para registrar un usuario.
+ * @param {Event} event
+ * @returns {Promise<void>}
+ * @var {string} nombre
+ * @var {string} apellidos
+ * @var {string} email
+ * @var {string} telefono
+ * @var {string} contrasenya
+ * @var {Object} registroData
+ * @async
+ */
 document.getElementById("registroForm").addEventListener("submit", function(event) {
     event.preventDefault();
 

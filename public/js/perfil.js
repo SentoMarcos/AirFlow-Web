@@ -1,3 +1,18 @@
+/**
+ * @file perfil.js
+ * @description Este archivo contiene el código JavaScript necesario para mostrar el perfil del usuario y permitirle editarlo.
+ * @requires fetch
+ */
+
+/**
+ * @var {string} idUsuario
+ * @var {string} nombre
+ * @var {string} apellidos
+ * @var {string} email
+ * @var {string} telefono
+ * @description Intentamos obtener los datos del usuario desde el localStorage.
+ * @type {string}
+ **/
 // Intentamos obtener los datos del usuario desde el localStorage
 const idUsuario = localStorage.getItem("idUsuario");
 const nombre = localStorage.getItem("nombreUsuario");
@@ -11,6 +26,13 @@ document.getElementById("greeting").textContent = "Hola " + nombre;
 // Cargamos los datos en la tabla
 const userTable = document.getElementById("userTable").getElementsByTagName('tbody')[0];
 
+/*******************************************************
+ * @function addRow
+ * @description Función para agregar una fila a la tabla.
+ * @param {string} campo
+ * @param {string} valor
+ * @returns {void}
+ *******************************************************/
 // Función para agregar una fila a la tabla
 function addRow(campo, valor) {
     const row = userTable.insertRow();
@@ -26,6 +48,12 @@ addRow("Apellidos", apellidos);
 addRow("Correo", email);
 addRow("Teléfono", telefono);
 
+/**
+ * @function editUser
+ * @description Función para manejar el botón de editar.
+ * @returns {void}
+ * @event editBtn
+ */
 // Manejar el botón de editar
 document.getElementById("editBtn").addEventListener("click", function() {
     // Ocultar la tabla y mostrar el formulario de edición
@@ -38,6 +66,13 @@ document.getElementById("editBtn").addEventListener("click", function() {
     document.getElementById("editEmail").value = email;
     document.getElementById("editTelefono").value = telefono;
 });
+
+/**
+ * @function cancelEdit
+ * @description Función para manejar el botón de cancelar.
+ * @returns {void}
+ * @event cancelBtn
+ */
 
 // Función para guardar los cambios
 document.getElementById("saveBtn").addEventListener("click", function() {

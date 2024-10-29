@@ -1,3 +1,19 @@
+/**
+ * @file login.js
+ * @description Este archivo contiene el código JavaScript necesario para iniciar sesión en la aplicación.
+ * @requires fetch
+ */
+
+/**
+ * @function loginForm
+ * @description Función para iniciar sesión.
+ * @param {Event} event
+ * @returns {Promise<void>}
+ * @var {string} username
+ * @var {string} password
+ * @var {Object} loginData
+ * @async
+ */
 document.getElementById("loginForm").addEventListener("submit", function(event) {
     event.preventDefault(); // No se lanza vacío
     

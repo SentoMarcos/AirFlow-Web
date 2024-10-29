@@ -1,7 +1,30 @@
+/**
+ * @fileoverview Modelo de la tabla Mediciones en la base de datos.
+ * @module Medicion
+ * @requires sequelize
+ * @requires Sensores
+ */
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database'); // Ajusta la ruta si es necesario
 const Sensores = require('./sensor'); // Asegúrate de tener el modelo Sensores
 
+/**
+ * @typedef {import('sequelize').Model} Model
+ * @typedef {import('sequelize').ModelCtor<Model>} ModelCtor
+ */
+
+/**
+ * @const {ModelCtor} Medicion
+ * @description Modelo para la tabla de Mediciones en la base de datos.
+ *
+ * @property {number} id - Identificador único de la medición, clave primaria y autoincremental.
+ * @property {number} id_sensor - Identificador del sensor asociado, clave foránea que referencia a Sensores.
+ * @property {string} tipo_gas - Tipo de gas medido.
+ * @property {number} latitud - Latitud de la ubicación de la medición.
+ * @property {number} longitud - Longitud de la ubicación de la medición.
+ * @property {Date} fecha - Fecha de la medición.
+ * @property {number} valor - Valor de la medición.
+ */
 const Medicion = sequelize.define('Medicion', {
   id: {
     type: DataTypes.INTEGER,
