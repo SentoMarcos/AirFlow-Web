@@ -1,6 +1,5 @@
 // Intentamos obtener los datos del usuario desde el localStorage
-//const idUsuario = localStorage.getItem("idUsuario"); TODO
-idUsuario = 8; // FIX
+const idUsuario = localStorage.getItem("idUsuario");
 const nombre = localStorage.getItem("nombreUsuario");
 const apellidos = localStorage.getItem("apellidosUsuario");
 const email = localStorage.getItem("emailUsuario");
@@ -43,12 +42,11 @@ document.getElementById("editBtn").addEventListener("click", function() {
 // Función para guardar los cambios
 document.getElementById("saveBtn").addEventListener("click", function() {
     const updatedData = {
-        id: document.getElementById("userId").value, // Obtiene el ID del usuario
+        id: idUsuario, // Utiliza la ID del localStorage
         nombre: document.getElementById("editNombre").value,
         apellidos: document.getElementById("editApellidos").value,
         email: document.getElementById("editEmail").value,
-        telefono: document.getElementById("editTelefono").value,
-        id: idUsuario
+        telefono: document.getElementById("editTelefono").value
     };
 
     fetch('http://127.0.0.1:3000/usuarios/editUsuario', {
@@ -58,16 +56,16 @@ document.getElementById("saveBtn").addEventListener("click", function() {
         },
         body: JSON.stringify(updatedData)
     })
-    .then(response => response.json())
-    .then(data => {
-        if (data.error) {
-            alert(data.error); // Muestra el error si lo hay
-        } else {
-            alert(data.message); // Muestra el mensaje de éxito
-            //location.reload(); // Recarga la página para mostrar los cambios
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-    });
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                alert(data.error); // Muestra el error si lo hay
+            } else {
+                alert(data.message); // Muestra el mensaje de éxito
+                //location.reload(); // Recarga la página para mostrar los cambios
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
 });
