@@ -1,7 +1,27 @@
+/**
+ * @file usuario-sensor.js
+ * @brief Modelo de la tabla Usuario-Sensor en la base de datos.
+ * @requires sequelize
+ * @requires Usuario
+ * @requires Sensor
+ */
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database'); // Importar la conexión a la base de datos
 const Usuario = require('./Usuario'); // Importar el modelo Usuario
 const Sensor = require('./Sensor');   // Importar el modelo Sensor
+/**
+ * @typedef {import('sequelize').Model} Model
+ * @typedef {import('sequelize').ModelCtor<Model>} ModelCtor
+ */
+
+/**
+ * @const {ModelCtor} UsuarioSensor
+ * @description Modelo para la tabla de unión entre Usuario y Sensor en la base de datos.
+ *
+ * @property {number} id_usuario - Llave foránea que referencia al usuario.
+ * @property {number} id_sensor - Llave foránea que referencia al sensor.
+ */
+
 
 const UsuarioSensor = sequelize.define('UsuarioSensor', {
     id_usuario: {

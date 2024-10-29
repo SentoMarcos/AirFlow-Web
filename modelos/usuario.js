@@ -1,6 +1,28 @@
+/**
+ * @fileoverview Modelo de la tabla Usuarios en la base de datos.
+ * @module Usuario
+ * @requires sequelize
+ */
+
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database'); // Importar la conexión a la base de datos
 
+/**
+ * @typedef {import('sequelize').Model} Model
+ * @typedef {import('sequelize').ModelCtor<Model>} ModelCtor
+ */
+
+/**
+ * @const {ModelCtor} Usuario
+ * @description Modelo para la tabla de Usuarios en la base de datos.
+ *
+ * @property {number} id - Identificador único del usuario, clave primaria y autoincremental.
+ * @property {string} nombre - Nombre del usuario, máximo 255 caracteres.
+ * @property {string} [apellidos] - Apellidos del usuario, máximo 255 caracteres. Puede ser nulo.
+ * @property {string} email - Correo electrónico del usuario, único y máximo 255 caracteres.
+ * @property {string} telefono - Teléfono de contacto del usuario, máximo 255 caracteres.
+ * @property {string} contrasenya - Contraseña del usuario, máximo 255 caracteres.
+ */
 const Usuario = sequelize.define('Usuario', {
   id: {
     type: DataTypes.INTEGER,
@@ -31,7 +53,7 @@ const Usuario = sequelize.define('Usuario', {
   }
 }, {
   tableName: 'Usuarios', // Nombre de la tabla en la base de datos
-  timestamps: false, // Cambia a true si quieres agregar createdAt y updatedAt
+  timestamps: true, // Cambia a true si quieres agregar createdAt y updatedAt
 });
 
 // Exportar el modelo
