@@ -25,11 +25,20 @@ document.getElementById("registroForm").addEventListener("submit", function(even
     const email = document.getElementById("email").value;
     const telefono = document.getElementById("telefono").value;
     const contrasenya = document.getElementById("contrasenya").value;
+    const contrasenya1 = document.getElementById("contrasenya1").value;
+    const errormsg = document.getElementById('error-message');
 
     // Validate password
     if (!validatePassword(contrasenya)) {
-        document.getElementById("error-message").textContent =
+        errormsg.textContent =
             "La contraseña debe tener entre 6 y 16 caracteres, incluir al menos un número y un carácter especial.";
+        return;
+    }
+
+    // Validate contraseña doble
+    if(contrasenya1!==contrasenya){
+        errormsg.textContent =
+            "Los campos contraseña deben coincidir";
         return;
     }
 
@@ -51,16 +60,16 @@ document.getElementById("registroForm").addEventListener("submit", function(even
     .then(response => response.json())
     .then(data => {
         if (data.error) {
-            document.getElementById("error-message").textContent = data.error;
+            errormsg.textContent = data.error;
         } else {
-            console.log("Usuario registrado con éxito");
+            errormsg.textContent = "Usuario registrado con éxito";
             // Aquí puedes añadir cualquier acción que desees realizar después de un registro exitoso,
             // como mostrar un mensaje, limpiar el formulario, etc.
         }
     })
     .catch(error => {
         console.error('Error:', error);
-        document.getElementById("error-message").textContent = "Ocurrió un error al registrar el usuario.";
+        errormsg.textContent = "Ocurrió un error al registrar el usuario.";
     });
 });
 /**
