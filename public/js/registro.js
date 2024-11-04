@@ -26,6 +26,13 @@ document.getElementById("registroForm").addEventListener("submit", function(even
     const telefono = document.getElementById("telefono").value;
     const contrasenya = document.getElementById("contrasenya").value;
 
+    // Validate password
+    if (!validatePassword(contrasenya)) {
+        document.getElementById("error-message").textContent =
+            "La contraseña debe tener entre 6 y 16 caracteres, incluir al menos un número y un carácter especial.";
+        return;
+    }
+
     const registroData = {
         nombre: nombre,
         apellidos: apellidos,
@@ -56,3 +63,22 @@ document.getElementById("registroForm").addEventListener("submit", function(even
         document.getElementById("error-message").textContent = "Ocurrió un error al registrar el usuario.";
     });
 });
+/**
+ * @function validatePassword
+ * @description Validates the password according to specified criteria.
+ * @param {string} password - The password to validate.
+ * @returns {boolean} True if valid, false otherwise.
+ */
+function validatePassword(password) {
+    const minNumberofChars = 6;
+    const maxNumberofChars = 16;
+    const regularExpression = /^(?=.*[0-9])(?=.*[!@#$%^&*_.])[a-zA-Z0-9!@#$%^&*_.]{6,16}$/;
+
+    if (password.length < minNumberofChars || password.length > maxNumberofChars) {
+        return false;
+    }
+    if (!regularExpression.test(password)) {
+        return false;
+    }
+    return true;
+}
