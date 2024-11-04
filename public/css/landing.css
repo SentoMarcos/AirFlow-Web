@@ -2,3 +2,150 @@
     height: 100vh;
     background: rgba(0,0,0,0.5);
 }
+.Bienvenida .container{
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: end;
+    padding-bottom: 22vh;
+}
+.Bienvenida .container #texto-bienvenida{
+    width: fit-content;
+}
+.Bienvenida .container #texto-bienvenida p,
+.Bienvenida .container #texto-bienvenida span{
+    font-size: 3vw;
+}
+.Bienvenida .container #texto-bienvenida span{
+    display: block;
+}
+.Bienvenida .container #texto-bienvenida span{
+    font-weight: bold;
+}
+#botones-bienvenida{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+#botones-bienvenida a{
+    margin-right: 5vw;
+}
+.servicio {
+    display: flex;
+    justify-content: center;
+    padding: 20px 0;
+    height: 100vh;
+}
+
+.servicio .container {
+    display: flex;
+    max-width: 100vw;
+    align-items: center;
+    gap: 20px;
+    height: 100%;
+    margin: 0;
+}
+
+/* Main Text Section */
+.main-text {
+    flex: 2;
+    background-color: var(--v3-negro);
+    padding: 20px;
+    border-radius: 48px;
+    text-align: left;
+    position: relative;
+    height: 100%;
+    align-content: center;
+    width: 100%;
+    background-image: url("../img/sensor.png");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.main-text h1 {
+    font-size: 14px;
+    color: #888;
+    margin: 0;
+}
+
+.main-text h2 {
+    font-size: 36px;
+    font-weight: bold;
+    margin: 10px 0;
+}
+.shop-button {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #333;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-transform: uppercase;
+}
+
+/* Sidebar Section */
+.aside {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    height: 100%;
+}
+
+#comentarios {
+    background-color: #444;
+    color: #fff;
+    padding: 15px;
+    border-radius: 48px;
+    font-size: 14px;
+    height: -webkit-fill-available;
+}
+
+#comentarios p {
+    margin: 10px 0;
+}
+
+.row {
+    display: flex;
+    gap: 10px;
+    padding: 0 12px;
+}
+
+#funcionalidades, #especificaciones {
+    flex: 1;
+    background-color: #b8e0e6;
+    color: #333;
+    padding: 15px;
+    border-radius: 48px;
+    text-align: center;
+    font-size: 14px;
+    position: relative;
+    height: 30vh;
+    align-content: center;
+}
+
+#funcionalidades {
+    background-color: var(--v3-azul);
+}
+
+#especificaciones {
+    background-color: #606060;
+    color: #fff;
+}
+
+#funcionalidades a, #especificaciones a {
+    font-weight: bold;
+    text-decoration: none;
+    color: inherit;
+}
+
+#funcionalidades::after, #especificaciones::after {
+    content: '➔';
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    font-size: 20px;
+}

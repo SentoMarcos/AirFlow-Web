@@ -1,3 +1,7 @@
+:root{
+    --v3-negro: #191718;
+    --v3-azul: #52CCD7;
+}
 body {
     font-family: Arial, sans-serif;
     margin: 0;
@@ -25,6 +29,16 @@ th {
 
 tr:nth-child(even) {
     background-color: #f9f9f9;
+}
+.header .container-fluid{
+    background-color: transparent;
+    transition: background-color 0.3s ease, padding 0.3s ease;
+}
+/* Estilo al hacer scroll */
+.header .container-fluid.scrolled {
+    background-color: #F1F3F5;
+    padding: 10px;  /* Reduce el padding al hacer scroll */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3); /* Añade una sombra */
 }
 header .navbar{
     padding-top: 0;
@@ -67,4 +81,30 @@ header .botones-header #mas-button{
     border: 4px white solid;
     color: white;
     text-decoration: none;
+}
+.button-primary{
+    background: var(--v3-negro);
+    border-radius: 48px;
+    display: flex;
+    width: 207px;
+    padding: 10px 20px;
+    justify-content: center;
+    align-items: center;
+    gap: 22px;
+    box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
+    text-decoration: none;
+    color: white;
+}
+.button-secondary{
+    background: var(--v3-azul);
+    box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
+    border-radius: 48px;
+    display: flex;
+    width: 207px;
+    padding: 10px 20px;
+    justify-content: center;
+    align-items: center;
+    gap: 22px;
+    text-decoration: none;
+    color: black;
 }
