@@ -14,6 +14,8 @@
  * @var {Object} loginData
  * @async
  */
+
+// Event:event => loginForm() => Promise<void>
 document.getElementById("loginForm").addEventListener("submit", function(event) {
     event.preventDefault(); // No se lanza vacío
     
