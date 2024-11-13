@@ -1,14 +1,12 @@
 body {
     font-family: Arial, sans-serif;
     margin: 0;
-    padding: 20px;
     background-color: #f4f4f4;
 }
 
 h1 {
     color: #333;
 }
-
 table {
     width: 100%;
     border-collapse: collapse;
@@ -27,4 +25,46 @@ th {
 
 tr:nth-child(even) {
     background-color: #f9f9f9;
+}
+header .navbar{
+    padding-top: 0;
+}
+header .navbar-brand{
+    padding: 0;
+}
+header .botones-header{
+    display: flex;
+    flex-direction: row;
+    align-items: end;
+    justify-content: end;
+}
+header .show .botones-header,
+header .collapsing .botones-header{
+    align-items: start;
+    justify-content: start;
+}
+header .navbar-collapse{
+    justify-content: space-between;
+}
+header .botones-header #login-button{
+    background: white;
+    padding: 10px 24px;
+    border-radius: 100px;
+    color: #444444;
+    font-family: "IBM Plex Mono";
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    text-decoration: none;
+}
+header .botones-header #mas-button{
+    background: black;
+    width: 38px;
+    height: 38px;
+    text-align: center;
+    border-radius: 100px;
+    border: 4px white solid;
+    color: white;
+    text-decoration: none;
 }
