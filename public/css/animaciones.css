@@ -1,0 +1,11 @@
+@keyframes saltoYVolteo {
+    0% {
+        transform: translateY(0) scaleX(1);
+    }
+    50% {
+        transform: translateY(-10px) scaleX(-1);
+    }
+    100% {
+        transform: translateY(0) scaleX(1);
+    }
+}
