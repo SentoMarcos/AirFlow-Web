@@ -1,0 +1,86 @@
+.login-container{
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+#login-panel{
+    display: flex;
+    flex-direction: row;
+    width: 66vw;
+    height: 64.6vh;
+    background: var(--v3-blanco);
+    border-radius: 48px;
+}
+#login-panel #texto-saludo{
+    background: var(--v3-gris);
+    border-radius: 48px 0 0 48px;
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+#login-panel #texto-saludo button {
+    border-radius: 10px;
+    color: var(--v3-blanco);
+    background: var(--v3-azul);
+    border: none;
+    height: 65px;
+    width: 35%;
+    font-size: 24px;
+}
+#login-panel #form-login{
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+#loginForm{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 5px;
+    width: 65%;
+    align-items: center;
+}
+#loginForm button{
+    height: 50px;
+    width: 70%;
+    border-radius: 30px;
+    background: var(--v3-azul);
+    border: none;
+    color: var(--v3-blanco);
+    font-size: 24px;
+}
+#loginForm a{
+    align-self: start;
+    text-decoration: none;
+    color: var(--v3-azul);
+}
+/* Contenedor para cada input e icono */
+.input-container {
+    position: relative;
+    margin-bottom: 15px;
+    width: 100%;
+}
+
+/* Posiciona el icono dentro del input */
+.input-container i {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--v3-negro);
+    font-size: 20px;
+}
+
+/* Ajusta el padding del input para dejar espacio al icono */
+.input-container input {
+    width: 100%;
+    padding: 10px 10px 10px 30px; /* Deja espacio a la izquierda para el icono */
+    box-sizing: border-box;
+}

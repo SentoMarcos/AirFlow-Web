@@ -14,26 +14,7 @@
     <link rel="stylesheet" href="css/landing.css">
 </head>
 <body>
-<header class="header">
-    <nav class="navbar navbar-expand-lg navbar-light fixed-top">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#"><img src="img/logo_retrofit.png" alt="logo retrofit"></a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse hide" id="navbarNavAltMarkup">
-                <div class="navbar-nav">
-                    <a class="nav-link active" aria-current="page" href="#">RetroFit</a>
-                <a class="nav-link" href="#">AirFlow</a><a class="nav-link" href="#">Tienda</a>
-                </div>
-                <div class="botones-header">
-                    <a href="#" id="login-button">Login</a>
-                    <a href="#" id="mas-button"><i class="bi bi-grid-fill"></i></a>
-                </div>
-            </div>
-        </div>
-    </nav>
-</header>
+<div id="header-container"></div>
 <section class="Bienvenida">
     <div class="container">
         <div id="texto-bienvenida">
@@ -196,7 +177,7 @@
             header.classList.remove('scrolled');
         }
     });
-
 </script>
+<script src="js/header.js"></script>
 </body>
 </html>

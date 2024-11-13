@@ -113,6 +113,15 @@ header .botones-header #mas-button{
     text-decoration: none;
     color: black;
 }
+input{
+    border: none;
+    background: var(--v3-gris);
+    height: 50px;
+    width: 100%;
+}
+label{
+    width: 100%;
+}
 @media (max-width: 991px) {
     .navbar-collapse {
         display: flex;
