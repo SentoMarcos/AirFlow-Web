@@ -84,3 +84,11 @@
     padding: 10px 10px 10px 30px; /* Deja espacio a la izquierda para el icono */
     box-sizing: border-box;
 }
+@media (max-width: 800px) {
+    #login-panel #texto-saludo{
+        display: none;
+    }
+    #login-panel #form-login{
+        width: 100%;
+    }
+}
