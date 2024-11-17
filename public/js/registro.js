@@ -17,6 +17,11 @@
  * @var {Object} registroData
  * @async
  */
+
+/* 
+    Event:event => registroForm() => Promise<void>
+*/
+
 document.getElementById("registroForm").addEventListener("submit", function(event) {
     event.preventDefault();
 
@@ -69,6 +74,10 @@ document.getElementById("registroForm").addEventListener("submit", function(even
  * @param {string} password - The password to validate.
  * @returns {boolean} True if valid, false otherwise.
  */
+
+/*
+    texto:password => validatePassword() => boolean
+*/
 function validatePassword(password) {
     const minNumberofChars = 6;
     const maxNumberofChars = 16;

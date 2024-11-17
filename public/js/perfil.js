@@ -13,6 +13,7 @@
  * @description Intentamos obtener los datos del usuario desde el localStorage.
  * @type {string}
  **/
+
 // Intentamos obtener los datos del usuario desde el localStorage
 const idUsuario = localStorage.getItem("idUsuario");
 const nombre = localStorage.getItem("nombreUsuario");
@@ -33,6 +34,11 @@ const userTable = document.getElementById("userTable").getElementsByTagName('tbo
  * @param {string} valor
  * @returns {void}
  *******************************************************/
+
+/*
+    texto: campo, texto: valor => addRow() <= void 
+*/
+
 // Función para agregar una fila a la tabla
 function addRow(campo, valor) {
     const row = userTable.insertRow();
@@ -54,6 +60,10 @@ addRow("Teléfono", telefono);
  * @returns {void}
  * @event editBtn
  */
+
+/*
+    editUser() => void
+*/
 // Manejar el botón de editar
 document.getElementById("editBtn").addEventListener("click", function() {
     // Ocultar la tabla y mostrar el formulario de edición
@@ -74,6 +84,9 @@ document.getElementById("editBtn").addEventListener("click", function() {
  * @event cancelBtn
  */
 
+/*
+    cancelEdit() => void
+*/
 // Función para guardar los cambios
 document.getElementById("saveBtn").addEventListener("click", function() {
     const updatedData = {
