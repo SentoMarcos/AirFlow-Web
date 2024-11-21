@@ -1,4 +1,5 @@
 const Usuario = require('../modelos/usuario');
+const bcrypt = require('bcryptjs');
 /**
  * @module UsuarioController
  */
@@ -38,6 +39,8 @@ exports.createUsuario = async (req, res) => {
     if (!contrasenya) return res.status(400).json({ error: 'La contraseña es obligatoria' });
 
     console.log("Datos recibidos:", req.body); // Log para verificar datos recibidos
+    // Encriptar la contraseña antes de guardarla
+    const hashedPassword = await bcrypt.hash(contrasenya, 10); // 10 es el número de salt rounds
 
     try {
         const nuevoUsuario = await Usuario.create({
@@ -45,7 +48,7 @@ exports.createUsuario = async (req, res) => {
             apellidos,
             email,
             telefono,
-            contrasenya: contrasenya
+            contrasenya: hashedPassword
         });
         res.status(201).json(nuevoUsuario);
     } catch (error) {
@@ -76,7 +79,10 @@ exports.loginUsuario = async (req, res) => {
         try {
             const usuario = await Usuario.findOne({ where: { email: email, } });
             if (usuario) {
-                if (usuario.contrasenya === contrasenya) {
+                // Verificar la contraseña encriptada
+                const isMatch = await bcrypt.compare(contrasenya, usuario.contrasenya);
+                console.log("¿Contraseñas coinciden?", isMatch);
+                if (isMatch) {
                     res.status(200).json(usuario); // Devuelve el usuario si la autenticación es exitosa
                 } else {
                     res.status(401).json({ error: 'Contraseña incorrecta' }); // Contraseña incorrecta
