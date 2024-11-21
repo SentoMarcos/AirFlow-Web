@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>AirFlow | Principal</title>
+  <link rel="icon" href="img/icon_retrofit.png">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/airflow-index.css">
+</head>
+<body>
+<div id="header-container"></div>
+<div id="container-airflow">
+    <div id="columna">
+        <div id="características">
+            <div id="buscador-container">
+                <img src="img/a-airflow.png" alt="a-airflow">
+                <label for="buscador-airflow"><input type="search" id="buscador-airflow" placeholder="Buscar en Airflow"></label>
+                <i class="bi bi-search"></i>
+            </div>
+            <div id="container-rutas">
+                <div id="iconos-transporte">
+                    <i class="bi bi-car-front-fill"></i>
+                    <i class="bi bi-train-front-fill"></i>
+                    <i class="bi bi-person-walking"></i>
+                    <i class="bi bi-bicycle"></i>
+                </div>
+                <div id="puntos-ruta">
+                    <div>
+                    <label for="punto-inicial"><input type="search" id="punto-inicial" placeholder="Elige un punto de partida"></label>
+                    <i class="bi bi-search"></i>
+                    </div>
+                    <div>
+                    <label for="punto-final"><input type="search" id="punto-final" placeholder="Elige un destino o haz click en el mapa"></label>
+                    <i class="bi bi-search"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="gráfica">
+            <h3>Gases</h3>
+            <div id="indicador-gráfica">
+                <img src="img/logo-ozono.png" alt="logo ozono">
+                <div id="texto-indicador">
+                    <p>Ozono 53 µg/m</p>
+                    <p>Calidad excelente</p>
+                </div>
+                <img src="img/carita-excelente.png" alt="calidad aire">
+            </div>
+            <div id="chart">
+                <canvas id="ozoneChart"></canvas>
+            </div>
+        </div>
+    </div>
+    <div id="mapa">
+        <img src="img/mapa-prueba.png" alt="mapa">
+    </div>
+</div>
+<script src="js/header.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+<script>
+  cargarHeader('header_airflow.html', 'headerAir-1')
+</script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    const ctx = document.getElementById('ozoneChart').getContext('2d');
+
+    // Generar datos aleatorios asegurando al menos un valor en cada rango
+    const data = [];
+    const ranges = [
+        { min: 25, max: 49, color: 'rgba(255, 132, 224, 1)' }, // Rosa
+        { min: 50, max: 74, color: 'rgba(82, 215, 131, 1)' }, // Verde
+        { min: 75, max: 99, color: 'rgba(255, 253, 132, 1)' }, // Amarillo
+        { min: 100, max: 150, color: 'rgba(255, 146, 132, 1)' } // Rojo para valores mayores a 100
+    ];
+
+    // Asegurar al menos un valor en cada rango
+    ranges.forEach(range => {
+        data.push(Math.floor(Math.random() * (range.max - range.min + 1)) + range.min);
+    });
+
+    // Completar el resto de los datos aleatorios
+    while (data.length < 24) {
+        data.push(Math.floor(Math.random() * 150));
+    }
+
+    // Mezclar los datos para distribuir los valores asegurados
+    data.sort(() => Math.random() - 0.5);
+
+    const backgroundColors = data.map(value => {
+        if (value <= 25) return 'rgba(255, 132, 224, 1)'; // Rosa
+        if (value <= 50) return 'rgba(82, 215, 131, 1)';  // Verde
+        if (value <= 75) return 'rgba(255, 253, 132, 1)';  // Amarillo
+        if (value <= 100) return 'rgba(255, 146, 132, 1)'; // Rojo
+        return 'rgba(255, 146, 132, 1)'; // Rojo para valores mayores a 100
+    });
+    const borderColors = backgroundColors;
+
+    const ozoneChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: Array.from({ length: 24 }, (_, i) => `${i}h`),
+            datasets: [{
+                label: 'µg/m³',
+                data: data,
+                backgroundColor: backgroundColors,
+                borderColor: borderColors,
+                borderWidth: 1
+            }]
+        },
+        options: {
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                x: {
+                    grid: {
+                        display: false
+                    }
+                },
+                y: {
+                    beginAtZero: true,
+                    max: 300,
+                    ticks: {
+                        stepSize: 50
+                    },
+                    grid: {
+                        display: false
+                    }
+                }
+            }
+        }
+    });
+</script>
+</body>
+</html>

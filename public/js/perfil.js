@@ -22,7 +22,7 @@ const email = localStorage.getItem("emailUsuario");
 const telefono = localStorage.getItem("telefonoUsuario");
 
 // Mostrar saludo al usuario
-document.getElementById("greeting").textContent = "Hola " + nombre;
+/*document.getElementById("greeting").textContent = "Hola " + nombre;*/
 
 // Cargamos los datos en la tabla
 const userTable = document.getElementById("userTable").getElementsByTagName('tbody')[0];
