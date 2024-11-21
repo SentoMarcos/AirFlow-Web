@@ -1,5 +1,7 @@
 const Usuario = require('../modelos/usuario');
 const bcrypt = require('bcryptjs');
+const UsuarioSensor = require("../modelos/usuario-sensor");
+const Sensor = require("../modelos/sensor");
 /**
  * @module UsuarioController
  */
@@ -150,6 +152,23 @@ exports.editContrasenya = async (req, res) => {
         }
     } else {
         res.status(400).json({ error: 'Faltan parámetros obligatorios' });
+    }
+};
+// Obtener los sensores de un usuario específico
+exports.getMisSensores = async (req, res) => {
+    try {
+        const { id_usuario } = req.params; // Obtener el ID del usuario de los parámetros de la solicitud
+
+        // Buscar los sensores asociados al usuario
+        const sensores = await UsuarioSensor.findAll({
+            where: { id_usuario },
+            include: [Sensor] // Incluir el modelo Sensor para obtener los detalles de los sensores
+        });
+
+        res.status(200).json(sensores);
+    } catch (error) {
+        console.error("Error al obtener los sensores del usuario:", error);
+        res.status(500).json({ error: 'Error al obtener los sensores del usuario.' });
     }
 };
 
