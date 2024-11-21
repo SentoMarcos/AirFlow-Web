@@ -1,5 +1,9 @@
 const Usuario = require('../modelos/usuario');
 const bcrypt = require('bcryptjs');
+const UsuarioSensor = require("../modelos/usuario-sensor");
+const Sensor = require("../modelos/sensor");
+const UsuarioRol = require("../modelos/usuario-rol");
+const Rol = require("../modelos/roles");
 /**
  * @module UsuarioController
  */
@@ -152,4 +156,42 @@ exports.editContrasenya = async (req, res) => {
         res.status(400).json({ error: 'Faltan parámetros obligatorios' });
     }
 };
+// Obtener los sensores de un usuario específico
+exports.getMisSensores = async (req, res) => {
+    try {
+        const { id_usuario } = req.params; // Obtener el ID del usuario de los parámetros de la solicitud
 
+        // Buscar los sensores asociados al usuario
+        const sensores = await UsuarioSensor.findAll({
+            where: { id_usuario },
+            include: [Sensor] // Incluir el modelo Sensor para obtener los detalles de los sensores
+        });
+
+        res.status(200).json(sensores);
+    } catch (error) {
+        console.error("Error al obtener los sensores del usuario:", error);
+        res.status(500).json({ error: 'Error al obtener los sensores del usuario.' });
+    }
+};
+
+exports.getMisRoles = async (req, res) => {
+    try {
+        const { id_usuario } = req.body; // Obtener el ID del usuario desde el cuerpo de la solicitud
+        console.log('Cuerpo de la solicitud:', req.body);
+
+        if (!id_usuario) {
+            return res.status(400).json({ error: 'ID de usuario no proporcionado' });
+        }
+
+        const usuarioRoles = await UsuarioRol.findAll({
+            where: { id_usuario },
+            include: [Rol] // Incluir el modelo Rol para obtener los detalles de los roles
+        });
+        console.log(usuarioRoles)
+        const roles = usuarioRoles.map(ur => ur.id_rol); // Obtener los IDs de los roles
+        res.status(200).json(roles);
+    } catch (error) {
+        console.error('Error al obtener los roles del usuario:', error);
+        res.status(500).json({ error: 'Error al obtener los roles del usuario.' });
+    }
+};

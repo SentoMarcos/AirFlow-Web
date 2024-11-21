@@ -12,7 +12,7 @@
   <link rel="stylesheet" href="css/styles.css">
   <link rel="stylesheet" href="css/airflow-index.css">
 </head>
-<body>
+<body class="loading">
 <div id="header-container"></div>
 <div id="container-airflow">
     <div id="columna">
@@ -66,7 +66,7 @@
   cargarHeader('header_airflow.html', 'headerAir-1')
 </script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
+<script src="js/control-acceso.js" data-roles-restringidos="1"></script>
 <script>
     const ctx = document.getElementById('ozoneChart').getContext('2d');
 

@@ -16,6 +16,9 @@ body {
     margin: 0;
     background-color: #f4f4f4;
 }
+body.loading{
+    display: none;
+}
 /* Estilos de la barra de scroll */
 /* Estilo general para la scrollbar */
 html::-webkit-scrollbar {
