@@ -81,7 +81,7 @@ document.getElementById("registroForm").addEventListener("submit", function(even
         document.getElementById("errorForm").textContent = "El email no es válido.";
         return;
     }
-    if (!/^\d{10}$/.test(telefono)) {
+    if (!/^\d{9}$/.test(telefono)) {
         document.getElementById("errorForm").textContent = "El teléfono debe tener 10 dígitos.";
         return;
     }
