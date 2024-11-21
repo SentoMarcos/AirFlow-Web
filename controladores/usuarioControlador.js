@@ -35,7 +35,6 @@ exports.createUsuario = async (req, res) => {
     if (!nombre) return res.status(400).json({ error: 'El nombre es obligatorio' });
     if (!email) return res.status(400).json({ error: 'El email es obligatorio' });
     if (!telefono) return res.status(400).json({ error: 'El teléfono es obligatorio' });
-    if (!contrasenya) return res.status(400).json({ error: 'La contraseña es obligatoria' });
 
     console.log("Datos recibidos:", req.body); // Log para verificar datos recibidos
 
@@ -45,7 +44,7 @@ exports.createUsuario = async (req, res) => {
             apellidos,
             email,
             telefono,
-            contrasenya: contrasenya
+            contrasenya
         });
         res.status(201).json(nuevoUsuario);
     } catch (error) {
