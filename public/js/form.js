@@ -107,7 +107,7 @@ document.getElementById("registroForm").addEventListener("submit", function(even
             document.getElementById("errorForm").textContent = data.error;
         } else {
             console.log("Usuario registrado con éxito");
-            window.location.href = 'formValido.html'; // Redirigir a formValido.html
+            //window.location.href = 'formValido.html'; // Redirigir a formValido.html
         }
     })
     .catch(error => {
