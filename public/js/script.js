@@ -10,6 +10,10 @@
  * @async
  * @returns {Promise<void>}
  */
+
+/*
+    obtenerUsuarios() => Promise<void>
+*/
 async function obtenerUsuarios() {
     try {
         const response = await fetch('http://localhost:3000/usuarios'); // Cambia la ruta según tu configuración de rutas
@@ -28,6 +32,10 @@ async function obtenerUsuarios() {
  * @description Función para mostrar los usuarios en la tabla.
  * @param usuarios
  */
+
+/*
+    usuarios => mostrarUsuarios()
+*/
 function mostrarUsuarios(usuarios) {
     const tablaUsuarios = document.getElementById('usuarios-table').getElementsByTagName('tbody')[0];
     tablaUsuarios.innerHTML = ''; // Limpiar tabla antes de agregar nuevos usuarios

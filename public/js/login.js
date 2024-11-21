@@ -14,6 +14,8 @@
  * @var {Object} loginData
  * @async
  */
+
+// Event:event => loginForm() => Promise<void>
 document.getElementById("loginForm").addEventListener("submit", function(event) {
     event.preventDefault(); // No se lanza vacío
     
@@ -23,6 +25,7 @@ document.getElementById("loginForm").addEventListener("submit", function(event) 
 
     // Validación básica de campos
     if (username === "" || password === "") {
+        document.getElementById("errorLogin").textContent = "Por favor, rellene todos los campos";
         alert("Por favor, rellene todos los campos");
         return;
     }
@@ -41,10 +44,15 @@ document.getElementById("loginForm").addEventListener("submit", function(event) 
         },
         body: JSON.stringify(loginData)
     })
-    .then(response => response.json())
+    .then(response => {
+        if (!response.ok) {
+            return response.json().then(error => { throw new Error(error.error); });
+        }
+        return response.json();
+    })
     .then(data => {
         if (data.error) {
-            document.getElementById("error-message").textContent = data.error;
+            document.getElementById("errorLogin").textContent = data.error;
         } else {
             // Guardar los datos del usuario en localStorage
             localStorage.setItem("idUsuario", data.id);
@@ -59,6 +67,6 @@ document.getElementById("loginForm").addEventListener("submit", function(event) 
     })
     .catch(error => {
         console.error('Error:', error);
-        document.getElementById("error-message").textContent = "Ocurrió un error al iniciar sesión.";
+        document.getElementById("errorLogin").textContent = error.message;
     });
 });
