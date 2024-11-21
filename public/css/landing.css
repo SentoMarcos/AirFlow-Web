@@ -33,7 +33,7 @@
 #botones-bienvenida .mapa{
     width: fit-content;
     height: 100%;
-    font-size: 1.2vw;
+    /*font-size: 1.2vw;*/
 }
 #botones-bienvenida .mapa i{
     color: white;
@@ -167,13 +167,14 @@
     flex: 1;
     background-color: var(--v3-blanco);
     color: #333;
-    padding: 15px;
     border-radius: 48px;
     text-align: center;
     font-size: 14px;
     position: relative;
     height: 25vh;
     align-content: center;
+    padding-inline: 25px;
+    padding-top: 25px;
 }
 
 #funcionalidades {
@@ -298,11 +299,15 @@
 .empresa .container .aside .row1 #airflow #telefono-airflow img{
     width: auto;
     height: 100%;
+    max-height: 227px;
+}
+.empresa .container .aside .row{
+    padding: unset;
 }
 .empresa .container .aside .row div{
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    /*justify-content: space-between;*/
     flex: 1;
     background-color: var(--v3-blanco);
     color: #333;
@@ -315,8 +320,11 @@
 }
 .empresa .container .aside .row div a{
     text-decoration: none;
-    font-size: 2vw;
+    font-size: 2.5vw;
     color: var(--v3-negro);
+    position: absolute;
+    bottom: 0;
+    padding-bottom: 15px;
 }
 .empresa .container .aside .row div#objetivos p{
     margin: unset;
@@ -350,6 +358,17 @@
     color: var(--v3-negro);
     width: 60%;
 }
+@media (max-width: 1200px) {
+    .empresa .container{
+        width: 100%;
+    }
+    .empresa{
+        width: 100%;
+    }
+    .aside{
+        width: 50%;
+    }
+}
 @media (max-width: 776px) {
     .Bienvenida .container{
         align-items: center;
@@ -365,6 +384,9 @@
     }
     .Bienvenida .container #botones-bienvenida>a{
         width: 100%;
+    }
+    .Bienvenida .container #botones-bienvenida>a:nth-child(2){
+        width: auto;
     }
     .Bienvenida .container #texto-bienvenida p,
     .Bienvenida .container #texto-bienvenida span{

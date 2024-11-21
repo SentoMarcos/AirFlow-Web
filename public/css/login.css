@@ -1,21 +1,26 @@
-.login-container{
-    height: 100vh;
+/* Contenedor principal de la página de login */
+.login-container {
+    height: 100vh; /* Ocupa toda la altura de la ventana */
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
 }
-#login-panel{
+
+/* Panel de login */
+#login-panel {
     display: flex;
     flex-direction: row;
     width: 66vw;
     height: 64.6vh;
-    background: var(--v3-blanco);
-    border-radius: 48px;
+    background: var(--v3-blanco); /* Color de fondo blanco */
+    border-radius: 48px; /* Bordes redondeados */
 }
-#login-panel #texto-saludo{
-    background: var(--v3-gris);
-    border-radius: 48px 0 0 48px;
+
+/* Sección de saludo dentro del panel de login */
+#login-panel #texto-saludo {
+    background: var(--v3-gris); /* Color de fondo gris */
+    border-radius: 48px 0 0 48px; /* Bordes redondeados solo en la parte izquierda */
     width: 50%;
     display: flex;
     flex-direction: column;
@@ -23,23 +28,28 @@
     align-items: center;
     text-align: center;
 }
+
+/* Botón dentro de la sección de saludo */
 #login-panel #texto-saludo button {
     border-radius: 10px;
-    color: var(--v3-blanco);
-    background: var(--v3-azul);
+    color: var(--v3-blanco); /* Color de texto blanco */
+    background: var(--v3-azul); /* Color de fondo azul */
     border: none;
     height: 65px;
-    width: 35%;
-    font-size: 24px;
+    font-size: 24px; /* Tamaño de fuente grande */
 }
-#login-panel #form-login{
+
+/* Formulario de login */
+#login-panel #form-login {
     width: 50%;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
 }
-#loginForm{
+
+/* Contenedor del formulario */
+#loginForm {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -47,20 +57,25 @@
     width: 65%;
     align-items: center;
 }
-#loginForm button{
+
+/* Botón dentro del formulario de login */
+#loginForm button {
     height: 50px;
     width: 70%;
-    border-radius: 30px;
-    background: var(--v3-azul);
+    border-radius: 30px; /* Bordes redondeados */
+    background: var(--v3-azul); /* Color de fondo azul */
     border: none;
-    color: var(--v3-blanco);
-    font-size: 24px;
+    color: var(--v3-blanco); /* Color de texto blanco */
+    font-size: 18px; /* Tamaño de fuente */
 }
-#loginForm a{
-    align-self: start;
-    text-decoration: none;
-    color: var(--v3-azul);
+
+/* Enlaces dentro del formulario de login */
+#loginForm a {
+    align-self: start; /* Alineación a la izquierda */
+    text-decoration: none; /* Sin subrayado */
+    color: var(--v3-azul); /* Color azul */
 }
+
 /* Contenedor para cada input e icono */
 .input-container {
     position: relative;
@@ -74,21 +89,40 @@
     left: 10px;
     top: 50%;
     transform: translateY(-50%);
-    color: var(--v3-negro);
-    font-size: 20px;
+    color: var(--v3-negro); /* Color del icono negro */
+    font-size: 20px; /* Tamaño de fuente del icono */
 }
 
 /* Ajusta el padding del input para dejar espacio al icono */
 .input-container input {
     width: 100%;
-    padding: 10px 10px 10px 30px; /* Deja espacio a la izquierda para el icono */
-    box-sizing: border-box;
+    padding: 10px 10px 10px 30px; /* Padding dejando espacio a la izquierda para el icono */
+    box-sizing: border-box; /* Incluye el padding dentro del tamaño total del input */
 }
+
+/* Estilos responsivos para pantallas más pequeñas */
 @media (max-width: 800px) {
-    #login-panel #texto-saludo{
-        display: none;
+    #login-panel #texto-saludo {
+        display: none; /* Oculta la sección de saludo */
     }
-    #login-panel #form-login{
+    #login-panel {
+        width: 65vw;
+        height: fit-content; /* Ajusta la altura al contenido */
+        padding: 25px 0; /* Padding arriba y abajo */
+    }
+    #login-panel #form-login {
         width: 100%;
+    }
+    #login-panel #form-login button {
+        width: 85%; /* Botones más anchos */
+    }
+}
+
+@media (max-width: 530px) {
+    #login-panel {
+        width: 80vw;
+    }
+    #login-panel #form-login #loginForm {
+        width: 80%;
     }
 }

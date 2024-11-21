@@ -5,11 +5,32 @@
     --cuadratica: #9F52D7;
     --v3-verde: #8AD752;
     --v3-gris: #E7E7E7;
+    --v3-rosa-excelente: #FF84E0;
+    --v3-verde-bueno: #52D783;
+    --v3-amarillo-media: #FFFD84;
+    --v3-naranja-mala: #FF9284;
+    --gris-texto:#A0A0A0;
 }
 body {
     font-family: Arial, sans-serif;
     margin: 0;
     background-color: #f4f4f4;
+}
+/* Estilos de la barra de scroll */
+/* Estilo general para la scrollbar */
+html::-webkit-scrollbar {
+    width: 10px; /* Ancho de la scrollbar */
+}
+
+/* Estilo del fondo de la scrollbar */
+html::-webkit-scrollbar-track {
+    background: #f1f1f1; /* Color del fondo */
+    border-radius: 10px; /* Bordes redondeados */
+}
+/* Estilo de la barra */
+html::-webkit-scrollbar-thumb {
+    background: var(--v3-azul); /* Color de la barra */
+    border-radius: 10px; /* Bordes redondeados */
 }
 
 h1 {
@@ -50,6 +71,9 @@ header .navbar{
 header .navbar-brand{
     padding: 0;
 }
+.navbar-nav .nav-link.active, .navbar-nav .nav-link.show{
+    color: var(--v3-azul);
+}
 header .botones-header{
     display: flex;
     flex-direction: row;
@@ -65,10 +89,22 @@ header .navbar-collapse{
     justify-content: space-between;
 }
 header .botones-header #login-button{
-    background: white;
+    background: var(--v3-blanco);
     padding: 10px 24px;
     border-radius: 100px;
     color: #444444;
+    font-family: "IBM Plex Mono";
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    text-decoration: none;
+}
+header #logout-button {
+    background: #ff4b4b;
+    padding: 10px 24px;
+    border-radius: 100px;
+    color: var(--v3-negro);
     font-family: "IBM Plex Mono";
     font-size: 14px;
     font-style: normal;
@@ -113,12 +149,7 @@ header .botones-header #mas-button{
     text-decoration: none;
     color: black;
 }
-input{
-    border: none;
-    background: var(--v3-gris);
-    height: 50px;
-    width: 100%;
-}
+input:not([type="checkbox"]) { border: none; background: var(--v3-gris); height: 50px; width: 100%; }
 label{
     width: 100%;
 }
@@ -144,6 +175,9 @@ label{
         justify-content: space-around;
         width: max-content;
         margin-top: 10px;
+    }
+    .header .container-fluid{
+        padding-left: unset;
     }
 }
 

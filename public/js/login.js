@@ -53,8 +53,8 @@ document.getElementById("loginForm").addEventListener("submit", function(event) 
             localStorage.setItem("emailUsuario", data.email);
             localStorage.setItem("telefonoUsuario", data.telefono);
 
-            // Redirigir a perfil.html
-            window.location.href = 'perfil.html'; // Redirección a la página de perfil
+            // Redirigir a airflow-index.html
+            window.location.href = 'airflow-index.html'; // Redirección a la página de perfil
         }
     })
     .catch(error => {
