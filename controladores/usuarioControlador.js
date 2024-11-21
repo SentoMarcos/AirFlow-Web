@@ -178,9 +178,6 @@ exports.getMisRoles = async (req, res) => {
     try {
         const { id_usuario } = req.body; // Obtener el ID del usuario desde el cuerpo de la solicitud
         console.log('Cuerpo de la solicitud:', req.body);
-// Registrar sensor a un usuario
-exports.registrarSensor = async (req, res) => {
-    const { id_usuario, id_sensor, estado, num_referencia, uuid, nombre, conexion, bateria } = req.body;
 
         if (!id_usuario) {
             return res.status(400).json({ error: 'ID de usuario no proporcionado' });
@@ -198,6 +195,10 @@ exports.registrarSensor = async (req, res) => {
         res.status(500).json({ error: 'Error al obtener los roles del usuario.' });
     }
 };
+
+exports.registrarSensor = async (req, res) => {
+    const { id_usuario, id_sensor, estado, num_referencia, uuid, nombre, conexion, bateria } = req.body;
+
     // Validación de campos obligatorios
     if (!id_usuario) return res.status(400).json({ error: 'El id_usuario es obligatorio' });
     if (!id_sensor) return res.status(400).json({ error: 'El id_sensor es obligatorio' });
