@@ -36,8 +36,7 @@ const Sensor = sequelize.define('Sensor', {
         allowNull: false,
     },
     uuid: {
-        type: DataTypes.UUID,
-        defaultValue: DataTypes.UUIDV4,
+        type: DataTypes.CHAR,
         allowNull: false,
     },
     nombre: {

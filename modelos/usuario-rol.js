@@ -50,5 +50,8 @@ const UsuarioRol = sequelize.define('UsuarioRol', {
     timestamps: false, // Cambia a true si deseas agregar createdAt y updatedAt
 });
 
+UsuarioRol.belongsTo(Rol, { foreignKey: 'id_rol' });
+
+
 // Exportar el modelo
 module.exports = UsuarioRol;
