@@ -1,4 +1,7 @@
 const Usuario = require('../modelos/usuario');
+const bcrypt = require('bcryptjs');
+const UsuarioSensor = require("../modelos/usuario-sensor");
+const Sensor = require("../modelos/sensor");
 /**
  * @module UsuarioController
  */
@@ -35,9 +38,10 @@ exports.createUsuario = async (req, res) => {
     if (!nombre) return res.status(400).json({ error: 'El nombre es obligatorio' });
     if (!email) return res.status(400).json({ error: 'El email es obligatorio' });
     if (!telefono) return res.status(400).json({ error: 'El teléfono es obligatorio' });
-    if (!contrasenya) return res.status(400).json({ error: 'La contraseña es obligatoria' });
 
     console.log("Datos recibidos:", req.body); // Log para verificar datos recibidos
+    // Encriptar la contraseña antes de guardarla
+    const hashedPassword = await bcrypt.hash(contrasenya, 10); // 10 es el número de salt rounds
 
     try {
         const nuevoUsuario = await Usuario.create({
@@ -45,7 +49,7 @@ exports.createUsuario = async (req, res) => {
             apellidos,
             email,
             telefono,
-            contrasenya: contrasenya
+            contrasenya: hashedPassword
         });
         res.status(201).json(nuevoUsuario);
     } catch (error) {
@@ -76,7 +80,10 @@ exports.loginUsuario = async (req, res) => {
         try {
             const usuario = await Usuario.findOne({ where: { email: email, } });
             if (usuario) {
-                if (usuario.contrasenya === contrasenya) {
+                // Verificar la contraseña encriptada
+                const isMatch = await bcrypt.compare(contrasenya, usuario.contrasenya);
+                console.log("¿Contraseñas coinciden?", isMatch);
+                if (isMatch) {
                     res.status(200).json(usuario); // Devuelve el usuario si la autenticación es exitosa
                 } else {
                     res.status(401).json({ error: 'Contraseña incorrecta' }); // Contraseña incorrecta
@@ -145,6 +152,23 @@ exports.editContrasenya = async (req, res) => {
         }
     } else {
         res.status(400).json({ error: 'Faltan parámetros obligatorios' });
+    }
+};
+// Obtener los sensores de un usuario específico
+exports.getMisSensores = async (req, res) => {
+    try {
+        const { id_usuario } = req.params; // Obtener el ID del usuario de los parámetros de la solicitud
+
+        // Buscar los sensores asociados al usuario
+        const sensores = await UsuarioSensor.findAll({
+            where: { id_usuario },
+            include: [Sensor] // Incluir el modelo Sensor para obtener los detalles de los sensores
+        });
+
+        res.status(200).json(sensores);
+    } catch (error) {
+        console.error("Error al obtener los sensores del usuario:", error);
+        res.status(500).json({ error: 'Error al obtener los sensores del usuario.' });
     }
 };
 

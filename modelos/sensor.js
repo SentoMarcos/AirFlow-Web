@@ -28,17 +28,35 @@ const Sensor = sequelize.define('Sensor', {
         allowNull: false,
     },
     estado: {
-        type: DataTypes.TEXT, // Tipo de dato TEXT para el estado
-        allowNull: false, // Campo obligatorio
+        type: DataTypes.TEXT,
+        allowNull: false,
     },
     num_referencia: {
-        type: DataTypes.TEXT, // Tipo de dato TEXT para el número de referencia
-        allowNull: false, // Campo obligatorio
+        type: DataTypes.TEXT,
+        allowNull: false,
+    },
+    uuid: {
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
+        allowNull: false,
+    },
+    nombre: {
+        type: DataTypes.STRING,
+        allowNull: false,
+    },
+    conexion: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: false,
+    },
+    bateria: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
     },
 }, {
-    tableName: 'Sensores', // Nombre de la tabla en la base de datos
-    timestamps: false, // Cambia a true si deseas agregar createdAt y updatedAt
+    tableName: 'Sensores',
+    timestamps: false,
 });
-
 // Exportar el modelo
 module.exports = Sensor;
+

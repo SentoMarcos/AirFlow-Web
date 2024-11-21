@@ -27,5 +27,6 @@ router.post('/registro', usuarioControlador.createUsuario); // Crear un nuevo us
 router.post('/login', usuarioControlador.loginUsuario); // Autenticar un usuario
 router.put('/editUsuario', usuarioControlador.editUsuario); // Editar un usuario
 router.put('/editContrasenya', usuarioControlador.editContrasenya); // Eliminar un usuario
+router.get('/mis-sensores', usuarioControlador.getMisSensores); // Obtener todos mis sensores
 
 module.exports = router;

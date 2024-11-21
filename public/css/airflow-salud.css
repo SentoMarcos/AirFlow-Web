@@ -1,0 +1,153 @@
+h3 {
+    font-size: 24px;
+}
+
+#container-salud{
+    display: flex;
+    flex-direction: row;
+    height: 100vh;
+    padding-top: 15vh;
+    gap: 10px;
+    padding-inline: 2vw; /* Relleno interno horizontal del 2% del ancho de la ventana */
+}
+
+#container-salud #main-salud{
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    width: 70%;
+    height: 100%;
+    gap: 10px;
+}
+
+#container-salud #main-salud>div{
+    background: var(--v3-blanco);
+    border-radius: 48px;
+    padding: 25px;
+}
+
+#container-salud #main-salud>div#info-salud{
+    height: 70%;
+}
+
+#container-salud #main-salud>div#info-salud .scroll-y{
+    max-height: 100%; /* Altura máxima según la ventana */
+    min-height: 100%;
+    overflow-y: auto;
+}
+/* Ocultar la barra de scroll solo en navegadores Webkit (Chrome, Safari) */
+#container-salud #main-salud>div#info-salud .scroll-y::-webkit-scrollbar {
+    display: none;
+}
+
+#container-salud #main-salud>div#info-salud .grid{
+    display: grid;
+    grid-template-columns: repeat(5, 1fr); /* 5 columnas iguales */
+    grid-template-rows: repeat(3, 1fr); /* 3 filas iguales */
+    gap: 10px;
+    flex: 1;
+}
+
+#container-salud #main-salud>div#info-salud .grid div{
+    border-radius: 24px;
+    background: white;
+    justify-items: center;
+    padding-inline: 10px;
+    color: var(--v3-blanco);
+    align-content: space-around;
+}
+
+#container-salud #main-salud>div#info-salud .grid>div>p:nth-child(1){
+    font-size: 13px;
+}
+
+#container-salud #main-salud>div#info-salud .grid>div>p:nth-child(2){
+    font-size: 14px;
+    font-style: oblique;
+}
+
+#container-salud #main-salud>div#info-salud .grid>div h5{
+    font-size: 20px;
+    font-weight: 700;
+}
+#container-salud #main-salud>div#info-salud .grid div.excelente{
+    background: var(--v3-rosa-excelente);
+}
+
+#container-salud #main-salud>div#info-salud .grid div.buena{
+    background: var(--v3-verde-bueno);
+}
+
+#container-salud #main-salud>div#info-salud .grid div.media{
+    background: var(--v3-amarillo-media);
+    color: var(--v3-negro);
+}
+
+#container-salud #main-salud>div#info-salud .grid div.mala{
+    background: var(--v3-naranja-mala);
+}
+
+#container-salud #main-salud>div#info-salud .grid div.peligrosa{
+    background: red;
+}
+
+#container-salud #main-salud>div#exposición{
+    height: 30%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#container-salud #main-salud #exposición>div{
+    display: flex;
+    flex-direction: column;
+    /*justify-content: space-between;*/
+    align-items: center;
+}
+
+#container-salud #main-salud>div#exposición .expo-nivel{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+#container-salud #main-salud>div#exposición .expo-nivel img{
+    max-height: 50px;
+    max-width: 50px;
+}
+
+#container-salud #main-salud>div#exposición p{
+    margin-bottom: unset;
+}
+
+#container-salud #lado{
+    height: 100%;
+    border-radius: 48px;
+    flex: 0.3;
+}
+
+#container-salud #lado img{
+    max-height: 100%;
+}
+
+
+@media (max-width: 1105px) {
+    #container-salud #main-salud>div#info-salud .grid{
+        grid-template-columns: repeat(3, 1fr); /* 5 columnas iguales */
+        grid-template-rows: repeat(5, 1fr); /* 3 filas iguales */
+    }
+}
+
+@media (max-width: 963px) {
+    #container-salud #main-salud{
+        width: 60%;
+    }
+    #container-salud #lado{
+        display: none;
+    }
+    #container-salud #main-salud>div#info-salud .grid{
+        grid-template-columns: repeat(3, 1fr); /* 5 columnas iguales */
+        grid-template-rows: repeat(5, 1fr); /* 3 filas iguales */
+    }
+}
