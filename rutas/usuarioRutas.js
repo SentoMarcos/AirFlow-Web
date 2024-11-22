@@ -26,6 +26,6 @@ router.get('/', usuarioControlador.getAllUsuarios); // Obtener todos los usuario
 router.post('/registro', usuarioControlador.createUsuario); // Crear un nuevo usuario
 router.post('/login', usuarioControlador.loginUsuario); // Autenticar un usuario
 router.put('/editUsuario', usuarioControlador.editUsuario); // Editar un usuario
-router.put('/editContrasenya', usuarioControlador.editContrasenya); // Eliminar un usuario
+router.put('/editContrasenya', usuarioControlador.editContrasenya); // Editar contraseña
 
 module.exports = router;

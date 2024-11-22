@@ -29,7 +29,7 @@ function generarContrasenya() {
     const longitudMaxima = 16;
     const caracteres = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&_.";
     const numeros = "0123456789";
-    const especiales = "!@#$%^&_";
+    const especiales = "!@#$%^&_.";
 
     // Garantizar al menos un número y un carácter especial
     const contrasenaBase = [
@@ -81,8 +81,8 @@ document.getElementById("registroForm").addEventListener("submit", function(even
         document.getElementById("errorForm").textContent = "El email no es válido.";
         return;
     }
-    if (!/^\d{10}$/.test(telefono)) {
-        document.getElementById("errorForm").textContent = "El teléfono debe tener 10 dígitos.";
+    if (!/^\d{9}$/.test(telefono)) {
+        document.getElementById("errorForm").textContent = "El teléfono debe tener 9 dígitos.";
         return;
     }
 
@@ -107,7 +107,7 @@ document.getElementById("registroForm").addEventListener("submit", function(even
             document.getElementById("errorForm").textContent = data.error;
         } else {
             console.log("Usuario registrado con éxito");
-            window.location.href = 'formValido.html'; // Redirigir a formValido.html
+            //window.location.href = 'formValido.html'; // Redirigir a formValido.html
         }
     })
     .catch(error => {

@@ -120,6 +120,9 @@
             <!-- Botón para editar los datos -->
             <button id="editBtn">Editar</button>
 
+            <!-- Botón para editar los datos -->
+            <button id="editPasswordBtn">Cambiar Contraseña</button>
+
             <!-- Formulario para editar los datos (inicialmente oculto) -->
             <div id="editForm" style="display: none;">
                 <h2>Editar Datos</h2>
@@ -145,8 +148,29 @@
                 </div>
 
                 <button id="saveBtn">Guardar Cambios</button>
-                <p id="message" style="color: green;"></p>
+                <p id="errorEdit" style="color: red;"></p>
             </div>
+
+            <!-- Formulario para editar la contraseña (inicialmente oculto) -->
+            <div id="editPassword" style="display: none;">
+                <h2>Cambiar Contraseña</h2>
+                <div>
+                    <label for="">Contraseña Actual:</label>
+                    <input type="text" id="inputPassword" required>
+                </div>
+                <div>
+                    <label for="editApellidos">Nueva Contraseña:</label>
+                    <input type="text" id="newPassword1" required>
+                </div>
+                <div>
+                    <label for="editEmail">Repetir Contraseña:</label>
+                    <input type="text" id="newPassword2" required>
+                </div>
+            
+                <button id="savePasswordBtn">Guardar Cambios</button>
+                <p id="errorPasswordEdit" style="color: red" ;></p>
+                <p id="confirmMessage" style="color: green;"></p>
+        
             </div>
         </div>
         <div id="leaderboard">

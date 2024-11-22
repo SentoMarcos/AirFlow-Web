@@ -134,22 +134,41 @@ exports.editUsuario = async (req, res) => {
  */
 // Editar cambio de contraseña
 exports.editContrasenya = async (req, res) => {
-    const { id, contrasenya } = req.body;
-    if (id && contrasenya) {
-        try {
-            const usuario = await Usuario.findOne({ where: { id: id } });
-            if (usuario) {
-                await Usuario.update({ contrasenya: contrasenya }, { where: { id: id } });
-                res.status(200).json({ message: 'Contraseña actualizada correctamente' });
-            } else {
-                res.status(404).json({ error: 'Usuario no encontrado' });
-            }
-        } catch (error) {
-            console.error("Error al actualizar la contraseña:", error);
-            res.status(500).json({ error: 'Error al actualizar la contraseña.' });
+    const { id, password, newPassword } = req.body;
+    console.log("Datos recibidos:", req.body);
+    //Comprobar parámetros obligatorios
+    if (!id || !password || !newPassword) {
+        console.error("Faltan parámetros obligatorios");
+        return res.status(400).json({ error: 'Faltan parámetros obligatorios' });
+    }
+
+    try {
+        // Buscar el usuario por ID
+        const user = await Usuario.findOne({ where: { id: id } });
+        if (!user) {
+            console.error("Usuario no encontrado");
+            return res.status(404).json({ error: 'Usuario no encontrado' });
         }
-    } else {
-        res.status(400).json({ error: 'Faltan parámetros obligatorios' });
+
+        // Verificar la contraseña actual
+        const isMatch = await bcrypt.compare(password, user.contrasenya);
+        console.log("¿Contraseñas coinciden?", isMatch);
+
+        if (!isMatch) {
+            console.error("Contraseña incorrecta");
+            return res.status(401).json({ error: 'Contraseña incorrecta' });
+        }
+
+        // Encriptar y actualizar la nueva contraseña
+        const hashedPassword = await bcrypt.hash(newPassword, 10); // 10 es el número de salt rounds
+        await Usuario.update({ contrasenya: hashedPassword }, { where: { id: id } });
+
+        console.log("Contraseña actualizada correctamente");
+        res.status(200).json({ message: 'Contraseña actualizada correctamente' });
+
+    } catch (error) {
+        console.error("Error al actualizar la contraseña:", error);
+        res.status(500).json({ error: 'Error al actualizar la contraseña.' });
     }
 };
 
