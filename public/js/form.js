@@ -25,8 +25,8 @@
     Function: generarContrasena() => string
 */
 function generarContrasenya() {
-    const longitudMinima = 6;
-    const longitudMaxima = 16;
+    const longitudMinima = 7;
+    const longitudMaxima = 15;
     const caracteres = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&_.";
     const numeros = "0123456789";
     const especiales = "!@#$%^&_.";

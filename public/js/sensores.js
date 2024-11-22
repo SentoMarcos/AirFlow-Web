@@ -2,7 +2,7 @@ async function obtenerSensores() {
     try {
         const response = await fetch('http://localhost:3000/sensores'); // Cambia la ruta según tu configuración de rutas
         if (!response.ok) {
-            throw new Error('Error en la red');
+            throw new Error(`Error en la red: ${response.status} ${response.statusText}`);
         }
         const sensores = await response.json();
         mostrarMisSensores(sensores);
@@ -10,6 +10,7 @@ async function obtenerSensores() {
         console.error('Error al obtener los sensores:', error);
     }
 }
+
 function mostrarMisSensores(sensores) {
     const table = document.createElement('table');
     table.border = '1';
@@ -39,4 +40,7 @@ function mostrarMisSensores(sensores) {
 }
 
 // Cargar sensores cuando la página esté completamente cargada
-document.addEventListener('DOMContentLoaded', obtenerSensores);
+document.addEventListener('DOMContentLoaded', () => {
+    obtenerSensores();
+    setInterval(obtenerSensores, 5000); // Actualizar cada 5 segundos
+});
