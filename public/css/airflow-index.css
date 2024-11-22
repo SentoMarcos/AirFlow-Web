@@ -1,0 +1,163 @@
+h3 {
+    font-size: 24px;
+}
+/* Contenedor principal de Airflow */
+#container-airflow{
+    display: flex;
+    flex-direction: row; /* Flexbox en fila */
+    margin-top: 15vh; /* Margen superior del 15% de la altura de la ventana */
+    height: 100vh; /* Altura del contenedor al 100% de la altura de la ventana */
+    border: none; /* Sin borde */
+    gap: 10px; /* Espacio entre elementos flexibles */
+    padding-inline: 2vw; /* Relleno interno horizontal del 2% del ancho de la ventana */
+}
+
+/* Estilos para el mapa */
+#container-airflow #mapa{
+    background: var(--v3-negro); /* Fondo negro */
+    border-radius: 48px; /* Bordes redondeados */
+    flex: 0.6; /* Toma el 60% del espacio flexible */
+    border: none; /* Sin borde */
+    width: 60%;
+}
+
+/* Columna de contenido adicional */
+#container-airflow #columna{
+    display: flex;
+    flex-direction: column; /* Flexbox en columna */
+    flex: 0.4; /* Toma el 40% del espacio flexible */
+    border: none; /* Sin borde */
+    gap: 10px; /* Espacio entre elementos flexibles */
+    width: 40%;
+}
+
+/* Estilos para los elementos dentro de la columna */
+#container-airflow #columna>div{
+    background: var(--v3-blanco); /* Fondo blanco */
+    border-radius: 48px; /* Bordes redondeados */
+    border: none; /* Sin borde */
+    padding: 15px; /* Relleno interno de 15 píxeles */
+}
+
+/* Sección de características */
+#container-airflow #columna #características{
+    height: 35%; /* Altura del 35% del contenedor */
+    background: var(--v3-azul); /* Fondo azul */
+    position: relative; /* Posición relativa para elementos internos */
+    padding-inline: 25px; /* Relleno horizontal de 25 píxeles */
+}
+
+/* Estilos para los inputs dentro de características */
+#container-airflow #columna #características input{
+    background: none; /* Sin fondo */
+    border: 2px solid var(--v3-blanco); /* Borde de 2 píxeles blanco */
+    border-radius: 36px; /* Bordes redondeados */
+    padding: 10px; /* Relleno interno de 10 píxeles */
+    max-height: 44px; /* Altura máxima de 44 píxeles */
+}
+
+/* Estilos para los placeholders de los inputs */
+#container-airflow #columna #características input::placeholder{
+    color: var(--v3-blanco); /* Color del texto placeholder blanco */
+}
+
+/* Contenedor de buscador dentro de características */
+#container-airflow #columna #características #buscador-container{
+    max-height: 80px; /* Altura máxima de 80 píxeles */
+    display: flex;
+    flex-direction: row; /* Flexbox en fila */
+    align-items: center; /* Alineación de elementos centrada verticalmente */
+    position: relative; /* Posición relativa para elementos internos */
+    gap: 20px; /* Espacio entre elementos flexibles */
+}
+
+/* Posiciona el icono dentro del input de búsqueda */
+#container-airflow #columna #características #buscador-container i {
+    position: absolute; /* Posición absoluta dentro del contenedor */
+    right: 35px; /* A 35 píxeles del borde derecho */
+    top: 50%; /* Centrando verticalmente */
+    transform: translateY(-50%); /* Ajustando para centrar completamente */
+    color: var(--v3-blanco); /* Color del icono blanco */
+    font-size: 20px; /* Tamaño de fuente del icono */
+}
+
+/* Estilos para la imagen dentro del buscador */
+#container-airflow #columna #características #buscador-container img{
+    max-width: 75px; /* Ancho máximo de 75 píxeles */
+    max-height: 60px; /* Altura máxima de 60 píxeles */
+}
+
+/* Estilos para los inputs dentro del contenedor de buscador */
+#container-airflow #columna #características #buscador-container input{
+    border: none; /* Sin borde */
+    border-bottom: 2px solid var(--v3-blanco); /* Borde inferior de 2 píxeles blanco */
+    border-radius: 0; /* Sin bordes redondeados */
+}
+
+/* Iconos de transporte dentro de características */
+#container-airflow #columna #características #iconos-transporte {
+    font-size: 25px; /* Tamaño de fuente de 25 píxeles */
+    display: flex;
+    flex-direction: row; /* Flexbox en fila */
+    gap: 10px; /* Espacio entre elementos flexibles */
+    color: var(--v3-blanco); /* Color blanco para los iconos */
+}
+
+/* Contenedor de rutas dentro de características */
+#container-airflow #columna #características #container-rutas #puntos-ruta{
+    display: flex;
+    flex-direction: column; /* Flexbox en columna */
+    gap: 10px; /* Espacio entre elementos flexibles */
+}
+
+/* Estilos para los divs dentro de puntos de ruta */
+#container-airflow #columna #características #container-rutas #puntos-ruta>div{
+    display: flex;
+    position: relative; /* Posición relativa para elementos internos */
+}
+
+/* Posiciona los iconos dentro de los puntos de ruta */
+#container-airflow #columna #características #container-rutas #puntos-ruta i {
+    position: absolute; /* Posición absoluta dentro del contenedor */
+    right: 35px; /* A 35 píxeles del borde derecho */
+    top: 50%; /* Centrando verticalmente */
+    transform: translateY(-50%); /* Ajustando para centrar completamente */
+    color: var(--v3-blanco); /* Color del icono blanco */
+    font-size: 20px; /* Tamaño de fuente del icono */
+}
+
+/* Sección de gráfica */
+#container-airflow #columna #gráfica{
+    height: 65%; /* Altura del 65% del contenedor */
+}
+
+/* Contenedor del indicador de la gráfica */
+#container-airflow #columna #gráfica #indicador-gráfica{
+    display: flex;
+    flex-direction: row; /* Flexbox en fila */
+    justify-content: space-evenly; /* Espacio igual entre elementos */
+    align-items: center; /* Alineación de elementos centrada verticalmente */
+    max-height: 60px; /* Altura máxima de 60 píxeles */
+}
+
+/* Estilos para el segundo párrafo dentro de texto-indicador */
+#container-airflow #columna #gráfica #indicador-gráfica #texto-indicador p:nth-child(2){
+    color: var(--v3-rosa-excelente); /* Color rosa excelente */
+}
+
+/* Estilos generales para párrafos dentro de indicador de gráfica */
+#container-airflow #columna #gráfica #indicador-gráfica p{
+    margin-bottom: unset; /* Sin margen inferior */
+}
+
+/* Estilos para las imágenes dentro de indicador de gráfica */
+#container-airflow #columna #gráfica #indicador-gráfica img{
+    max-height: 60px; /* Altura máxima de 60 píxeles */
+    max-width: 60px; /* Ancho máximo de 60 píxeles */
+}
+
+/* Estilos para las imágenes dentro de indicador de gráfica */
+#container-airflow #mapa img{
+    width: 100%;
+    height: 100%;
+}
