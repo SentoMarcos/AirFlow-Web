@@ -240,7 +240,7 @@
     padding-top: 15vh;
     padding-inline: 2vw;
     height: 100vh;
-    padding-bottom: 2vw;
+    padding-bottom: 1vw;
 }
 .empresa .container {
     display: flex;
@@ -328,7 +328,7 @@
 }
 .empresa .container .aside .row div a{
     text-decoration: none;
-    font-size: 2.5vw;
+    font-size: 2.3vw;
     color: var(--v3-negro);
     position: absolute;
     bottom: 0;
@@ -365,6 +365,18 @@
 .empresa .container .main-text p{
     color: var(--v3-negro);
     width: 60%;
+}
+footer{
+    border-radius: 48px;
+    background: var(--v3-blanco);
+    margin-inline: 2vw;
+    padding: 22px;
+}
+footer a{
+    color: var(--v3-azul);
+}
+footer a:hover{
+    color: var(--v3-negro);
 }
 @media (max-width: 1200px) {
     .empresa .container{
