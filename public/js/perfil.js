@@ -71,6 +71,9 @@ document.getElementById("editBtn").addEventListener("click", function() {
     document.getElementById("editPassword").style.display = "none";
     document.getElementById("editForm").style.display = "block";
 
+    document.getElementById("editBtn").style.display = "none";
+    document.getElementById("editPasswordBtn").style.display = "none";
+
     // Cargar los datos en el formulario de edición
     document.getElementById("editNombre").value = nombre;
     document.getElementById("editApellidos").value = apellidos;
@@ -123,6 +126,28 @@ document.getElementById("saveBtn").addEventListener("click", function() {
 });
 
 /**
+ * @function cancelEdit
+ * @description Función para manejar el botón de cancelar.
+ * @returns {void}
+ * @event cancelBtn
+ */
+
+/*
+    cancelEdit() => void
+*/
+
+//Función para cancelar la edición de datos.
+document.getElementById("cancelEditBtn").addEventListener("click", function () {
+    // Mostrar la tabla y ocultar el formulario de edición
+    document.getElementById("userTable").style.display = "block";
+    document.getElementById("editPassword").style.display = "none";
+    document.getElementById("editForm").style.display = "none";
+
+    document.getElementById("editBtn").style.display = "block";
+    document.getElementById("editPasswordBtn").style.display = "block";
+});
+
+/**
  * @function editPassword
  * @description Función para manejar el botón de editar contraseña.
  * @returns {void}
@@ -138,6 +163,9 @@ document.getElementById("editPasswordBtn").addEventListener("click", function ()
     document.getElementById("userTable").style.display = "none";
     document.getElementById("editPassword").style.display = "block";
     document.getElementById("editForm").style.display = "none";
+
+    document.getElementById("editBtn").style.display = "none";
+    document.getElementById("editPasswordBtn").style.display = "none";
 });
 
 // Función para guardar los cambios de contraseña
@@ -190,7 +218,7 @@ document.getElementById("savePasswordBtn").addEventListener("click", function ()
 });
 
 /**
- * @function cancelEdit
+ * @function cancelPasswordEdit
  * @description Función para manejar el botón de cancelar.
  * @returns {void}
  * @event cancelBtn
@@ -199,3 +227,19 @@ document.getElementById("savePasswordBtn").addEventListener("click", function ()
 /*
     cancelEdit() => void
 */
+
+//Función para cancelar la edición de contraseña.
+document.getElementById("cancelPasswordBtn").addEventListener("click", function () {
+    // Mostrar la tabla y ocultar el formulario de edición
+    document.getElementById("userTable").style.display = "block";
+    document.getElementById("editPassword").style.display = "none";
+    document.getElementById("editForm").style.display = "none";
+
+    document.getElementById("editBtn").style.display = "block";
+    document.getElementById("editPasswordBtn").style.display = "block";
+
+    // Opcional: Restablecer los valores de los campos
+    document.getElementById("inputPassword").value = "";
+    document.getElementById("newPassword1").value = "";
+    document.getElementById("newPassword2").value = "";
+});
