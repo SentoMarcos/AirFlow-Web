@@ -1,9 +1,9 @@
 const Usuario = require('../modelos/usuario');
 const bcrypt = require('bcryptjs');
 const UsuarioSensor = require("../modelos/usuario-sensor");
-const Sensor = require("../modelos/sensor");
+const Sensor = require("../modelos/Sensor");
 const UsuarioRol = require("../modelos/usuario-rol");
-const Rol = require("../modelos/roles");
+const Rol = require("../modelos/Roles");
 /**
  * @module UsuarioController
  */
@@ -40,7 +40,6 @@ exports.createUsuario = async (req, res) => {
     if (!nombre) return res.status(400).json({ error: 'El nombre es obligatorio' });
     if (!email) return res.status(400).json({ error: 'El email es obligatorio' });
     if (!telefono) return res.status(400).json({ error: 'El teléfono es obligatorio' });
-    }
 
     try {
         // Verificar si el email ya existe
