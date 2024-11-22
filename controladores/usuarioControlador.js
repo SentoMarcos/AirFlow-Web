@@ -40,8 +40,6 @@ exports.createUsuario = async (req, res) => {
     if (!nombre) return res.status(400).json({ error: 'El nombre es obligatorio' });
     if (!email) return res.status(400).json({ error: 'El email es obligatorio' });
     if (!telefono) return res.status(400).json({ error: 'El teléfono es obligatorio' });
-    if (!contrasenya || contrasenya.length < 8) {
-        return res.status(400).json({ error: 'La contraseña debe tener al menos 8 caracteres' });
     }
 
     try {
