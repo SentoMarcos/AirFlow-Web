@@ -216,3 +216,35 @@ exports.getMisRoles = async (req, res) => {
         res.status(500).json({ error: 'Error al obtener los roles del usuario.' });
     }
 };
+
+exports.registrarSensor = async (req, res) => {
+    const { id_usuario, id_sensor, estado, num_referencia, uuid, nombre, conexion, bateria } = req.body;
+
+    // Validación de campos obligatorios
+    if (!id_usuario) return res.status(400).json({ error: 'El id_usuario es obligatorio' });
+    if (!id_sensor) return res.status(400).json({ error: 'El id_sensor es obligatorio' });
+
+    try {
+        // Crear la relación entre usuario y sensor
+        const usuarioSensor = await UsuarioSensor.create({
+            id_usuario,
+            id_sensor
+        });
+
+        // Crear el sensor en la tabla Sensor
+        const sensor = await Sensor.create({
+            id_sensor,
+            estado,
+            num_referencia,
+            uuid,
+            nombre,
+            conexion,
+            bateria
+        });
+
+        res.status(201).json({ usuarioSensor, sensor });
+    } catch (error) {
+        console.error("Error al registrar el sensor al usuario:", error);
+        res.status(500).json({ error: 'Error al registrar el sensor al usuario.' });
+    }
+};
