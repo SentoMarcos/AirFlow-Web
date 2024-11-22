@@ -1,5 +1,9 @@
 const Usuario = require('../modelos/usuario');
 const bcrypt = require('bcryptjs');
+const UsuarioSensor = require("../modelos/usuario-sensor");
+const Sensor = require("../modelos/sensor");
+const UsuarioRol = require("../modelos/usuario-rol");
+const Rol = require("../modelos/roles");
 /**
  * @module UsuarioController
  */
@@ -36,34 +40,55 @@ exports.createUsuario = async (req, res) => {
     if (!nombre) return res.status(400).json({ error: 'El nombre es obligatorio' });
     if (!email) return res.status(400).json({ error: 'El email es obligatorio' });
     if (!telefono) return res.status(400).json({ error: 'El teléfono es obligatorio' });
-
-    console.log("Datos recibidos:", req.body); // Log para verificar datos recibidos
-    // Encriptar la contraseña antes de guardarla
-    const hashedPassword = await bcrypt.hash(contrasenya, 10); // 10 es el número de salt rounds
+    if (!contrasenya || contrasenya.length < 8) {
+        return res.status(400).json({ error: 'La contraseña debe tener al menos 8 caracteres' });
+    }
 
     try {
+        // Verificar si el email ya existe
+        const usuarioExistente = await Usuario.findOne({ where: { email } });
+        if (usuarioExistente) {
+            return res.status(400).json({ error: 'El correo ya está registrado' });
+        }
+
+        // Encriptar la contraseña antes de guardarla
+        const hashedPassword = await bcrypt.hash(contrasenya, 10);
+
+        // Crear el usuario
         const nuevoUsuario = await Usuario.create({
             nombre,
             apellidos,
             email,
             telefono,
-            contrasenya: hashedPassword
+            contrasenya: hashedPassword,
         });
-        res.status(201).json(nuevoUsuario);
+
+        // Asignar el rol 2 al usuario en la tabla Usuario-Rol
+        await UsuarioRol.create({
+            id_usuario: nuevoUsuario.id, // ID del usuario recién creado
+            id_rol: 2,                  // Rol 2 (por ejemplo: "Usuario")
+        });
+
+        // Respuesta exitosa (sin incluir la contraseña)
+        res.status(201).json({
+            id: nuevoUsuario.id,
+            nombre: nuevoUsuario.nombre,
+            apellidos: nuevoUsuario.apellidos,
+            email: nuevoUsuario.email,
+            telefono: nuevoUsuario.telefono,
+        });
     } catch (error) {
         console.error("Error al crear el usuario:", error.message || error);
 
-        // Captura de errores específicos
         if (error.name === 'SequelizeValidationError') {
-            res.status(400).json({ error: 'Error de validación: verifica los datos ingresados' });
+            return res.status(400).json({ error: 'Error de validación: verifica los datos ingresados' });
         } else if (error.name === 'SequelizeUniqueConstraintError') {
-            res.status(400).json({ error: 'El correo ya está registrado' });
+            return res.status(400).json({ error: 'El correo ya está registrado' });
         } else {
-            res.status(500).json({ error: 'Error interno del servidor' });
+            return res.status(500).json({ error: 'Error interno del servidor' });
         }
     }
 };
-
 /**
  * Autenticar un usuario.
  * @function loginUsuario
@@ -171,4 +196,74 @@ exports.editContrasenya = async (req, res) => {
         res.status(500).json({ error: 'Error al actualizar la contraseña.' });
     }
 };
+// Obtener los sensores de un usuario específico
+exports.getMisSensores = async (req, res) => {
+    try {
+        const { id_usuario } = req.params; // Obtener el ID del usuario de los parámetros de la solicitud
 
+        // Buscar los sensores asociados al usuario
+        const sensores = await UsuarioSensor.findAll({
+            where: { id_usuario },
+            include: [Sensor] // Incluir el modelo Sensor para obtener los detalles de los sensores
+        });
+
+        res.status(200).json(sensores);
+    } catch (error) {
+        console.error("Error al obtener los sensores del usuario:", error);
+        res.status(500).json({ error: 'Error al obtener los sensores del usuario.' });
+    }
+};
+
+exports.getMisRoles = async (req, res) => {
+    try {
+        const { id_usuario } = req.body; // Obtener el ID del usuario desde el cuerpo de la solicitud
+        console.log('Cuerpo de la solicitud:', req.body);
+
+        if (!id_usuario) {
+            return res.status(400).json({ error: 'ID de usuario no proporcionado' });
+        }
+
+        const usuarioRoles = await UsuarioRol.findAll({
+            where: { id_usuario },
+            include: [Rol] // Incluir el modelo Rol para obtener los detalles de los roles
+        });
+        console.log(usuarioRoles)
+        const roles = usuarioRoles.map(ur => ur.id_rol); // Obtener los IDs de los roles
+        res.status(200).json(roles);
+    } catch (error) {
+        console.error('Error al obtener los roles del usuario:', error);
+        res.status(500).json({ error: 'Error al obtener los roles del usuario.' });
+    }
+};
+
+exports.registrarSensor = async (req, res) => {
+    const { id_usuario, id_sensor, estado, num_referencia, uuid, nombre, conexion, bateria } = req.body;
+
+    // Validación de campos obligatorios
+    if (!id_usuario) return res.status(400).json({ error: 'El id_usuario es obligatorio' });
+    if (!id_sensor) return res.status(400).json({ error: 'El id_sensor es obligatorio' });
+
+    try {
+        // Crear la relación entre usuario y sensor
+        const usuarioSensor = await UsuarioSensor.create({
+            id_usuario,
+            id_sensor
+        });
+
+        // Crear el sensor en la tabla Sensor
+        const sensor = await Sensor.create({
+            id_sensor,
+            estado,
+            num_referencia,
+            uuid,
+            nombre,
+            conexion,
+            bateria
+        });
+
+        res.status(201).json({ usuarioSensor, sensor });
+    } catch (error) {
+        console.error("Error al registrar el sensor al usuario:", error);
+        res.status(500).json({ error: 'Error al registrar el sensor al usuario.' });
+    }
+};
