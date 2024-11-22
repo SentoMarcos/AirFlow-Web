@@ -29,7 +29,7 @@ function generarContrasenya() {
     const longitudMaxima = 16;
     const caracteres = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&_.";
     const numeros = "0123456789";
-    const especiales = "!@#$%^&_";
+    const especiales = "!@#$%^&_.";
 
     // Garantizar al menos un número y un carácter especial
     const contrasenaBase = [
@@ -82,7 +82,7 @@ document.getElementById("registroForm").addEventListener("submit", function(even
         return;
     }
     if (!/^\d{9}$/.test(telefono)) {
-        document.getElementById("errorForm").textContent = "El teléfono debe tener 10 dígitos.";
+        document.getElementById("errorForm").textContent = "El teléfono debe tener 9 dígitos.";
         return;
     }
 

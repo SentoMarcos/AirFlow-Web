@@ -11,6 +11,14 @@
     --v3-naranja-mala: #FF9284;
     --gris-texto:#A0A0A0;
 }
+@font-face {
+    font-family: 'Poppins';
+    src: url('font/poppins.woff2') format('woff2');
+}
+@font-face {
+    font-family: 'IBM Plex Mono';
+    src: url('font/IBMPlexMono-Regular.woff') format('woff');
+}
 body {
     font-family: Arial, sans-serif;
     margin: 0;
@@ -38,6 +46,7 @@ html::-webkit-scrollbar-thumb {
 
 h1 {
     color: #333;
+    font-family: "Poppins", serif;
 }
 table {
     width: 100%;
@@ -70,6 +79,7 @@ tr:nth-child(even) {
 }
 header .navbar{
     padding-top: 0;
+    font-family: "IBM Plex Mono", sans-serif;
 }
 header .navbar-brand{
     padding: 0;
