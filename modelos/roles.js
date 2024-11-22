@@ -32,6 +32,17 @@ const Rol = sequelize.define('Rol', {
     tableName: 'Roles', // Nombre de la tabla en la base de datos
     timestamps: false, // Cambia a true si deseas agregar createdAt y updatedAt
 });
-
+// Agregar datos predeterminados al inicializarse
+Rol.afterSync(async () => {
+    const rolesExistentes = await Rol.count(); // Verificar si ya hay datos
+    if (rolesExistentes === 0) {
+        await Rol.bulkCreate([
+            { id_rol: 1, descripcion: 'Administrador' },
+            { id_rol: 2, descripcion: 'Usuario' },
+            { id_rol: 3, descripcion: 'Moderador' },
+        ]);
+        console.log('Datos iniciales de roles insertados.');
+    }
+});
 // Exportar el modelo
 module.exports = Rol;
