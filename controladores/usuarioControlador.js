@@ -216,35 +216,51 @@ exports.getMisRoles = async (req, res) => {
         res.status(500).json({ error: 'Error al obtener los roles del usuario.' });
     }
 };
-
 exports.registrarSensor = async (req, res) => {
-    const { id_usuario, id_sensor, estado, num_referencia, uuid, nombre, conexion, bateria } = req.body;
-
-    // Validación de campos obligatorios
-    if (!id_usuario) return res.status(400).json({ error: 'El id_usuario es obligatorio' });
-    if (!id_sensor) return res.status(400).json({ error: 'El id_sensor es obligatorio' });
+    const { id_usuario, estado, num_referencia, uuid, nombre, conexion, bateria } = req.body;
 
     try {
-        // Crear la relación entre usuario y sensor
-        const usuarioSensor = await UsuarioSensor.create({
-            id_usuario,
-            id_sensor
-        });
-
         // Crear el sensor en la tabla Sensor
         const sensor = await Sensor.create({
-            id_sensor,
-            estado,
-            num_referencia,
-            uuid,
-            nombre,
-            conexion,
-            bateria
+            estado: estado,
+            num_referencia: num_referencia,
+            uuid: uuid,
+            nombre: nombre,
+            conexion: conexion,
+            bateria: bateria,
         });
 
-        res.status(201).json({ usuarioSensor, sensor });
+        // Validación de campos obligatorios
+        if (!id_usuario) return res.status(400).json({ error: 'El id_usuario es obligatorio' });
+        if (!sensor.id_sensor) return res.status(400).json({ error: 'El id_sensor es obligatorio' });
+
+        // Crear la relación entre usuario y sensor
+        const usuarioSensor = await UsuarioSensor.create({
+            id_usuario: id_usuario,
+            id_sensor: sensor.id_sensor,
+        });
+
+        res.status(201).json({ usuarioSensor, sensorId: sensor.id_sensor });
     } catch (error) {
         console.error("Error al registrar el sensor al usuario:", error);
         res.status(500).json({ error: 'Error al registrar el sensor al usuario.' });
     }
 };
+exports.actualizarSensor = async (req, res) => {
+    const { id_sensor, estado, conexion, bateria } = req.body;
+
+    if (!id_sensor) return res.status(400).json({ error: 'El id_sensor es obligatorio' });
+
+    try {
+        const sensor = await Sensor.findOne({ where: { id_sensor: id_sensor } });
+        if (sensor) {
+            await Sensor.update({ estado, conexion, bateria }, { where: { id_sensor: id_sensor } });
+            res.status(200).json({ message: 'Sensor actualizado correctamente' });
+        } else {
+            res.status(404).json({ error: 'Sensor no encontrado' });
+        }
+    } catch (error) {
+        console.error("Error al actualizar el sensor:", error);
+        res.status(500).json({ error: 'Error al actualizar el sensor.' });
+    }
+}

@@ -30,5 +30,6 @@ router.put('/editContrasenya', usuarioControlador.editContrasenya); // Eliminar 
 router.get('/mis-sensores', usuarioControlador.getMisSensores); // Obtener todos mis sensores
 router.post('/registrar-sensor', usuarioControlador.registrarSensor); // Registrar un sensor a un usuario
 router.post('/roles', usuarioControlador.getMisRoles); // Obtener todos mis roles
+router.put('/actualizar-sensor', usuarioControlador.actualizarSensor); // Actualizar un sensor
 
 module.exports = router;
