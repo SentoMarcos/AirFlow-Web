@@ -13,6 +13,8 @@ const Medicion = require('../modelos/medicion');
  * @description Este método permite crear una nueva medición en la base de datos, asegurándose de que todos los campos necesarios estén presentes.
  */
 // Crear una nueva medición
+//-----------------------------------------------------
+//--Medición<Objeto>-->createMedicion()-->Código:numero
 exports.createMedicion = async (req, res) => {
     const { valor, fecha, latitud, longitud } = req.body;
   
