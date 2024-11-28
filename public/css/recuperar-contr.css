@@ -1,0 +1,57 @@
+/* Contenedor principal de la página de login */
+.recuperar-container {
+    height: 100vh; /* Ocupa toda la altura de la ventana */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Panel de login */
+#recuperar-contr-panel {
+    display: flex;
+    flex-direction: column;
+    background: var(--v3-blanco); /* Color de fondo blanco */
+    border-radius: 48px; /* Bordes redondeados */
+    padding: 25px;
+    align-items: center;
+}
+/* Botón dentro de la sección de saludo */
+button {
+    border-radius: 10px;
+    color: var(--v3-blanco); /* Color de texto blanco */
+    background: var(--v3-azul); /* Color de fondo azul */
+    border: none;
+    height: 65px;
+    font-size: 24px; /* Tamaño de fuente grande */
+    font-family: "IBM Plex Mono",sans-serif;
+}
+input{
+    width: 100%;
+}
+/* Contenedor para cada input e icono */
+.input-container {
+    position: relative;
+    margin-bottom: 15px;
+    width: 100%;
+}
+
+/* Posiciona el icono dentro del input */
+.input-container i {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--v3-negro); /* Color del icono negro */
+    font-size: 20px; /* Tamaño de fuente del icono */
+}
+input{
+    padding-left: 30px;
+}
+#recuperarForm{
+    width: -webkit-fill-available;
+    justify-items: center;
+}
+h3{
+    text-align: center;
+}
