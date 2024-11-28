@@ -16,37 +16,19 @@
  */
 
 // Event:event => loginForm() => Promise<void>
-document.getElementById("loginForm").addEventListener("submit", function(event) {
-    event.preventDefault(); // No se lanza vacío
-    
-    // Obtener Inputs
-    const username = document.getElementById("email").value;
-    const password = document.getElementById("password").value;
 
-    // Validación básica de campos
-    if (username === "" || password === "") {
-        document.getElementById("errorLogin").textContent = "Por favor, rellene todos los campos";
-        alert("Por favor, rellene todos los campos");
-        return;
-    }
+    document.getElementById("loginForm").addEventListener("submit", function(event) {
+        event.preventDefault(); // No se lanza vacío
+        
+        // Obtener Inputs
+        const username = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
 
-    // Crear el cuerpo de la solicitud
-    const loginData = {
-        email: username,
-        contrasenya: password
-    };
-
-    // Enviar la solicitud POST al servidor
-    fetch('http://127.0.0.1:3000/usuarios/login', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(loginData)
-    })
-    .then(response => {
-        if (!response.ok) {
-            return response.json().then(error => { throw new Error(error.error); });
+        // Validación básica de campos
+        if (username === "" || password === "") {
+            document.getElementById("errorLogin").textContent = "Por favor, rellene todos los campos";
+            alert("Por favor, rellene todos los campos");
+            return;
         }
         return response.json();
     })
@@ -100,4 +82,3 @@ document.getElementById("loginForm").addEventListener("submit", function(event) 
         console.error('Error:', error);
         document.getElementById("errorLogin").textContent = error.message;
     });
-});
