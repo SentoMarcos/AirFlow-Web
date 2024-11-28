@@ -50,5 +50,18 @@ const UsuarioRol = sequelize.define('UsuarioRol', {
     timestamps: false, // Cambia a true si deseas agregar createdAt y updatedAt
 });
 
+UsuarioRol.belongsTo(Rol, { foreignKey: 'id_rol' });
+
+UsuarioRol.afterSync(async () => {
+    const rolesExistentes = await Rol.count(); // Verificar si ya hay datos
+    const usuarios = await Usuario.count(); // Verificar si ya hay datos
+    if (rolesExistentes !== 0 && usuarios !== 0) {
+        await UsuarioRol.bulkCreate([
+            { id_rol: 1, id_usuario: 1 },
+        ]);
+        console.log('Datos iniciales de roles insertados.');
+    }
+});
+
 // Exportar el modelo
 module.exports = UsuarioRol;

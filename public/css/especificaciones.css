@@ -1,0 +1,45 @@
+#section-especificaciones{
+    padding-top: 17vh;
+    padding-inline: 2vw;
+    padding-bottom: 2vw;
+    height: 100vh;
+}
+#section-especificaciones #especificaciones{
+    width: 100%;
+    height: 100%;
+    background: var(--v3-blanco);
+    border-radius: 48px;
+    padding: 25px;
+    display: flex;
+    flex-direction: column;
+}
+#section-especificaciones #especificaciones h3{
+    font-size: calc(1rem + .6vw);
+}
+#section-especificaciones #especificaciones #especificaciones-container{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+#section-especificaciones #especificaciones #especificaciones-container .colum{
+    display: flex;
+    flex-direction: column;
+    width: 40%;
+}
+#section-especificaciones #especificaciones #especificaciones-container .grid{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto;
+    gap: 10px; /* Ajusta el espacio entre los elementos si lo necesitas */
+    flex: 1;
+}
+.list{
+    list-style-type: disc; /* Cambia 'disc' a 'circle' o 'square' si prefieres otros estilos de lista */
+    padding-left: 20px; /* Ajusta el espaciado de acuerdo a tus necesidades */
+}
+a{
+    text-decoration: none;
+}
+@media (max-width: 792px){
+
+}

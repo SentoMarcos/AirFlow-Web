@@ -15,6 +15,8 @@ const path = require('path');
 const sequelize = require('./config/database'); // Importar configuración de base de datos
 const usuarioRoutes = require('./rutas/usuarioRutas.js'); // Importa las rutas de usuario
 const medicionRoutes = require('./rutas/medicionRutas'); // Importa las rutas de mediciones
+const sensorRoutes = require('./rutas/sensoresRutes'); // Importa las rutas de mediciones
+
 
 const app = express();
 const port = 3000;
@@ -32,7 +34,9 @@ app.get('/', (req, res) => {
 
 // Usa las rutas
 app.use('/usuarios', usuarioRoutes);
-app.use('/', medicionRoutes); 
+app.use('/mediciones', medicionRoutes);
+app.use('/sensores', sensorRoutes);
+
 
 // Sincronizar la base de datos
 sequelize.sync().then(() => {

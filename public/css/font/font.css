@@ -1,0 +1,9 @@
+@font-face {
+    font-family: 'Poppins';
+    src: url('poppins.woff2') format('woff2');
+}
+@font-face {
+    font-family: 'IBM Plex Mono';
+    src: url('IBMPlexMono-Regular.woff') format('woff');
+}
+
