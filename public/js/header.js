@@ -1,4 +1,6 @@
 // Cargar el header externo
+// -----------------------------------------
+//archivo:texto,elemento:texto----->cargarHeader()
 function cargarHeader(string,elemento) {
     fetch(string)
         .then(response => response.text())

@@ -1,3 +1,6 @@
+//Función que obtiene los sensores
+//-------------------------------------------------
+//------obtenerSensores()--------------------------
 async function obtenerSensores() {
     try {
         const response = await fetch('http://localhost:3000/sensores'); // Cambia la ruta según tu configuración de rutas
@@ -10,6 +13,9 @@ async function obtenerSensores() {
         console.error('Error al obtener los sensores:', error);
     }
 }
+//Función que muestra los sensores en una tabla
+//-----------------------------------------------------
+//sensores:JSON----->mostrarMisSensores()--------------
 function mostrarMisSensores(sensores) {
     const table = document.createElement('table');
     table.border = '1';
@@ -39,4 +45,4 @@ function mostrarMisSensores(sensores) {
 }
 
 // Cargar sensores cuando la página esté completamente cargada
-document.addEventListener('DOMContentLoaded', obtenerSensores);
+obtenerSensores();
