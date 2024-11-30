@@ -33,7 +33,7 @@
 /* Botón dentro de la sección de saludo */
 #login-panel #texto-saludo button {
     border-radius: 10px;
-    color: var(--v3-blanco); /* Color de texto blanco */
+    color:#0f7eed; /* Color de texto blanco */
     background: var(--v3-azul); /* Color de fondo azul */
     border: none;
     height: 65px;

@@ -1,4 +1,6 @@
 // Obtener todos los usuarios
+//-----------------------------------------------------
+//--getAllSensores()-->Código:numero,sensores:json
 const Sensor = require("../modelos/sensor");
 exports.getAllSensores = async (req, res) => {
     try {

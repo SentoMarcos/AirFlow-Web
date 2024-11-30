@@ -66,7 +66,7 @@ function generarContrasenya() {
     Event:event => registroForm() => Promise<void>
 */
 
-document.getElementById("registroForm").addEventListener("submit", function(event) {
+document.getElementById("registroForm").addEventListener("submit", async function (event) {
     event.preventDefault();
 
     const nombre = document.getElementById("nombre").value;
@@ -74,7 +74,8 @@ document.getElementById("registroForm").addEventListener("submit", function(even
     const email = document.getElementById("email").value;
     const telefono = document.getElementById("telefono").value;
     const contrasenya = generarContrasenya();
-    console.log(contrasenya); //Muestra contrasenya generada aleatroriamente (esta se debe enviar al correo del usuario)
+
+    console.log(contrasenya); // Muestra la contraseña generada aleatoriamente (para pruebas).
 
     // Validar campos correctos
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
@@ -87,31 +88,51 @@ document.getElementById("registroForm").addEventListener("submit", function(even
     }
 
     const registroData = {
-        nombre: nombre,
-        apellidos: apellidos,
-        email: email,
-        telefono: telefono,
-        contrasenya: contrasenya
+        nombre,
+        apellidos,
+        email,
+        telefono,
+        contrasenya,
     };
 
-    fetch('http://127.0.0.1:3000/usuarios/registro', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(registroData)
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.error) {
-            document.getElementById("errorForm").textContent = data.error;
-        } else {
+    try {
+        // 1. Realiza el registro del usuario
+        const registroResponse = await fetch('http://127.0.0.1:3000/usuarios/registro', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(registroData),
+        });
+
+        const registroResult = await registroResponse.json();
+
+        if (registroResponse.ok) {
             console.log("Usuario registrado con éxito");
-            //window.location.href = 'formValido.html'; // Redirigir a formValido.html
+
+            // 2. Envía el correo al usuario
+            const correoResponse = await fetch('http://127.0.0.1:3000/email/enviarCorreo', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    email,
+                    contrasenya,
+                }),
+            });
+
+            if (correoResponse.ok) {
+                alert("Correo enviado correctamente");
+            } else {
+                const correoResult = await correoResponse.json();
+                document.getElementById("errorForm").textContent = correoResult.error || "Error enviando el correo.";
+            }
+        } else {
+            document.getElementById("errorForm").textContent = registroResult.error || "Error en el registro del usuario.";
         }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        document.getElementById("errorForm").textContent = "Ocurrió un error al registrar el usuario.";
-    });
+    } catch (error) {
+        console.error("Error:", error);
+        document.getElementById("errorForm").textContent = "Ocurrió un error durante el proceso.";
+    }
 });

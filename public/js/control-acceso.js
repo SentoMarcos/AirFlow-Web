@@ -1,3 +1,6 @@
+// Control de acceso por rol a páginas
+//-----------------------------------------------------
+//---id_usuario:N--->control-acceso()------------------
 (async (script) => {
     const user = localStorage.getItem('idUsuario');
 
@@ -40,7 +43,10 @@
         location.href = '../login.html'; // Redirigir en caso de error
     }
 })(document.currentScript);
+// Control de acceso por rol a páginas
+//-----------------------------------------------------
+//---------------------logOut()------------------------
 function logOut(){
-    localStorage.clear();
-    location.href = '../login.html';
+    localStorage.clear();  //borra el almacenamiento local
+    location.href = '../login.html';  //redirige a login
 }
