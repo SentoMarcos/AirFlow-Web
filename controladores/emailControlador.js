@@ -21,7 +21,16 @@ exports.enviarCorreo = async (req, res) => {
             from: 'airflowtest1234@gmail.com',
             to: email,
             subject: 'Registro Exitoso',
-            text: `Tu contraseña es: ${contrasenya}`,
+            html: `
+                <p>Estimado(a) Usuario,</p>
+                <p>¡Gracias por registrarte en nuestra plataforma! Nos complace informarte que tu cuenta ha sido creada exitosamente.</p>
+                <p>A continuación, te proporcionamos tu contraseña temporal. Por favor, asegúrate de cambiarla después de iniciar sesión por primera vez:</p>
+                <p><strong>Contraseña: ${contrasenya}</strong></p>
+                <p>Si tienes alguna duda o necesitas asistencia, no dudes en contactarnos. Estamos aquí para ayudarte.</p>
+                <br>
+                <p>Atentamente,</p>
+                <p><strong>El Equipo de Soporte</strong></p>
+                <p><a href="mailto:airflowtest1234@gmail.com">airflowtest1234@gmail.com</a></p>`,
         };
 
         // Enviar el correo

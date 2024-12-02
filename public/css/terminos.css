@@ -1,0 +1,10 @@
+#terminos-container{
+    padding-top: 15vh;
+    height: 100vh;
+    padding-inline: 2vw;
+}
+#terminos-container>div{
+    background: var(--v3-blanco);
+    border-radius: 48px;
+    padding: 25px;
+}

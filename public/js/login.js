@@ -22,10 +22,12 @@ document.getElementById("loginForm").addEventListener("submit", function(event) 
     // Obtener Inputs
     const username = document.getElementById("email").value;
     const password = document.getElementById("password").value;
+    const errorText = document.getElementById("errorLogin");
 
+    errorText.textContent = '';
     // Validación básica de campos
     if (username === "" || password === "") {
-        document.getElementById("errorLogin").textContent = "Por favor, rellene todos los campos";
+        errorText.textContent = "Por favor, rellene todos los campos";
         alert("Por favor, rellene todos los campos");
         return;
     }
@@ -52,7 +54,7 @@ document.getElementById("loginForm").addEventListener("submit", function(event) 
         })
         .then(async data => {
             if (data.error) {
-                document.getElementById("errorLogin").textContent = data.error;
+                errorText.textContent = data.error;
             } else {
                 // Guardar los datos del usuario en localStorage
                 localStorage.setItem("idUsuario", data.id);
@@ -98,6 +100,6 @@ document.getElementById("loginForm").addEventListener("submit", function(event) 
         })
         .catch(error => {
             console.error('Error:', error);
-            document.getElementById("errorLogin").textContent = error.message;
+            errorText.textContent = error.message;
         });
 });
