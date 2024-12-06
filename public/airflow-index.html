@@ -11,12 +11,51 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
   <link rel="stylesheet" href="css/styles.css">
   <link rel="stylesheet" href="css/airflow-index.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-routing-machine/3.2.12/leaflet-routing-machine.min.js"></script>
+  <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+    <style>
+        /* Contenedor desplegable en la parte inferior */
+        .leaflet-bottom.leaflet-routing-container {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            transition: transform 0.3s ease; /* Animación al desplegar/ocultar */
+            transform: translateY(100%); /* Ocultar inicialmente */
+            background-color: rgba(255, 255, 255, 0.9); /* Fondo semitransparente */
+            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+        }
+
+        /* Mostrar el contenedor cuando esté desplegado */
+        .leaflet-bottom.leaflet-routing-container.open {
+            transform: translateY(0); /* Mostrar */
+        }
+
+        /* Botón para desplegar */
+        .toggle-routing {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #333;
+            color: white;
+            border: none;
+            border-radius: 5px 5px 0 0;
+            padding: 10px 20px;
+            cursor: pointer;
+            z-index: 1001;
+        }
+
+    </style>
 </head>
 <body class="loading">
 <div id="header-container"></div>
 <div id="container-airflow">
-    <div id="columna">
-        <div id="características">
+    <div id="características">
             <div id="buscador-container">
                 <img src="img/a-airflow.png" alt="a-airflow">
                 <label for="buscador-airflow"><input type="search" id="buscador-airflow" placeholder="Buscar en Airflow"></label>
@@ -41,7 +80,7 @@
                 </div>
             </div>
         </div>
-        <div id="gráfica">
+        <!--<div id="gráfica">
             <h3>Gases</h3>
             <div id="indicador-gráfica">
                 <img src="img/logo-ozono.png" alt="logo ozono">
@@ -54,10 +93,10 @@
             <div id="chart">
                 <canvas id="ozoneChart"></canvas>
             </div>
-        </div>
-    </div>
+        </div>-->
     <div id="mapa">
-        <img src="img/mapa-prueba.png" alt="mapa">
+        <button class="toggle-routing">Mostrar Ruta</button>
+
     </div>
 </div>
 <script src="js/header.js"></script>
@@ -138,6 +177,191 @@
             }
         }
     });
+</script>
+<script>
+    // Variables globales para los marcadores y la capa de ruta
+    let startMarker = null;
+    let endMarker = null;
+    let routingControl = null;
+
+    // Inicializa el mapa con una ubicación inicial genérica
+    var map = L.map('mapa', {
+        zoomControl: false // Deshabilita el control de zoom predeterminado
+    }).setView([51.505, -0.09], 13);
+
+    // Agrega el mapa base
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+    // Añade el control de zoom en la esquina inferior izquierda
+    L.control.zoom({
+        position: 'bottomright' // Cambia la posición del control de zoom
+    }).addTo(map);
+
+    // Define el icono personalizado
+    var customIcon = L.icon({
+        iconUrl: 'img/ubicacion-marker.png', // Reemplaza con la URL de tu icono
+        iconSize: [32, 48], // Tamaño del icono en píxeles
+        iconAnchor: [16, 32], // Punto de anclaje del icono (centro en la parte inferior)
+    });
+
+    // Usa la geolocalización del navegador para obtener tu ubicación
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+            function (position) {
+                // Obtiene las coordenadas del usuario
+                var lat = position.coords.latitude;
+                var lng = position.coords.longitude;
+
+                // Centra el mapa en las coordenadas del usuario
+                map.setView([lat, lng], 13);
+
+                // Agrega un marcador con el icono personalizado en la ubicación del usuario
+                L.marker([lat, lng], { icon: customIcon }).addTo(map);
+            },
+            function (error) {
+                console.error('Error al obtener la ubicación: ', error);
+            }
+        );
+    } else {
+        console.error('Geolocalización no es compatible con este navegador.');
+    }
+
+    // Asegura que el mapa se ajusta correctamente en pantalla completa
+    setTimeout(() => {
+        map.invalidateSize();
+    }, 300);
+
+    // Función para realizar la geocodificación usando Nominatim
+    async function geocodeAddress(query) {
+        const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=1`;
+        try {
+            const response = await fetch(url);
+            if (!response.ok) {
+                throw new Error(`Geocoding error: ${response.status}`);
+            }
+            const data = await response.json();
+            return data[0]; // Retorna el primer resultado
+        } catch (error) {
+            console.error('Error al buscar la dirección:', error);
+            return null;
+        }
+    }
+
+    // Función para manejar la entrada de texto y mover el marcador
+    async function handleInputSearch(event) {
+        if (event.key === 'Enter') { // Ejecutar cuando se presione Enter
+            const input = event.target;
+            const query = input.value;
+
+            // Realiza la búsqueda de la dirección
+            const location = await geocodeAddress(query);
+            if (location) {
+                const latlng = {
+                    lat: parseFloat(location.lat),
+                    lng: parseFloat(location.lon),
+                };
+
+                if (input.id === 'punto-inicial') {
+                    setMarker(latlng, 'start');
+                } else if (input.id === 'punto-final') {
+                    setMarker(latlng, 'end');
+                }
+
+                // Centrar el mapa en la ubicación
+                map.setView(latlng, 15);
+
+                // Si ambos puntos están definidos, trazar la ruta
+                if (startMarker && endMarker) {
+                    traceRoute();
+                }
+            } else {
+                alert('Dirección no encontrada. Intente con otra.');
+            }
+        }
+    }
+
+    // Vincular el evento "keypress" para ambos inputs
+    document.getElementById('punto-inicial').addEventListener('keypress', handleInputSearch);
+    document.getElementById('punto-final').addEventListener('keypress', handleInputSearch);
+
+    // Función para establecer marcadores en el mapa
+    function setMarker(latlng, type) {
+        if (type === 'start') {
+            if (startMarker) map.removeLayer(startMarker);
+            startMarker = L.marker(latlng).addTo(map);
+            document.getElementById('punto-inicial').value = `${latlng.lat.toFixed(5)}, ${latlng.lng.toFixed(5)}`;
+        } else if (type === 'end') {
+            if (endMarker) map.removeLayer(endMarker);
+            endMarker = L.marker(latlng).addTo(map);
+            document.getElementById('punto-final').value = `${latlng.lat.toFixed(5)}, ${latlng.lng.toFixed(5)}`;
+        }
+    }
+
+    // Función para trazar una ruta entre dos puntos
+    function traceRoute() {
+        // Si ya hay una ruta trazada, eliminarla
+        if (routingControl) {
+            map.removeControl(routingControl);
+        }
+
+        // Crear un nuevo control de enrutamiento
+        routingControl = L.Routing.control({
+            waypoints: [
+                startMarker.getLatLng(), // Coordenadas del punto inicial
+                endMarker.getLatLng()   // Coordenadas del punto final
+            ],
+            routeWhileDragging: true, // Permite modificar la ruta arrastrando
+            geocoder: L.Control.Geocoder.nominatim() // Geocodificador de Nominatim
+        }).addTo(map);
+    }
+
+
+
+
+
+
+
+
+    // Selecciona el botón de alternar y el contenedor de rutas
+    const toggleButton = document.querySelector('.toggle-routing');
+
+    // Agregar evento de clic para alternar el contenedor de rutas
+    toggleButton.addEventListener('click', () => {
+        const routingContainer = document.querySelector('.leaflet-bottom.leaflet-routing-container');
+        routingContainer.classList.toggle('open');
+
+        // Cambiar el texto del botón según el estado
+        if (routingContainer.classList.contains('open')) {
+            toggleButton.textContent = 'Ocultar Ruta';
+        } else {
+            toggleButton.textContent = 'Mostrar Ruta';
+        }
+    });
+
+    // Configura Leaflet Routing Machine para agregar la clase necesaria
+    function traceRoute() {
+        if (routingControl) {
+            map.removeControl(routingControl);
+        }
+
+        routingControl = L.Routing.control({
+            waypoints: [
+                startMarker.getLatLng(),
+                endMarker.getLatLng()
+            ],
+            routeWhileDragging: true,
+            geocoder: L.Control.Geocoder.nominatim()
+        }).addTo(map);
+
+        // Agrega una clase al contenedor de rutas para personalizar su posición
+        const routingContainer = document.querySelector('.leaflet-routing-container');
+        if (routingContainer) {
+            routingContainer.classList.add('leaflet-bottom');
+        }
+    }
+
 </script>
 </body>
 </html>
