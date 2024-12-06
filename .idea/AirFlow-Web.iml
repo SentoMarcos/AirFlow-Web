@@ -7,5 +7,6 @@
     <orderEntry type="library" name="leaflet" level="application" />
     <orderEntry type="library" name="leaflet-routing-machine" level="application" />
     <orderEntry type="library" name="leaflet-control-geocoder" level="application" />
+    <orderEntry type="library" name="leaflet.heat" level="application" />
   </component>
 </module>
