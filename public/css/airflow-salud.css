@@ -151,3 +151,89 @@ h3 {
         grid-template-rows: repeat(5, 1fr); /* 3 filas iguales */
     }
 }
+
+#lado {
+    background-color: #1e1e1e;
+    color: #fff;
+    width: 300px;
+    border-radius: 10px;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+}
+#navegacion header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+#navegacion{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+#navegacion button {
+    background: none;
+    color: #fff;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+#navegacion button:disabled{
+    color: var(--v3-gris);
+}
+
+#dias-semana {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    margin-top: 10px;
+    text-align: center;
+    font-weight: bold;
+    gap: 15px;
+}
+
+#dias {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr); /* 7 días por fila */
+    grid-template-rows: repeat(6, 1fr); /* Siempre 6 filas */
+    grid-gap: 5px; /* Espaciado entre las celdas */
+    height: 300px; /* Altura fija para mantener proporciones constantes */
+    align-items: stretch;
+    justify-items: stretch;
+}
+
+#dias span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 10px;
+    border-radius: 5px 5px 10px 10px;
+    background-color: #2c2c2c; /* Fondo por defecto */
+    color: #fff; /* Color del texto */
+    cursor: pointer;
+}
+
+#dias span[data-status="excelente"] {
+    background-color: #ff67d0;
+}
+
+#dias span[data-status="bueno"] {
+    background-color: #4cd137;
+}
+
+#dias span[data-status="moderado"] {
+    background-color: #fbc531;
+}
+
+#dias span[data-status="malo"] {
+    background-color: #e84118;
+}
+
+#dias span.seleccionado {
+    background-color: var(--v3-azul); /* Color resaltado para el día seleccionado */
+    color: var(--v3-blanco);
+    font-weight: bold;
+    border: 2px solid var(--v3-blanco);
+}
+

@@ -16,7 +16,29 @@
 <div id="header-container"></div>
 
 <div id="container-salud">
-  <div id="main-salud">
+    <div id="lado">
+        <div id="calendario">
+            <div id="dias-semana">
+                <span>Dom</span>
+                <span>Lun</span>
+                <span>Mar</span>
+                <span>Mié</span>
+                <span>Jue</span>
+                <span>Vie</span>
+                <span>Sáb</span>
+            </div>
+            <div id="dias">
+                <!-- Aquí van los días del mes -->
+            </div>
+            <header>
+                <div id="navegacion">
+                    <button id="mes-anterior">&lt;</button>
+                    <h2 id="mes-actual">Diciembre 2023</h2>
+                    <button id="mes-siguiente">&gt;</button>
+                </div>
+            </header>
+        </div>
+    </div>  <div id="main-salud">
       <div id="info-salud">
           <div class="scroll-y grid">
               <div class="noti-salud excelente">
@@ -129,9 +151,6 @@
           </div>
       </div>
   </div>
-  <div id="lado">
-      <img src="img/salud-movil.png" alt="movil">
-  </div>
 </div>
 
 <script src="js/header.js"></script>
@@ -140,5 +159,101 @@
   cargarHeader('header_airflow.html', 'headerAir-2')
 </script>
 <script src="js/control-acceso.js" data-roles-restringidos="1"></script>
+<script>
+    const diasContenedor = document.getElementById('dias');
+    const mesActual = document.getElementById('mes-actual');
+    const mesAnterior = document.getElementById('mes-anterior');
+    const mesSiguiente = document.getElementById('mes-siguiente');
+
+    const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+    const hoy = new Date(); // Fecha actual
+    let fecha = new Date();
+
+    function cargarCalendario() {
+        diasContenedor.innerHTML = ''; // Limpiar el contenedor de días
+        const mes = fecha.getMonth();
+        const anio = fecha.getFullYear();
+        mesActual.textContent = `${meses[mes]} ${anio}`;
+
+        const primerDiaMes = new Date(anio, mes, 1).getDay(); // Día de la semana del primer día del mes
+        const diasEnMes = new Date(anio, mes + 1, 0).getDate(); // Número de días en el mes
+
+        // Número total de celdas (42: 6 filas x 7 días)
+        const totalCeldas = 42;
+
+        // Añadir días vacíos antes del primer día del mes
+        for (let i = 0; i < primerDiaMes; i++) {
+            diasContenedor.innerHTML += `<span></span>`;
+        }
+
+        // Añadir los días del mes con el atributo de fecha
+        for (let dia = 1; dia <= diasEnMes; dia++) {
+            const estado = asignarEstado(dia); // Lógica de estado
+            const fechaCompleta = `${anio}-${String(mes + 1).padStart(2, '0')}-${String(dia).padStart(2, '0')}`;
+            const esHoy = anio === hoy.getFullYear() && mes === hoy.getMonth() && dia === hoy.getDate();
+
+            diasContenedor.innerHTML += `
+            <span data-date="${fechaCompleta}" data-status="${estado}" class="${esHoy ? 'seleccionado' : ''}">
+                ${dia}
+            </span>
+        `;
+        }
+
+        // Añadir días vacíos después del último día del mes
+        const celdasOcupadas = primerDiaMes + diasEnMes;
+        const diasFaltantes = totalCeldas - celdasOcupadas;
+        for (let i = 0; i < diasFaltantes; i++) {
+            diasContenedor.innerHTML += `<span></span>`;
+        }
+
+        // Deshabilitar el botón "siguiente" si estamos en el mes actual
+        mesSiguiente.disabled = (fecha.getFullYear() === hoy.getFullYear() && fecha.getMonth() === hoy.getMonth());
+
+        // Agregar evento de clic a los días
+        agregarEventoSeleccion();
+    }
+
+
+    function agregarEventoSeleccion() {
+        const dias = document.querySelectorAll('#dias span[data-date]'); // Seleccionar solo los días válidos
+        dias.forEach(dia => {
+            dia.addEventListener('click', (e) => {
+                // Remover selección previa
+                document.querySelectorAll('#dias .seleccionado').forEach(d => d.classList.remove('seleccionado'));
+
+                // Agregar clase seleccionado al día clicado
+                e.target.classList.add('seleccionado');
+
+                // Mostrar la fecha seleccionada (puedes adaptarlo)
+                console.log(`Fecha seleccionada: ${e.target.dataset.date}`);
+            });
+        });
+    }
+
+
+    function asignarEstado(dia) {
+        // Lógica para asignar estado: puedes adaptarlo a tus necesidades
+        if (dia % 5 === 0) return 'malo';
+        if (dia % 3 === 0) return 'moderado';
+        if (dia % 2 === 0) return 'bueno';
+        return 'excelente';
+    }
+
+    mesAnterior.addEventListener('click', () => {
+        fecha.setMonth(fecha.getMonth() - 1);
+        cargarCalendario();
+    });
+
+    mesSiguiente.addEventListener('click', () => {
+        if (!(fecha.getFullYear() === hoy.getFullYear() && fecha.getMonth() === hoy.getMonth())) {
+            fecha.setMonth(fecha.getMonth() + 1);
+            cargarCalendario();
+        }
+    });
+
+    // Cargar el calendario inicial
+    cargarCalendario();
+
+</script>
 </body>
 </html>

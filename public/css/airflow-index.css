@@ -1,31 +1,43 @@
 h3 {
     font-size: 24px;
 }
+/* Oculta los demás elementos cuando el mapa está en fullscreen */
+.hidden {
+    display: none;
+}
+
+/* Transiciones suaves */
+#mapa {
+    transition: all 0.3s ease;
+}
+
 /* Contenedor principal de Airflow */
 #container-airflow{
     display: flex;
     flex-direction: row; /* Flexbox en fila */
-    margin-top: 15vh; /* Margen superior del 15% de la altura de la ventana */
+    /*margin-top: 15vh; /* Margen superior del 15% de la altura de la ventana */
     height: 100vh; /* Altura del contenedor al 100% de la altura de la ventana */
     border: none; /* Sin borde */
     gap: 10px; /* Espacio entre elementos flexibles */
-    padding-inline: 2vw; /* Relleno interno horizontal del 2% del ancho de la ventana */
+    /*padding-inline: 2vw; /* Relleno interno horizontal del 2% del ancho de la ventana */
 }
 
 /* Estilos para el mapa */
 #container-airflow #mapa{
     background: var(--v3-negro); /* Fondo negro */
-    border-radius: 48px; /* Bordes redondeados */
-    flex: 0.6; /* Toma el 60% del espacio flexible */
+    /*border-radius: 48px; /* Bordes redondeados */
+    flex: 1; /* Toma el 60% del espacio flexible */
     border: none; /* Sin borde */
-    width: 60%;
+    width: 100%;
+    height: 100%;
+    z-index: 1000; /* Asegura que el mapa esté encima del resto */
+    position: relative; /* Base para elementos superpuestos */
 }
-
 /* Columna de contenido adicional */
 #container-airflow #columna{
-    display: flex;
+    display: block;
     flex-direction: column; /* Flexbox en columna */
-    flex: 0.4; /* Toma el 40% del espacio flexible */
+    /*flex: 0.4; /* Toma el 40% del espacio flexible */
     border: none; /* Sin borde */
     gap: 10px; /* Espacio entre elementos flexibles */
     width: 40%;
@@ -38,17 +50,28 @@ h3 {
     border: none; /* Sin borde */
     padding: 15px; /* Relleno interno de 15 píxeles */
 }
+.leaflet-control-zoom {
+    position: absolute;
+    bottom: 20px; /* Espacio desde la parte inferior */
+    right: 20px;   /* Espacio desde el borde izquierdo */
+}
 
 /* Sección de características */
-#container-airflow #columna #características{
-    height: 35%; /* Altura del 35% del contenedor */
-    background: var(--v3-azul); /* Fondo azul */
-    position: relative; /* Posición relativa para elementos internos */
-    padding-inline: 25px; /* Relleno horizontal de 25 píxeles */
+#container-airflow #características {
+    position: absolute; /* Hace que el div esté encima del mapa */
+    top: 10px;          /* Separa el div del borde superior */
+    left: 10px;         /* Separa el div del borde izquierdo */
+    z-index: 1001;      /* Asegura que esté encima del mapa */
+    background-color: rgba(82, 204, 215, 0.9); /* Fondo blanco translúcido */
+    padding: 15px;      /* Espaciado interno para mejor apariencia */
+    border-radius: 48px; /* Esquinas redondeadas */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2); /* Sombra para resaltar */
+    margin-top: 12vh;
+    width: 30%;
 }
 
 /* Estilos para los inputs dentro de características */
-#container-airflow #columna #características input{
+#container-airflow #características input{
     background: none; /* Sin fondo */
     border: 2px solid var(--v3-blanco); /* Borde de 2 píxeles blanco */
     border-radius: 36px; /* Bordes redondeados */
@@ -57,12 +80,12 @@ h3 {
 }
 
 /* Estilos para los placeholders de los inputs */
-#container-airflow #columna #características input::placeholder{
+#container-airflow #características input::placeholder{
     color: var(--v3-blanco); /* Color del texto placeholder blanco */
 }
 
 /* Contenedor de buscador dentro de características */
-#container-airflow #columna #características #buscador-container{
+#container-airflow #características #buscador-container{
     max-height: 80px; /* Altura máxima de 80 píxeles */
     display: flex;
     flex-direction: row; /* Flexbox en fila */
@@ -72,7 +95,7 @@ h3 {
 }
 
 /* Posiciona el icono dentro del input de búsqueda */
-#container-airflow #columna #características #buscador-container i {
+#container-airflow #características #buscador-container i {
     position: absolute; /* Posición absoluta dentro del contenedor */
     right: 35px; /* A 35 píxeles del borde derecho */
     top: 50%; /* Centrando verticalmente */
@@ -82,20 +105,20 @@ h3 {
 }
 
 /* Estilos para la imagen dentro del buscador */
-#container-airflow #columna #características #buscador-container img{
+#container-airflow #características #buscador-container img{
     max-width: 75px; /* Ancho máximo de 75 píxeles */
     max-height: 60px; /* Altura máxima de 60 píxeles */
 }
 
 /* Estilos para los inputs dentro del contenedor de buscador */
-#container-airflow #columna #características #buscador-container input{
+#container-airflow #características #buscador-container input{
     border: none; /* Sin borde */
     border-bottom: 2px solid var(--v3-blanco); /* Borde inferior de 2 píxeles blanco */
     border-radius: 0; /* Sin bordes redondeados */
 }
 
 /* Iconos de transporte dentro de características */
-#container-airflow #columna #características #iconos-transporte {
+#container-airflow #características #iconos-transporte {
     font-size: 25px; /* Tamaño de fuente de 25 píxeles */
     display: flex;
     flex-direction: row; /* Flexbox en fila */
@@ -104,20 +127,20 @@ h3 {
 }
 
 /* Contenedor de rutas dentro de características */
-#container-airflow #columna #características #container-rutas #puntos-ruta{
+#container-airflow #características #container-rutas #puntos-ruta{
     display: flex;
     flex-direction: column; /* Flexbox en columna */
     gap: 10px; /* Espacio entre elementos flexibles */
 }
 
 /* Estilos para los divs dentro de puntos de ruta */
-#container-airflow #columna #características #container-rutas #puntos-ruta>div{
+#container-airflow #características #container-rutas #puntos-ruta>div{
     display: flex;
     position: relative; /* Posición relativa para elementos internos */
 }
 
 /* Posiciona los iconos dentro de los puntos de ruta */
-#container-airflow #columna #características #container-rutas #puntos-ruta i {
+#container-airflow #características #container-rutas #puntos-ruta i {
     position: absolute; /* Posición absoluta dentro del contenedor */
     right: 35px; /* A 35 píxeles del borde derecho */
     top: 50%; /* Centrando verticalmente */
@@ -129,6 +152,7 @@ h3 {
 /* Sección de gráfica */
 #container-airflow #columna #gráfica{
     height: 65%; /* Altura del 65% del contenedor */
+    display: none;
 }
 
 /* Contenedor del indicador de la gráfica */
