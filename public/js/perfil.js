@@ -10,7 +10,7 @@
     const apellidos = localStorage.getItem("apellidosUsuario");
     const email = localStorage.getItem("emailUsuario");
     const telefono = localStorage.getItem("telefonoUsuario");
-
+    const errorPassword = document.getElementById("errorPasswordEdit");
 // Mostrar saludo al usuario
     /*document.getElementById("greeting").textContent = "Hola " + nombre;*/
 
@@ -178,11 +178,11 @@ document.getElementById("saveBtn").addEventListener("click", function() {
 
         // Validar campos correctos
         if (!/^(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*_.\-:])[a-zA-Z0-9!@#$%^&*_.\-:]{6,16}$/.test(newPassword1)) {
-            document.getElementById("errorPasswordEdit").textContent = "La contraseña debe tener entre 6 y 16 caracteres e incluir al menos: una letra mayúscula, un número, y un carácter especial (!@#$%^&*_.-:).";
+            errorPassword.textContent = "La contraseña debe tener entre 6 y 16 caracteres e incluir al menos: una letra mayúscula, un número, y un carácter especial (!@#$%^&*_.-:).";
             return;
         }
-        if (newPassword1 != newPassword2) {
-            document.getElementById("errorPasswordEdit").textContent = "Las contraseñas no coinciden.";
+        if (newPassword1 !== newPassword2) {
+            errorPassword.textContent = "Las contraseñas no coinciden.";
             return;
         }
         if (!idUsuario) {
@@ -209,7 +209,7 @@ document.getElementById("saveBtn").addEventListener("click", function() {
             .then(data => {
                 if (data.error) {
                     alert(data.error); // Muestra el error si lo hay
-                    document.getElementById("errorPasswordEdit").textContent = data.error;
+                    errorPassword.textContent = data.error;
                 } else {
                     console.log("Contraseña cambiada con éxito");
                     document.getElementById("confirmMessage").textContent = "Contraseña cambiada con éxito";
@@ -217,7 +217,7 @@ document.getElementById("saveBtn").addEventListener("click", function() {
             })
             .catch(error => {
                 console.error('Error:', error);
-                document.getElementById("errorPasswordEdit").textContent = "Ocurrió un error al cambiar la contraseña.";
+                errorPassword.textContent = "Ocurrió un error al cambiar la contraseña.";
             });
     });
 

@@ -20,17 +20,48 @@ exports.enviarCorreo = async (req, res) => {
         const mailOptions = {
             from: 'airflowtest1234@gmail.com',
             to: email,
-            subject: 'Registro Exitoso',
+            subject: '¡Bienvenido a RetroFit!',
             html: `
-                <p>Estimado(a) Usuario,</p>
-                <p>¡Gracias por registrarte en nuestra plataforma! Nos complace informarte que tu cuenta ha sido creada exitosamente.</p>
-                <p>A continuación, te proporcionamos tu contraseña temporal. Por favor, asegúrate de cambiarla después de iniciar sesión por primera vez:</p>
-                <p><strong>Contraseña: ${contrasenya}</strong></p>
-                <p>Si tienes alguna duda o necesitas asistencia, no dudes en contactarnos. Estamos aquí para ayudarte.</p>
-                <br>
-                <p>Atentamente,</p>
-                <p><strong>El Equipo de Soporte</strong></p>
-                <p><a href="mailto:airflowtest1234@gmail.com">airflowtest1234@gmail.com</a></p>`,
+                <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+  <table style="width: 100%; max-width: 600px; margin: 0 auto; border: 1px solid #ddd; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+    <tr>
+      <td style="background-color: #52CCD7FF; padding: 15px; text-align: center; color: #fff; font-size: 24px; font-weight: bold; border-radius: 10px 10px 0 0;">
+        <!--<img src="../img/icon_retrofit.png" alt="Logo" style="height: 50px; vertical-align: middle; margin-right: 10px;">-->
+        Bienvenido a RetroFit
+      </td>
+    </tr>
+    <tr>
+      <td style="padding: 20px;">
+        <p style="font-size: 18px; font-weight: bold; color: #555;">Estimado(a) Usuario,</p>
+        <p>¡Gracias por registrarte en nuestra plataforma! Nos complace informarte que tu cuenta ha sido creada exitosamente.</p>
+        <p>A continuación, te proporcionamos tu contraseña temporal. Por favor, asegúrate de cambiarla después de iniciar sesión por primera vez:</p>
+        <p style="font-size: 16px; background-color: #f9f9f9; padding: 10px; border: 1px solid #52CCD7FF; border-radius: 5px; text-align: center;">
+          <strong>Contraseña: ${contrasenya}</strong>
+        </p>
+        <p>Si tienes alguna duda o necesitas asistencia, no dudes en contactarnos. Estamos aquí para ayudarte.</p>
+      </td>
+    </tr>
+    <tr>
+      <td style="background-color: #f9f9f9; padding: 15px; text-align: center; color: #555; font-size: 14px;">
+        <p>Atentamente,</p>
+        <p style="font-size: 16px; font-weight: bold;">El Equipo de Soporte</p>
+        <p>
+          <a href="mailto:airflowtest1234@gmail.com" style="color: #9F52D7; text-decoration: none;">airflowtest1234@gmail.com</a>
+        </p>
+      </td>
+    </tr>
+    <tr>
+      <td style="background-color: #eee; padding: 10px; text-align: center; font-size: 12px; color: #999;">
+        <p>© 2024 RetroFit. Todos los derechos reservados.</p>
+        <p>
+          <a href="../public/index.html" style="color: #9F52D7; text-decoration: none;">Visítanos</a>
+          |
+          <a href="../public/terminos.html" style="color: #9F52D7; text-decoration: none;">Términos y Condiciones</a>
+        </p>
+      </td>
+    </tr>
+  </table>
+</div>`,
         };
 
         // Enviar el correo
