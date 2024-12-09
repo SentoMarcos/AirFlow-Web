@@ -11,8 +11,6 @@
     const email = localStorage.getItem("emailUsuario");
     const telefono = localStorage.getItem("telefonoUsuario");
     const errorPassword = document.getElementById("errorPasswordEdit");
-// Mostrar saludo al usuario
-    /*document.getElementById("greeting").textContent = "Hola " + nombre;*/
 
 // Cargamos los datos en la tabla
     const userTable = document.getElementById("userTable").getElementsByTagName('tbody')[0];
@@ -48,7 +46,7 @@
      * @event editBtn
  */
 
-// editUser() => void
+// editUserBtn() => void
 
     document.getElementById("editBtn").addEventListener("click", function() {
 
