@@ -37,7 +37,9 @@
     list-style-type: disc; /* Cambia 'disc' a 'circle' o 'square' si prefieres otros estilos de lista */
     padding-left: 20px; /* Ajusta el espaciado de acuerdo a tus necesidades */
 }
-
+a{
+    text-decoration: none;
+}
 @media (max-width: 792px){
 
 }
