@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Popup Demo</title>
+</head>
+<body>
+<button class="open-btn" onclick="openPopup()">Abrir Popup</button>
+
+<div id="popup" class="popup-overlay" onclick="closePopup(event)">
+    <div class="popup-content" onclick="event.stopPropagation()">
+        <h2>Este es un Popup</h2>
+        <p>Puedes personalizar este contenido como quieras.</p>
+        <button class="close-btn" onclick="closePopup()">Cerrar</button>
+    </div>
+</div>
+
+<script>
+    // Función para abrir el popup
+    function openPopup() {
+        document.getElementById('popup').style.display = 'block';
+    }
+
+    // Función para cerrar el popup
+    function closePopup(event) {
+        if (!event || event.target.id === 'popup') {
+            document.getElementById('popup').style.display = 'none';
+        }
+    }
+</script>
+</body>
+</html>

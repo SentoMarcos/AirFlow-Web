@@ -74,16 +74,18 @@ document.getElementById("registroForm").addEventListener("submit", async functio
     const email = document.getElementById("email").value;
     const telefono = document.getElementById("telefono").value;
     const contrasenya = generarContrasenya();
+    const errorText = document.getElementById("errorForm");
 
     console.log(contrasenya); // Muestra la contraseña generada aleatoriamente (para pruebas).
 
+    errorText.textContent = '';
     // Validar campos correctos
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-        document.getElementById("errorForm").textContent = "El email no es válido.";
+        errorText.textContent = "El email no es válido.";
         return;
     }
     if (!/^\d{9}$/.test(telefono)) {
-        document.getElementById("errorForm").textContent = "El teléfono debe tener 9 dígitos.";
+        errorText.textContent = "El teléfono debe tener 9 dígitos.";
         return;
     }
 
@@ -126,13 +128,13 @@ document.getElementById("registroForm").addEventListener("submit", async functio
                 alert("Correo enviado correctamente");
             } else {
                 const correoResult = await correoResponse.json();
-                document.getElementById("errorForm").textContent = correoResult.error || "Error enviando el correo.";
+                errorText.textContent = correoResult.error || "Error enviando el correo.";
             }
         } else {
-            document.getElementById("errorForm").textContent = registroResult.error || "Error en el registro del usuario.";
+            errorText.textContent = registroResult.error || "Error en el registro del usuario.";
         }
     } catch (error) {
         console.error("Error:", error);
-        document.getElementById("errorForm").textContent = "Ocurrió un error durante el proceso.";
+        errorText.textContent = "Ocurrió un error durante el proceso.";
     }
 });

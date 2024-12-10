@@ -112,6 +112,7 @@ header .botones-header #login-button{
     font-weight: 400;
     line-height: normal;
     text-decoration: none;
+    cursor: pointer;
 }
 header #logout-button {
     background: #ff4b4b;
@@ -124,6 +125,7 @@ header #logout-button {
     font-weight: 400;
     line-height: normal;
     text-decoration: none;
+    cursor: pointer;
 }
 header .botones-header #mas-button{
     background: black;
