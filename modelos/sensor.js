@@ -19,6 +19,10 @@ const sequelize = require('../config/database'); // Importar la conexión a la b
  * @property {number} id_sensor - Identificador único del sensor, clave primaria y autoincremental.
  * @property {string} estado - Estado actual del sensor.
  * @property {string} num_referencia - Número de referencia del sensor.
+ * @property {string} uuid - UUID del sensor.
+ * @property {string} nombre - Nombre del sensor.
+ * @property {boolean} conexion - Estado de conexión del sensor.
+ * @property {number} bateria - Nivel de batería del sensor.
  */
 const Sensor = sequelize.define('Sensor', {
     id_sensor: {
@@ -36,7 +40,7 @@ const Sensor = sequelize.define('Sensor', {
         allowNull: false,
     },
     uuid: {
-        type: DataTypes.CHAR,
+        type: DataTypes.TEXT,
         allowNull: false,
     },
     nombre: {
@@ -56,6 +60,6 @@ const Sensor = sequelize.define('Sensor', {
     tableName: 'Sensores',
     timestamps: false,
 });
+
 // Exportar el modelo
 module.exports = Sensor;
-
