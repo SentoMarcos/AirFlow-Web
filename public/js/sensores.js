@@ -5,7 +5,7 @@ async function obtenerSensores() {
     try {
         const response = await fetch('http://localhost:3000/sensores'); // Cambia la ruta según tu configuración de rutas
         if (!response.ok) {
-            throw new Error('Error en la red');
+            throw new Error(`Error en la red: ${response.status} ${response.statusText}`);
         }
         const sensores = await response.json();
         mostrarMisSensores(sensores);
