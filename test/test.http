@@ -34,3 +34,19 @@ Content-Type: application/json
   "telefono": "987654321"
 }
 
+### Obtener sensores
+GET http://localhost:3000/sensores
+
+
+### Obtener sensores del usuario
+GET http://localhost:3000/usuarios/mis-sensores
+Content-Type: application/json
+
+
+### Obtener medidas por sensor
+POST http://localhost:3000/mediciones/mediciones-por-sensor
+Content-Type: application/json
+
+{
+  "sensores": [2]
+}

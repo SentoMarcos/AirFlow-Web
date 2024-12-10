@@ -8,7 +8,7 @@
  */
 
 const express = require('express');
-const { createMedicion } = require('../controladores/medicionControlador');
+const { createMedicion, getMedicionesPorSensores, getMedicionesPorFecha} = require('../controladores/medicionControlador');
 const router = express.Router();
 
 /**
@@ -19,7 +19,8 @@ const router = express.Router();
  */
 // Ruta para crear una nueva medición
 router.post('/mediciones', createMedicion);
-
+router.post('/mediciones-por-sensor', getMedicionesPorSensores);
+router.post('/mediciones-por-fecha', getMedicionesPorFecha);
 // Aquí puedes agregar más rutas para Mediciones
 
 module.exports = router;
