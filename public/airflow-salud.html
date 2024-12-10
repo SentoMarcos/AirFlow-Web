@@ -11,6 +11,11 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
   <link rel="stylesheet" href="css/styles.css">
   <link rel="stylesheet" href="css/airflow-salud.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-routing-machine/3.2.12/leaflet-routing-machine.min.js"></script>
+    <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
 </head>
 <body class="loading">
 <div id="header-container"></div>
@@ -40,84 +45,8 @@
         </div>
     </div>  <div id="main-salud">
       <div id="info-salud">
-          <div class="scroll-y grid">
-              <div class="noti-salud excelente">
-                  <p>Hace 2h</p>
-                  <p>Es un buen momento para disfrutar al aire libre.</p>
-                  <h5>Excelente</h5>
-              </div>
-              <div class="noti-salud buena">
-                  <p>Hace 2h</p>
-                  <p>Es un buen momento para disfrutar al aire libre.</p>
-                  <h5>Excelente</h5>
-              </div>
-              <div class="noti-salud media">
-                  <p>Hace 2h</p>
-                  <p>Es un buen momento para disfrutar al aire libre.</p>
-                  <h5>Excelente</h5>
-              </div>
-              <div class="noti-salud mala">
-                  <p>Hace 2h</p>
-                  <p>Es un buen momento para disfrutar al aire libre.</p>
-                  <h5>Excelente</h5>
-              </div>
-              <div class="noti-salud peligrosa">
-                  <p>Hace 2h</p>
-                  <p>Es un buen momento para disfrutar al aire libre.</p>
-                  <h5>Excelente</h5>
-              </div>
-
-              <div class="noti-salud media">
-                  <p>Hace 2h</p>
-                  <p>Es un buen momento para disfrutar al aire libre.</p>
-                  <h5>Excelente</h5>
-              </div>
-              <div class="noti-salud buena">
-                  <p>Hace 2h</p>
-                  <p>Es un buen momento para disfrutar al aire libre.</p>
-                  <h5>Excelente</h5>
-              </div>
-              <div class="noti-salud media">
-                  <p>Hace 2h</p>
-                  <p>Es un buen momento para disfrutar al aire libre.</p>
-                  <h5>Excelente</h5>
-              </div>
-              <div class="noti-salud mala">
-                  <p>Hace 2h</p>
-                  <p>Es un buen momento para disfrutar al aire libre.</p>
-                  <h5>Excelente</h5>
-              </div>
-              <div class="noti-salud peligrosa">
-                  <p>Hace 2h</p>
-                  <p>Es un buen momento para disfrutar al aire libre.</p>
-                  <h5>Excelente</h5>
-              </div>
-
-              <div class="noti-salud mala">
-                  <p>Hace 2h</p>
-                  <p>Es un buen momento para disfrutar al aire libre.</p>
-                  <h5>Excelente</h5>
-              </div>
-              <div class="noti-salud media">
-                  <p>Hace 2h</p>
-                  <p>Es un buen momento para disfrutar al aire libre.</p>
-                  <h5>Excelente</h5>
-              </div>
-              <div class="noti-salud mala">
-                  <p>Hace 2h</p>
-                  <p>Es un buen momento para disfrutar al aire libre.</p>
-                  <h5>Excelente</h5>
-              </div>
-              <div class="noti-salud buena">
-                  <p>Hace 2h</p>
-                  <p>Es un buen momento para disfrutar al aire libre.</p>
-                  <h5>Excelente</h5>
-              </div>
-              <div class="noti-salud excelente">
-                  <p>Hace 2h</p>
-                  <p>Es un buen momento para disfrutar al aire libre.</p>
-                  <h5>Excelente</h5>
-              </div>
+          <div id="mapa">
+              <button class="toggle-routing">Mostrar Ruta</button>
           </div>
       </div>
       <div id="exposición">
@@ -159,6 +88,8 @@
   cargarHeader('header_airflow.html', 'headerAir-2')
 </script>
 <script src="js/control-acceso.js" data-roles-restringidos="1"></script>
+<script src="js/mis-medidas.js"></script>
+<script src="js/crear-mapa.js"></script>
 <script>
     const diasContenedor = document.getElementById('dias');
     const mesActual = document.getElementById('mes-actual');
@@ -193,7 +124,7 @@
             const esHoy = anio === hoy.getFullYear() && mes === hoy.getMonth() && dia === hoy.getDate();
 
             diasContenedor.innerHTML += `
-            <span data-date="${fechaCompleta}" data-status="${estado}" class="${esHoy ? 'seleccionado' : ''}">
+            <span data-date="${fechaCompleta}" data-status="${estado}">
                 ${dia}
             </span>
         `;
@@ -253,6 +184,115 @@
 
     // Cargar el calendario inicial
     cargarCalendario();
+
+    // Añadir un event listener para capturar el clic en un día
+    diasContenedor.addEventListener('click', function(event) {
+        // Buscar el día que tiene la clase 'seleccionado'
+        const diaSeleccionado = document.querySelector('#dias .seleccionado');
+
+        if (diaSeleccionado) {
+            const fechaSeleccionada = diaSeleccionado.dataset.date; // Obtener la fecha del día seleccionado
+            console.log("Fecha seleccionada:", fechaSeleccionada);
+
+            // Limpiar la ruta existente antes de obtener nuevas mediciones
+            if (routingControl) {
+                map.removeControl(routingControl); // Eliminar la ruta existente
+            }
+
+            // Ahora obtenemos los sensores y las mediciones para esa fecha
+            obtenerMisSensores()
+                .then(idsSensores => {
+                    return obtenerMedicionesPorFecha(idsSensores, fechaSeleccionada); // Pasar los IDs de sensores y la fecha
+                })
+                .then(mediciones => {
+                    console.log("Mediciones del día:", mediciones);
+
+                    // Llamamos a la función mostrarMarcadores con las mediciones obtenidas
+                    mostrarMisMarcadores(mediciones); // Mostrar los marcadores de las mediciones en el mapa
+
+                    // Aquí puedes manejar las mediciones como desees (mostrar en el calendario, etc.)
+                })
+                .catch(error => {
+                    console.error("Error al obtener las mediciones:", error);
+                });
+        } else {
+            console.log("No se ha seleccionado ningún día.");
+        }
+    });
+
+    // Función para mostrar los marcadores y trazar la ruta con las mediciones
+    function mostrarMisMarcadores(mediciones) {
+        // Limpiar los marcadores anteriores del mapa
+        map.eachLayer(function(layer) {
+            if (layer instanceof L.Marker) {
+                map.removeLayer(layer);
+            }
+        });
+
+        // Crear un array para almacenar las coordenadas de las mediciones
+        const waypoints = [];
+
+        // Añadir los marcadores para las mediciones
+        mediciones.forEach(function(medicion) {
+            const { latitud, longitud, tipo_gas, fecha } = medicion;
+
+            // Asegúrate de que las coordenadas son válidas
+            if (latitud && longitud) {
+                const latLng = [latitud, longitud];
+
+                // Crear un marcador para cada medición con el icono personalizado
+                const marcador = L.marker(latLng, { icon: customIcon }).addTo(map);
+
+                // Añadir información al marcador (opcional)
+                marcador.bindPopup(`
+                <b>Tipo de Gas:</b> ${tipo_gas}<br>
+                <b>Fecha:</b> ${fecha}<br>
+            `);
+
+                // Añadir el punto a la lista de waypoints (coordenadas para la ruta)
+                waypoints.push(latLng);
+            }
+        });
+
+        // Si hay más de un punto, trazar la ruta
+        if (waypoints.length > 1) {
+            trazarRuta(waypoints);
+        }
+    }
+    // Función para trazar la ruta entre los puntos
+    function trazarRuta(waypoints) {
+        // Si ya existe una ruta en el mapa, la eliminamos
+        if (routingControl) {
+            map.removeControl(routingControl);
+        }
+
+        // Crear una nueva ruta utilizando los waypoints (puntos) obtenidos
+        routingControl = L.Routing.control({
+            waypoints: waypoints.map(latLng => L.latLng(latLng)), // Convertir los puntos a formato L.LatLng
+            routeWhileDragging: true, // Permite modificar la ruta arrastrando los puntos
+            geocoder: L.Control.Geocoder.nominatim(), // Utiliza el geocodificador de Nominatim (si es necesario)
+            createMarker: function() {
+                return null;  // Evita que Leaflet Routing Machine cree los marcadores predeterminados
+            }
+        }).addTo(map);
+
+        // Añadir los puntos con texto indicativo en orden
+        waypoints.forEach((waypoint, index) => {
+            const latLng = waypoint;
+
+            // Crear un marcador para cada waypoint con el icono personalizado
+            const marcador = L.marker(latLng, { icon: customIcon }).addTo(map);
+
+            // Crear texto indicativo para mostrar fuera de la ruta
+            const textoIndicaciones = `Punto ${index + 1} - Coordenadas: ${latLng[0].toFixed(5)}, ${latLng[1].toFixed(5)}`;
+            marcador.bindPopup(textoIndicaciones);
+
+            // Aquí puedes ajustar el texto o desplazamiento si es necesario
+            // Puedes incluir información adicional como distancias, direcciones, etc.
+        });
+    }
+
+
 
 </script>
 </body>
