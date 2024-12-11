@@ -23,6 +23,7 @@
 <div id="container-salud">
     <div id="lado">
         <div id="calendario">
+            <h3>Salud</h3>
             <div id="dias-semana">
                 <span>Dom</span>
                 <span>Lun</span>
@@ -123,8 +124,17 @@
             const fechaCompleta = `${anio}-${String(mes + 1).padStart(2, '0')}-${String(dia).padStart(2, '0')}`;
             const esHoy = anio === hoy.getFullYear() && mes === hoy.getMonth() && dia === hoy.getDate();
 
+            // Determinar si el día es posterior al actual
+            const esPosterior = new Date(fechaCompleta) > hoy;
+
+            // Asignar clase 'disabled' si es posterior al día actual
+            const clases = [
+                esHoy ? 'hoy' : '',
+                esPosterior ? 'disabled' : '',
+            ].filter(Boolean).join(' ');
+
             diasContenedor.innerHTML += `
-            <span data-date="${fechaCompleta}" data-status="${estado}">
+            <span data-date="${fechaCompleta}" data-status="${estado}" class="${clases}">
                 ${dia}
             </span>
         `;
@@ -143,6 +153,7 @@
         // Agregar evento de clic a los días
         agregarEventoSeleccion();
     }
+
 
 
     function agregarEventoSeleccion() {

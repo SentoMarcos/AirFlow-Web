@@ -6,9 +6,10 @@ h3 {
     display: flex;
     flex-direction: row;
     height: 100vh;
-    padding-top: 15vh;
+    padding-top: 13vh;
     gap: 10px;
     padding-inline: 2vw; /* Relleno interno horizontal del 2% del ancho de la ventana */
+    padding-bottom: 2vw;
 }
 
 #container-salud #main-salud{
@@ -124,7 +125,7 @@ h3 {
 #container-salud #lado{
     height: 100%;
     border-radius: 48px;
-    flex: 0.3;
+    /*flex: 0.3;*/
 }
 
 #container-salud #lado img{
@@ -144,7 +145,7 @@ h3 {
         width: 60%;
     }
     #container-salud #lado{
-        display: none;
+        display: block;
     }
     #container-salud #main-salud>div#info-salud .grid{
         grid-template-columns: repeat(3, 1fr); /* 5 columnas iguales */
@@ -153,12 +154,26 @@ h3 {
 }
 
 #lado {
-    background-color: #1e1e1e;
+    background-color: var(--v3-blanco);
+    background-image: url("../img/calendario.png");
+    background-position: center center;
+    background-size: cover;
+    background-repeat: no-repeat;
     color: #fff;
     width: 300px;
     border-radius: 10px;
     padding: 20px;
     font-family: Arial, sans-serif;
+    position: relative;
+}
+#lado h3{
+    color: var(--v3-negro);
+    position: absolute;
+    top: 30px;
+    left: 40px;
+}
+#lado #calendario{
+    margin-top: 5vw;
 }
 #navegacion header {
     display: flex;
@@ -182,25 +197,29 @@ h3 {
 #navegacion button:disabled{
     color: var(--v3-gris);
 }
-
 #dias-semana {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
     margin-top: 10px;
     text-align: center;
-    font-weight: bold;
-    gap: 15px;
+    font-weight: lighter;
+    gap: 0.5vw;
 }
 
 #dias {
     display: grid;
     grid-template-columns: repeat(7, 1fr); /* 7 días por fila */
     grid-template-rows: repeat(6, 1fr); /* Siempre 6 filas */
-    grid-gap: 5px; /* Espaciado entre las celdas */
     height: 300px; /* Altura fija para mantener proporciones constantes */
     align-items: stretch;
     justify-items: stretch;
 }
+#dias .disabled {
+    background: gray; /* Cambia el color para indicar deshabilitado */
+    pointer-events: none; /* Desactiva los clics */
+    opacity: 0.5; /* Reduce la opacidad */
+}
+
 
 #dias span {
     display: flex;
@@ -243,5 +262,8 @@ h3 {
 }
 .leaflet-top{
     display: none;
+}
+#mes-actual{
+    font-size: 25px;
 }
 

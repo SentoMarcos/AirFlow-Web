@@ -11,6 +11,12 @@
     const email = localStorage.getItem("emailUsuario");
     const telefono = localStorage.getItem("telefonoUsuario");
     const errorPassword = document.getElementById("errorPasswordEdit");
+
+// Cargar los datos en el formulario de edición
+    const editNombre = document.getElementById("editNombre");
+    const editApellidos = document.getElementById("editApellidos");
+    const editEmail = document.getElementById("editEmail");
+    const editTelefono = document.getElementById("editTelefono");
 // Mostrar saludo al usuario
     /*document.getElementById("greeting").textContent = "Hola " + nombre;*/
 
@@ -61,10 +67,10 @@
         document.getElementById("editPasswordBtn").style.display = "none";
 
         // Cargar los datos en el formulario de edición
-        document.getElementById("editNombre").value = nombre;
-        document.getElementById("editApellidos").value = apellidos;
-        document.getElementById("editEmail").value = email;
-        document.getElementById("editTelefono").value = telefono;
+        editNombre.value = nombre;
+        editApellidos.value = apellidos;
+        editEmail.value = email;
+        editTelefono.value = telefono;
     });
 
 /**
@@ -78,24 +84,25 @@
 // editUser() => void
 
 document.getElementById("saveBtn").addEventListener("click", function() {
-
+    let telefonoCorrecto = /^\d{9}$/.test(editTelefono.value);
+    let emailCorrecto = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(editEmail.value);
     // Validar campos correctos
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    if (emailCorrecto===false) {
         document.getElementById("errorEdit").textContent = "El email no es válido.";
         return;
     }
-    if (!/^\d{10}$/.test(telefono)) {
-        document.getElementById("errorEdit").textContent = "El teléfono debe tener 10 dígitos.";
+    if (telefonoCorrecto===false) {
+        document.getElementById("errorEdit").textContent = "El teléfono debe tener 9 dígitos.";
         return;
     }
 
     // Actualizar los datos del usuario
     const updatedData = {
         id: idUsuario, // Utiliza la ID del localStorage
-        nombre: document.getElementById("editNombre").value,
-        apellidos: document.getElementById("editApellidos").value,
-        email: document.getElementById("editEmail").value,
-        telefono: document.getElementById("editTelefono").value,
+        nombre: editNombre.value,
+        apellidos: editApellidos.value,
+        email: editEmail.value,
+        telefono: editTelefono.value,
     };
 
     // Enviar la solicitud PUT al servidor
@@ -113,6 +120,10 @@ document.getElementById("saveBtn").addEventListener("click", function() {
                 document.getElementById("errorEdit").textContent = data.error;
             } else {
                 console.log("Usuario registrado con éxito");
+                localStorage.setItem("nombreUsuario", editNombre.value);
+                localStorage.setItem("apellidosUsuario", editApellidos.value);
+                localStorage.setItem("emailUsuario", editEmail.value);
+                localStorage.setItem("telefonoUsuario", editTelefono.value);
                 location.reload(); // Recarga la página para mostrar los cambios
             }
         })
@@ -134,7 +145,7 @@ document.getElementById("saveBtn").addEventListener("click", function() {
     document.getElementById("cancelEditBtn").addEventListener("click", function () {
 
         // Mostrar la tabla y ocultar el formulario de edición
-        document.getElementById("userTable").style.display = "block";
+        document.getElementById("userTable").style.display = "table";
         document.getElementById("editPassword").style.display = "none";
         document.getElementById("editForm").style.display = "none";
 
@@ -232,7 +243,7 @@ document.getElementById("saveBtn").addEventListener("click", function() {
 
     document.getElementById("cancelPasswordBtn").addEventListener("click", function () {
         // Mostrar la tabla y ocultar el formulario de edición
-        document.getElementById("userTable").style.display = "block";
+        document.getElementById("userTable").style.display = "table";
         document.getElementById("editPassword").style.display = "none";
         document.getElementById("editForm").style.display = "none";
 
