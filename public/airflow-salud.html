@@ -11,6 +11,7 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
   <link rel="stylesheet" href="css/styles.css">
   <link rel="stylesheet" href="css/airflow-salud.css">
+  <link rel="stylesheet" href="css/airflow-index.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-routing-machine/3.2.12/leaflet-routing-machine.min.js"></script>
@@ -23,6 +24,7 @@
 <div id="container-salud">
     <div id="lado">
         <div id="calendario">
+            <h3>Salud</h3>
             <div id="dias-semana">
                 <span>Dom</span>
                 <span>Lun</span>
@@ -42,9 +44,21 @@
                     <button id="mes-siguiente">&gt;</button>
                 </div>
             </header>
+            <div id="calidad-aire-dia">
+                <div id="texto-calidad-aire">
+                    <p>Calidad Aire</p>
+                    <h4>calidad</h4>
+                </div>
+                <div id="calidad-aire-foto"></div>
+            </div>
         </div>
     </div>  <div id="main-salud">
       <div id="info-salud">
+          <div id="botones-mapa">
+              <button id="centrar-ubicacion" onclick="centrarEnMiUbicacion()"><i class="bi bi-crosshair"></i></button>
+              <button id="consultar-medición" onclick="verMedidasEnUbicacion()" class="button-primary">Ver medición</button>
+              <button id="cancelar-consulta" class="button-primary">Cancelar Consulta</button>
+          </div>
           <div id="mapa">
               <button class="toggle-routing">Mostrar Ruta</button>
           </div>
@@ -108,41 +122,72 @@
 
         const primerDiaMes = new Date(anio, mes, 1).getDay(); // Día de la semana del primer día del mes
         const diasEnMes = new Date(anio, mes + 1, 0).getDate(); // Número de días en el mes
-
-        // Número total de celdas (42: 6 filas x 7 días)
         const totalCeldas = 42;
 
         // Añadir días vacíos antes del primer día del mes
+        const diasFragment = document.createDocumentFragment();
         for (let i = 0; i < primerDiaMes; i++) {
-            diasContenedor.innerHTML += `<span></span>`;
+            diasFragment.appendChild(document.createElement('span'));
         }
 
-        // Añadir los días del mes con el atributo de fecha
-        for (let dia = 1; dia <= diasEnMes; dia++) {
-            const estado = asignarEstado(dia); // Lógica de estado
-            const fechaCompleta = `${anio}-${String(mes + 1).padStart(2, '0')}-${String(dia).padStart(2, '0')}`;
-            const esHoy = anio === hoy.getFullYear() && mes === hoy.getMonth() && dia === hoy.getDate();
+        // Obtener sensores y calcular estados
+        obtenerMisSensores()
+            .then(idsSensores => {
+                // Añadir días del mes con atributos y estado
+                for (let dia = 1; dia <= diasEnMes; dia++) {
+                    const fechaCompleta = `${anio}-${String(mes + 1).padStart(2, '0')}-${String(dia).padStart(2, '0')}`;
+                    const esHoy = anio === hoy.getFullYear() && mes === hoy.getMonth() && dia === hoy.getDate();
+                    const esPosterior = new Date(fechaCompleta) > hoy;
 
-            diasContenedor.innerHTML += `
-            <span data-date="${fechaCompleta}" data-status="${estado}">
-                ${dia}
-            </span>
-        `;
-        }
+                    const diaElemento = document.createElement('span');
+                    diaElemento.dataset.date = fechaCompleta;
+                    diaElemento.textContent = dia;
 
-        // Añadir días vacíos después del último día del mes
-        const celdasOcupadas = primerDiaMes + diasEnMes;
-        const diasFaltantes = totalCeldas - celdasOcupadas;
-        for (let i = 0; i < diasFaltantes; i++) {
-            diasContenedor.innerHTML += `<span></span>`;
-        }
+                    // Asignar clases iniciales
+                    diaElemento.className = [
+                        esHoy ? 'hoy' : '',
+                        esPosterior ? 'disabled' : '',
+                    ].filter(Boolean).join(' ');
 
-        // Deshabilitar el botón "siguiente" si estamos en el mes actual
-        mesSiguiente.disabled = (fecha.getFullYear() === hoy.getFullYear() && fecha.getMonth() === hoy.getMonth());
+                    diasFragment.appendChild(diaElemento);
 
-        // Agregar evento de clic a los días
-        agregarEventoSeleccion();
+                    // Calcular estado si el día no es futuro
+                    if (!esPosterior) {
+                        obtenerMedicionesPorFecha(idsSensores, fechaCompleta)
+                            .then(({ media }) => {
+                                const estado = asignarEstadoPorMedia(media);
+
+                                // Asignar estado y clase al día
+                                diaElemento.dataset.status = estado;
+                                diaElemento.classList.add(estado);
+                            })
+                            .catch(() => {
+                                console.warn(`No se pudo obtener las mediciones para ${fechaCompleta}`);
+                            });
+                    }
+                }
+
+                // Añadir días vacíos después del último día del mes
+                const celdasOcupadas = primerDiaMes + diasEnMes;
+                const diasFaltantes = totalCeldas - celdasOcupadas;
+                for (let i = 0; i < diasFaltantes; i++) {
+                    diasFragment.appendChild(document.createElement('span'));
+                }
+
+                diasContenedor.appendChild(diasFragment);
+
+                // Habilitar selección de días
+                agregarEventoSeleccion();
+            })
+            .catch(error => {
+                console.error("Error al cargar el calendario:", error);
+            });
+
+        // Deshabilitar botón "siguiente" si estamos en el mes actual
+        mesSiguiente.disabled = fecha.getFullYear() === hoy.getFullYear() && fecha.getMonth() === hoy.getMonth();
     }
+
+
 
 
     function agregarEventoSeleccion() {
@@ -162,12 +207,14 @@
     }
 
 
-    function asignarEstado(dia) {
-        // Lógica para asignar estado: puedes adaptarlo a tus necesidades
-        if (dia % 5 === 0) return 'malo';
-        if (dia % 3 === 0) return 'moderado';
-        if (dia % 2 === 0) return 'bueno';
-        return 'excelente';
+    function asignarEstadoPorMedia(media) {
+        // Define los intervalos para los estados
+        if (!media) return 'vacio';
+        if (media <= 50) return 'excelente';
+        if (media <= 100) return 'bueno';
+        if (media <= 150) return 'moderado';
+        if (media <= 200) return 'malo';
+        return 'peligroso'; // Si es mayor a 100
     }
 
     mesAnterior.addEventListener('click', () => {
@@ -204,16 +251,38 @@
                 .then(idsSensores => {
                     return obtenerMedicionesPorFecha(idsSensores, fechaSeleccionada); // Pasar los IDs de sensores y la fecha
                 })
-                .then(mediciones => {
+                .then(({ mediciones, media }) => {
+                    // Verificar si se han recibido mediciones
+                    if (mediciones.length === 0) {
+                        console.warn(`No hay mediciones disponibles para la fecha: ${fechaSeleccionada}`);
+                        // Mostrar un mensaje de advertencia o algo en la interfaz
+                        const textoEstado = document.getElementById('texto-calidad-aire').querySelector('h4');
+                        textoEstado.textContent = "No hay mediciones para esta fecha.";
+
+                        // Opcionalmente, podrías actualizar algún indicador de estado o hacer más acciones
+                        return; // Salir de la función si no hay mediciones
+                    }
+
                     console.log("Mediciones del día:", mediciones);
 
                     // Llamamos a la función mostrarMarcadores con las mediciones obtenidas
                     mostrarMisMarcadores(mediciones); // Mostrar los marcadores de las mediciones en el mapa
 
                     // Aquí puedes manejar las mediciones como desees (mostrar en el calendario, etc.)
+                    // Por ejemplo, actualizar la calidad del aire en la UI con la media:
+                    const estado = diaSeleccionado.getAttribute('data-status');
+                    const icono = document.getElementById('calidad-aire-foto');
+                    icono.className = estado; // Cambiar el icono según el estado
+
+                    // Actualizar el texto en la interfaz
+                    const texto = document.getElementById('texto-calidad-aire').querySelector('h4');
+                    texto.textContent = estado;
                 })
                 .catch(error => {
                     console.error("Error al obtener las mediciones:", error);
+                    // Mostrar un mensaje de error en caso de fallar la obtención de las mediciones
+                    const textoEstado = document.getElementById('texto-calidad-aire').querySelector('h4');
+                    textoEstado.textContent = "Error al obtener las mediciones.";
                 });
         } else {
             console.log("No se ha seleccionado ningún día.");
@@ -222,9 +291,9 @@
 
     // Función para mostrar los marcadores y trazar la ruta con las mediciones
     function mostrarMisMarcadores(mediciones) {
-        // Limpiar los marcadores anteriores del mapa
+        // Limpiar los marcadores anteriores del mapa (eliminar solo los marcadores con una clase específica)
         map.eachLayer(function(layer) {
-            if (layer instanceof L.Marker) {
+            if (layer instanceof L.Marker && layer.options.className === 'mi-marcador') {
                 map.removeLayer(layer);
             }
         });
@@ -240,8 +309,11 @@
             if (latitud && longitud) {
                 const latLng = [latitud, longitud];
 
-                // Crear un marcador para cada medición con el icono personalizado
-                const marcador = L.marker(latLng, { icon: customIcon }).addTo(map);
+                // Crear un marcador para cada medición con el icono personalizado y añadir la clase 'mi-marcador'
+                const marcador = L.marker(latLng, {
+                    icon: customIcon,
+                    className: 'mi-marcador' // Añadir clase personalizada
+                }).addTo(map);
 
                 // Añadir información al marcador (opcional)
                 marcador.bindPopup(`
@@ -259,6 +331,7 @@
             trazarRuta(waypoints);
         }
     }
+
     // Función para trazar la ruta entre los puntos
     function trazarRuta(waypoints) {
         // Si ya existe una ruta en el mapa, la eliminamos

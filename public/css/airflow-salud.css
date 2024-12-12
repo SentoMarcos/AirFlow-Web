@@ -6,9 +6,10 @@ h3 {
     display: flex;
     flex-direction: row;
     height: 100vh;
-    padding-top: 15vh;
+    padding-top: 13vh;
     gap: 10px;
     padding-inline: 2vw; /* Relleno interno horizontal del 2% del ancho de la ventana */
+    padding-bottom: 2vw;
 }
 
 #container-salud #main-salud{
@@ -124,41 +125,65 @@ h3 {
 #container-salud #lado{
     height: 100%;
     border-radius: 48px;
-    flex: 0.3;
+    /*flex: 0.3;*/
 }
 
 #container-salud #lado img{
     max-height: 100%;
 }
 
-
-@media (max-width: 1105px) {
-    #container-salud #main-salud>div#info-salud .grid{
-        grid-template-columns: repeat(3, 1fr); /* 5 columnas iguales */
-        grid-template-rows: repeat(5, 1fr); /* 3 filas iguales */
-    }
-}
-
-@media (max-width: 963px) {
-    #container-salud #main-salud{
-        width: 60%;
-    }
-    #container-salud #lado{
-        display: none;
-    }
-    #container-salud #main-salud>div#info-salud .grid{
-        grid-template-columns: repeat(3, 1fr); /* 5 columnas iguales */
-        grid-template-rows: repeat(5, 1fr); /* 3 filas iguales */
-    }
-}
-
 #lado {
-    background-color: #1e1e1e;
+    background-color: var(--v3-blanco);
+    background-image: url("../img/calendario.png");
+    background-position: center center;
+    background-size: cover;
+    background-repeat: no-repeat;
     color: #fff;
     width: 300px;
     border-radius: 10px;
     padding: 20px;
     font-family: Arial, sans-serif;
+    position: relative;
+}
+#lado h3{
+    color: var(--v3-negro);
+    position: absolute;
+    top: 30px;
+    left: 40px;
+}
+#lado #calidad-aire-dia{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    margin-top: 15px;
+}
+#lado #calidad-aire-dia h4{
+    font-size: 20px;
+}
+#lado #calidad-aire-dia #calidad-aire-foto{
+    width: 80px;
+    height: 80px;
+    border-radius: 80px;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+#calidad-aire-foto.vacio{
+    background-image: url("../img/carita-mala.png");
+}
+#calidad-aire-foto.malo{
+    background-image: url("../img/carita-mala.png");
+}
+#calidad-aire-foto.bueno{
+    background-image: url("../img/carita-buena.png");
+}
+#calidad-aire-foto.excelente{
+    background-image: url("../img/carita-excelente.png");
+}
+#calidad-aire-foto.moderado{
+    background-image: url("../img/carita-media.png");
+}
+#lado #calendario{
+    margin-top: 5vw;
 }
 #navegacion header {
     display: flex;
@@ -182,25 +207,29 @@ h3 {
 #navegacion button:disabled{
     color: var(--v3-gris);
 }
-
 #dias-semana {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
     margin-top: 10px;
     text-align: center;
-    font-weight: bold;
-    gap: 15px;
+    font-weight: lighter;
+    gap: 0.5vw;
 }
 
 #dias {
     display: grid;
     grid-template-columns: repeat(7, 1fr); /* 7 días por fila */
     grid-template-rows: repeat(6, 1fr); /* Siempre 6 filas */
-    grid-gap: 5px; /* Espaciado entre las celdas */
     height: 300px; /* Altura fija para mantener proporciones constantes */
     align-items: stretch;
     justify-items: stretch;
 }
+#dias .disabled {
+    background: gray; /* Cambia el color para indicar deshabilitado */
+    pointer-events: none; /* Desactiva los clics */
+    opacity: 0.5; /* Reduce la opacidad */
+}
+
 
 #dias span {
     display: flex;
@@ -215,21 +244,25 @@ h3 {
 }
 
 #dias span[data-status="excelente"] {
-    background-color: #ff67d0;
+    background-color: var(--v3-rosa-excelente);
 }
 
 #dias span[data-status="bueno"] {
-    background-color: #4cd137;
+    background-color: var(--v3-verde-bueno);
 }
 
 #dias span[data-status="moderado"] {
-    background-color: #fbc531;
+    background-color: var(--v3-amarillo-media);
+    color: var(--v3-negro);
 }
 
 #dias span[data-status="malo"] {
-    background-color: #e84118;
+    background-color: var(--v3-naranja-mala);
 }
 
+#dias span[data-status="peligroso"] {
+    background-color: var(--v3-naranja-mala);
+}
 #dias span.seleccionado {
     background-color: var(--v3-azul); /* Color resaltado para el día seleccionado */
     color: var(--v3-blanco);
@@ -244,4 +277,29 @@ h3 {
 .leaflet-top{
     display: none;
 }
+#mes-actual{
+    font-size: 25px;
+}
+
+
+@media (max-width: 1105px) {
+    #container-salud #main-salud>div#info-salud .grid{
+        grid-template-columns: repeat(3, 1fr); /* 5 columnas iguales */
+        grid-template-rows: repeat(5, 1fr); /* 3 filas iguales */
+    }
+}
+
+@media (max-width: 963px) {
+    #container-salud #main-salud{
+        width: 60%;
+    }
+    #container-salud #lado{
+        display: block;
+    }
+    #container-salud #main-salud>div#info-salud .grid{
+        grid-template-columns: repeat(3, 1fr); /* 5 columnas iguales */
+        grid-template-rows: repeat(5, 1fr); /* 3 filas iguales */
+    }
+}
+
 
