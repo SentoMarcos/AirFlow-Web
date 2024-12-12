@@ -238,7 +238,6 @@ h3 {
     background: var(--v3-blanco);
     border-radius: 5px;
     box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
-    padding-inline: 3px;
 }
 #botones-mapa #zoom-botones a{
     font-size: 50px;
@@ -258,7 +257,42 @@ h3 {
 .leaflet-touch .leaflet-control-zoom-in, .leaflet-touch .leaflet-control-zoom-out {
     width: fit-content;
 }
-
+.leaflet-popup-content-wrapper.peligroso{
+    background-color: var(--v3-naranja-mala);
+    background-image: url("../img/carita-peligrosa.png");
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: right center;
+}
+.leaflet-popup-content-wrapper.malo{
+    background-color: var(--v3-naranja-mala);
+    background-image: url("../img/carita-mala.png");
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: right center;
+}
+.leaflet-popup-content-wrapper.moderado{
+    background-color: var(--v3-amarillo-media);
+    color: var(--v3-negro);
+    background-image: url("../img/carita-media.png");
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: right center;
+}
+.leaflet-popup-content-wrapper.bueno{
+    background-color: var(--v3-verde-bueno);
+    background-image: url("../img/carita-buena.png");
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: right center;
+}
+.leaflet-popup-content-wrapper.excelente{
+    background-color: var(--v3-rosa-excelente);
+    background-image: url("../img/carita-excelente.png");
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: right center;
+}
 .custom-marker {
     width: 30px;
     height: 30px;
