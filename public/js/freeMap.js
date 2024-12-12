@@ -209,23 +209,149 @@ async function getAirPollutionData(lat, lon) {
 // MAPA DE CALOR
 // ---------------------------------------------------------
 // Datos de ejemplo para el mapa de calor (Latitud, Longitud, Peso opcional)
-var heatData = [
-    [39.4702, -0.3750, 0.8], // Coordenadas de Valencia con un peso
-    [39.4528, -0.3526, 0.5],
-    [39.4708, -0.3774, 1.0]
-];
+function asignarEstado(media) {
+    // Define los intervalos para los estados
+    if (!media) return 'vacio';
+    if (media <= 50) return 'excelente';
+    if (media <= 100) return 'bueno';
+    if (media <= 150) return 'moderado';
+    if (media <= 200) return 'malo';
+    return 'peligroso'; // Si es mayor a 100
+}
+let currentZoom = map.getZoom();  // Guardar el zoom inicial
+let markers = [];  // Array para almacenar los marcadores
 
-// Agregar el mapa de calor
-L.heatLayer(heatData, {
-    radius: 25,      // Radio de cada punto
-    blur: 35,        // Suavizado entre puntos
-    maxZoom: 8,     // Máximo nivel de zoom para mostrar calor
-    zIndex: 1000, // Asegura que el mapa de calor esté por encima
-    gradient: {
-        0.2: 'blue',    // Intensidad baja
-        0.4: 'cyan',    // Intensidad moderada-baja
-        0.6: 'lime',    // Intensidad moderada-alta
-        0.8: 'yellow',  // Intensidad alta
-        1: 'red'        // Intensidad muy alta
-    } // Colores personalizados para el mapa de calor
-}).addTo(map);
+function mostrarMarcadores(mediciones) {
+    // Limpiar todos los marcadores anteriores del mapa
+    map.eachLayer(function(layer) {
+        if (layer instanceof L.Marker) {
+            map.removeLayer(layer); // Eliminar todos los marcadores
+        }
+    });
+
+    // Crear un array para almacenar las coordenadas de las mediciones
+    const waypoints = [];
+
+    // Añadir los marcadores para las mediciones
+    mediciones.forEach(function(medicion) {
+        const { latitud, longitud, tipo_gas, fecha, valor } = medicion;
+
+        // Asegúrate de que las coordenadas son válidas
+        if (latitud && longitud) {
+            const latLng = [latitud, longitud];
+            const estado = asignarEstado(valor);
+
+            // Crear un ícono personalizado con clase basada en el estado
+            const customIcon = L.divIcon({
+                className: `custom-marker ${estado}`, // Clases personalizadas
+                iconSize: [30, 30], // Tamaño del ícono
+                iconAnchor: [15, 30], // Punto de anclaje del ícono
+                popupAnchor: [0, -30], // Posición del popup respecto al ícono
+            });
+
+            // Crear un marcador con el ícono personalizado
+            const marcador = L.marker(latLng, {
+                icon: customIcon,
+                latLng: latLng,  // Guardamos las coordenadas
+            });
+
+            // Añadir información al marcador (popup) con la clase de estado
+            marcador.bindPopup(`
+                <b>Tipo de Gas:</b> ${tipo_gas}<br>
+                <b>Fecha:</b> ${fecha}<br>
+                <b>Valor:</b> ${valor}<br>
+                <b>Estado:</b> <span class="${estado}">${estado}</span>
+            `);
+
+            // Añadir el marcador al array de marcadores
+            markers.push(marcador);
+
+            // Añadir la clase de estado al contenedor del popup al abrirlo
+            marcador.on('popupopen', function(e) {
+                const popupContentWrapper = e.popup._container.querySelector('.leaflet-popup-content-wrapper');
+                if (popupContentWrapper) {
+                    popupContentWrapper.classList.add(estado);
+                }
+            });
+
+            // Añadir el punto a la lista de waypoints (coordenadas para la ruta)
+            waypoints.push(latLng);
+        }
+    });
+
+    // Función para actualizar la visibilidad de los marcadores según el nivel de zoom
+    function actualizarMarcadores() {
+        const zoom = map.getZoom();  // Obtener el zoom actual
+        const center = map.getCenter();  // Obtener el centro del mapa
+        const radio = 5000 / zoom;  // Radio de visibilidad (ajustar según necesidad)
+
+        // Iterar sobre los marcadores y mostrar/ocultar según la distancia del centro
+        markers.forEach(marcador => {
+            const distance = center.distanceTo(marcador.getLatLng());  // Calcular la distancia desde el centro
+
+            // Si la distancia es menor que el radio, mostramos el marcador, si no lo ocultamos
+            if (distance < radio) {
+                marcador.addTo(map);  // Mostrar marcador
+            } else {
+                map.removeLayer(marcador);  // Ocultar marcador
+            }
+        });
+    }
+
+    // Inicializar los marcadores en el mapa
+    markers.forEach(marcador => {
+        marcador.addTo(map);
+    });
+
+    // Actualizar los marcadores cada vez que el zoom cambie
+    map.on('zoomend', actualizarMarcadores);
+
+    // Llamar a la función una vez al cargar para asegurar que el estado de los marcadores es correcto
+    actualizarMarcadores();
+}
+
+async function initMapa() {
+    const { mediciones, datosHeatmap } = await obtenerMediciones(); // Espera a obtener las mediciones
+
+    if (datosHeatmap.length > 0) {
+        mostrarMarcadores(mediciones); // Solo agrega los marcadores si hay datos
+        agregarMapaDeCalor(datosHeatmap); // Solo agrega el mapa si hay datos
+    } else {
+        console.warn("No hay datos para mostrar en el mapa de calor.");
+    }
+}
+initMapa();
+function obtenerColorPorValor(valor) {
+    // Asignar colores según el intervalo de valor
+    if (valor <= 50) {
+        return 'blue';    // Azul para valores entre 0 y 50
+    } else if (valor <= 100) {
+        return 'cyan';    // Cian para valores entre 51 y 100
+    } else if (valor <= 150) {
+        return 'lime';    // Lima para valores entre 101 y 150
+    } else if (valor <= 200) {
+        return 'yellow';  // Amarillo para valores entre 151 y 200
+    } else {
+        return 'red';     // Rojo para valores mayores de 200
+    }
+}
+
+function agregarMapaDeCalor(datosHeatmap) {
+    // Crear el mapa de calor utilizando los datos y los colores según el valor
+    L.heatLayer(datosHeatmap.map(([lat, lon, valor]) => {
+        return [lat, lon, valor];  // Crear el mapa de calor con los valores
+    }), {
+        radius: 25,      // Radio de cada punto
+        blur: 40,        // Suavizado entre puntos
+        maxZoom: 10,     // Máximo nivel de zoom para mostrar calor
+        zIndex: 1000,    // Asegura que el mapa de calor esté por encima
+        gradient: {
+            0.2: 'blue',    // Intensidad baja
+            0.4: 'cyan',    // Intensidad moderada-baja
+            0.6: 'lime',    // Intensidad moderada-alta
+            0.8: 'yellow',  // Intensidad alta
+            1: 'red'        // Intensidad muy alta
+        }
+    }).addTo(map);
+}
+

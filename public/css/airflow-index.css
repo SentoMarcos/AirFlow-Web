@@ -258,3 +258,32 @@ h3 {
 .leaflet-touch .leaflet-control-zoom-in, .leaflet-touch .leaflet-control-zoom-out {
     width: fit-content;
 }
+.custom-marker {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 2px solid white;
+    background-size: cover;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    background-image: url("../img/a-airflow.png");
+}
+
+.custom-marker.peligroso {
+    background-color: red;
+}
+
+.custom-marker.malo {
+    background-color: var(--v3-naranja-mala);
+}
+
+.custom-marker.moderado {
+    background-color: var(--v3-amarillo-media);
+}
+
+.custom-marker.bueno {
+    background-color: var(--v3-verde-bueno);
+}
+
+.custom-marker.excelente {
+    background-color: var(--v3-rosa-excelente);
+}
