@@ -105,6 +105,7 @@
 <script src="js/mis-medidas.js"></script>
 <script src="js/crear-mapa.js"></script>
 <script>
+    let contadorMarcadores = 0; // Inicializa el contador para los IDs
     const diasContenedor = document.getElementById('dias');
     const mesActual = document.getElementById('mes-actual');
     const mesAnterior = document.getElementById('mes-anterior');
@@ -291,10 +292,10 @@
 
     // Función para mostrar los marcadores y trazar la ruta con las mediciones
     function mostrarMisMarcadores(mediciones) {
-        // Limpiar los marcadores anteriores del mapa (eliminar solo los marcadores con una clase específica)
+        // Limpiar todos los marcadores anteriores del mapa
         map.eachLayer(function(layer) {
-            if (layer instanceof L.Marker && layer.options.className === 'mi-marcador') {
-                map.removeLayer(layer);
+            if (layer instanceof L.Marker) {
+                map.removeLayer(layer); // Eliminar todos los marcadores
             }
         });
 
@@ -303,23 +304,41 @@
 
         // Añadir los marcadores para las mediciones
         mediciones.forEach(function(medicion) {
-            const { latitud, longitud, tipo_gas, fecha } = medicion;
+            const { latitud, longitud, tipo_gas, fecha, valor } = medicion;
 
             // Asegúrate de que las coordenadas son válidas
             if (latitud && longitud) {
                 const latLng = [latitud, longitud];
+                const estado = asignarEstadoPorMedia(valor);
 
-                // Crear un marcador para cada medición con el icono personalizado y añadir la clase 'mi-marcador'
+                // Crear un ícono personalizado con clase basada en el estado
+                const customIcon = L.divIcon({
+                    className: `custom-marker ${estado}`, // Clases personalizadas
+                    iconSize: [30, 30], // Tamaño del ícono
+                    iconAnchor: [15, 30], // Punto de anclaje del ícono
+                    popupAnchor: [0, -30], // Posición del popup respecto al ícono
+                });
+
+                // Crear un marcador con el ícono personalizado
                 const marcador = L.marker(latLng, {
                     icon: customIcon,
-                    className: 'mi-marcador' // Añadir clase personalizada
                 }).addTo(map);
 
-                // Añadir información al marcador (opcional)
-                marcador.bindPopup(`
+                // Añadir información al marcador (popup) con la clase de estado
+                const popup = marcador.bindPopup(`
                 <b>Tipo de Gas:</b> ${tipo_gas}<br>
                 <b>Fecha:</b> ${fecha}<br>
+                <b>Valor:</b> ${valor}<br>
+                <b>Estado:</b> <span class="${estado}">${estado}</span>
             `);
+
+                // Añadir la clase de estado al contenedor del popup al abrirlo
+                marcador.on('popupopen', function(e) {
+                    const popupContentWrapper = e.popup._container.querySelector('.leaflet-popup-content-wrapper');
+                    if (popupContentWrapper) {
+                        popupContentWrapper.classList.add(estado);
+                    }
+                });
 
                 // Añadir el punto a la lista de waypoints (coordenadas para la ruta)
                 waypoints.push(latLng);
@@ -332,6 +351,7 @@
         }
     }
 
+
     // Función para trazar la ruta entre los puntos
     function trazarRuta(waypoints) {
         // Si ya existe una ruta en el mapa, la eliminamos
@@ -339,31 +359,69 @@
             map.removeControl(routingControl);
         }
 
-        // Crear una nueva ruta utilizando los waypoints (puntos) obtenidos
+        // Función para calcular la distancia entre dos puntos (en metros)
+        function calcularDistancia(latLng1, latLng2) {
+            // Convertir a L.LatLng si no lo son ya
+            latLng1 = L.latLng(latLng1);
+            latLng2 = L.latLng(latLng2);
+            return latLng1.distanceTo(latLng2); // Utiliza el método distanceTo de L.LatLng
+        }
+
+        // Función para encontrar el punto más cercano en la lista de waypoints
+        function obtenerPuntoMasCercano(punto, puntosRestantes) {
+            let puntoCercano = null;
+            let distanciaMinima = Infinity;
+
+            puntosRestantes.forEach((puntoRestante) => {
+                const distancia = calcularDistancia(punto, puntoRestante);
+                if (distancia < distanciaMinima) {
+                    distanciaMinima = distancia;
+                    puntoCercano = puntoRestante;
+                }
+            });
+
+            return puntoCercano;
+        }
+
+        // Crear una lista de waypoints que no se han visitado
+        let puntosRestantes = waypoints.slice();
+        let rutaOrdenada = [];
+        let puntoActual = puntosRestantes.shift(); // Comenzamos desde el primer punto
+        rutaOrdenada.push(puntoActual);
+
+        // Encontrar la ruta más corta, asegurándonos de no pasar dos veces por el mismo punto
+        while (puntosRestantes.length > 0) {
+            const siguientePunto = obtenerPuntoMasCercano(puntoActual, puntosRestantes);
+            rutaOrdenada.push(siguientePunto);
+
+            // Eliminar el punto seleccionado de la lista de puntos restantes
+            puntosRestantes = puntosRestantes.filter((punto) => punto !== siguientePunto);
+
+            // Actualizar el punto actual
+            puntoActual = siguientePunto;
+        }
+
+        // Crear la ruta en Leaflet
         routingControl = L.Routing.control({
-            waypoints: waypoints.map(latLng => L.latLng(latLng)), // Convertir los puntos a formato L.LatLng
-            routeWhileDragging: true, // Permite modificar la ruta arrastrando los puntos
-            geocoder: L.Control.Geocoder.nominatim(), // Utiliza el geocodificador de Nominatim (si es necesario)
+            waypoints: rutaOrdenada.map(latLng => L.latLng(latLng)), // Convertir waypoints a L.LatLng
+            routeWhileDragging: true,
+            geocoder: L.Control.Geocoder.nominatim(),
             createMarker: function() {
-                return null;  // Evita que Leaflet Routing Machine cree los marcadores predeterminados
+                return null; // Evitar que se creen marcadores predeterminados
+            },
+            lineOptions: {
+                styles: [
+                    {
+                        color: '#52CCD7', // Asigna el color de la ruta
+                        weight: 6,        // Grosor de la línea
+                        opacity: 0.8      // Opacidad de la línea
+                    }
+                ]
             }
         }).addTo(map);
-
-        // Añadir los puntos con texto indicativo en orden
-        waypoints.forEach((waypoint, index) => {
-            const latLng = waypoint;
-
-            // Crear un marcador para cada waypoint con el icono personalizado
-            const marcador = L.marker(latLng, { icon: customIcon }).addTo(map);
-
-            // Crear texto indicativo para mostrar fuera de la ruta
-            const textoIndicaciones = `Punto ${index + 1} - Coordenadas: ${latLng[0].toFixed(5)}, ${latLng[1].toFixed(5)}`;
-            marcador.bindPopup(textoIndicaciones);
-
-            // Aquí puedes ajustar el texto o desplazamiento si es necesario
-            // Puedes incluir información adicional como distancias, direcciones, etc.
-        });
     }
+
+
 
 
 
