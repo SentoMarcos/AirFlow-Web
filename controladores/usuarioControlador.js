@@ -239,7 +239,7 @@ exports.getMisSensores = async (req, res) => {
             where: { id_usuario },
             include: [{
                 model: Sensor,
-                attributes: ['estado', 'num_referencia', 'uuid', 'nombre', 'conexion', 'bateria'] // Asegurarse de incluir todos los campos necesarios
+                attributes: ['id_sensor','estado', 'num_referencia', 'uuid', 'nombre', 'conexion', 'bateria'] // Asegurarse de incluir todos los campos necesarios
             }]
         });
 

@@ -54,7 +54,7 @@
      * @event editBtn
  */
 
-// editUser() => void
+// editUserBtn() => void
 
     document.getElementById("editBtn").addEventListener("click", function() {
 
