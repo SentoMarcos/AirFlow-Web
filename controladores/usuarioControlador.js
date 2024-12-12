@@ -104,31 +104,41 @@ const Rol = require("../modelos/Roles");
 
 // {Object}: req, {Object}: res => loginUsuario() => void
 
-    exports.loginUsuario = async (req, res) => {
-        const { email, contrasenya } = req.body;
-        if (email && contrasenya) {
-            try {
-                const usuario = await Usuario.findOne({ where: { email: email, } });
-                if (usuario) {
-                    // Verificar la contraseña encriptada
-                    const isMatch = await bcrypt.compare(contrasenya, usuario.contrasenya);
-                    console.log("¿Contraseñas coinciden?", isMatch);
-                    if (isMatch) {
-                        res.status(200).json(usuario); // Devuelve el usuario si la autenticación es exitosa
-                    } else {
-                        res.status(401).json({ error: 'Contraseña incorrecta' }); // Contraseña incorrecta
-                    }
-                } else {
-                    res.status(404).json({ error: 'Usuario no encontrado' }); // Usuario no encontrado
-                }
-            } catch (error) {
-                console.error("Error al obtener el usuario:", error);
-                res.status(500).json({ error: 'Error al obtener el usuario.' });
-            }
-        } else {
-            res.status(400).json({ error: 'Faltan parámetros obligatorios' });
+exports.loginUsuario = async (req, res) => {
+    const { email, contrasenya } = req.body;
+
+    // Validar que los parámetros requeridos estén presentes
+    if (!email || !contrasenya) {
+        return res.status(400).json({ error: 'El email y la contraseña son obligatorios' });
+    }
+
+    try {
+        // Buscar al usuario por email
+        const usuario = await Usuario.findOne({ where: { email } });
+
+        if (!usuario) {
+            return res.status(404).json({ error: 'Usuario no encontrado' });
         }
-    };
+
+        // Verificar la contraseña
+        const isMatch = await bcrypt.compare(contrasenya, usuario.contrasenya);
+
+        if (!isMatch) {
+            return res.status(401).json({ error: 'Contraseña incorrecta' });
+        }
+
+        // Excluir información sensible
+        const { contrasenya: _, ...usuarioSeguro } = usuario.toJSON();
+
+        // Responder con los datos del usuario autenticado
+        return res.status(200).json(usuarioSeguro);
+    } catch (error) {
+        console.error('Error al autenticar usuario:', error);
+
+        // Manejo genérico de errores
+        return res.status(500).json({ error: 'Error interno del servidor' });
+    }
+};
 
 /**
  * @function editUsuario
@@ -219,22 +229,27 @@ const Rol = require("../modelos/Roles");
 
 //  {Object}: req, {Object}: res => getMisSensores() => void 
 
-    exports.getMisSensores = async (req, res) => {
-        try {
-            const { id_usuario } = req.params; // Obtener el ID del usuario de los parámetros de la solicitud
+// controladores/usuarioControlador.js
+exports.getMisSensores = async (req, res) => {
+    try {
+        const { id_usuario } = req.query; // Obtener el ID del usuario de los parámetros de la solicitud
 
-            // Buscar los sensores asociados al usuario
-            const sensores = await UsuarioSensor.findAll({
-                where: { id_usuario },
-                include: [Sensor] // Incluir el modelo Sensor para obtener los detalles de los sensores
-            });
+        // Buscar los sensores asociados al usuario
+        const sensores = await UsuarioSensor.findAll({
+            where: { id_usuario },
+            include: [{
+                model: Sensor,
+                attributes: ['estado', 'num_referencia', 'uuid', 'nombre', 'conexion', 'bateria'] // Asegurarse de incluir todos los campos necesarios
+            }]
+        });
 
-            res.status(200).json(sensores);
-        } catch (error) {
-            console.error("Error al obtener los sensores del usuario:", error);
-            res.status(500).json({ error: 'Error al obtener los sensores del usuario.' });
-        }
-    };
+
+        res.status(200).json(sensores);
+    } catch (error) {
+        console.error("Error al obtener los sensores del usuario:", error);
+        res.status(500).json({ error: 'Error al obtener los sensores del usuario.' });
+    }
+};
 
 /**
 * @function getMisRoles
@@ -276,36 +291,55 @@ const Rol = require("../modelos/Roles");
 * @param {Object} res - Objeto de respuesta de Express.
 */
 
-//  {Object}: req, {Object}: res => getMisRoles() => void 
+//  {Object}: req, {Object}: res => getMisRoles() => void
+// Update the registrarSensor function in `controladores/usuarioControlador.js`
+exports.registrarSensor = async (req, res) => {
+    let { id_usuario, estado, num_referencia, uuid, nombre, conexion, bateria } = req.body;
 
-    exports.registrarSensor = async (req, res) => {
-        const { id_usuario, id_sensor, estado, num_referencia, uuid, nombre, conexion, bateria } = req.body;
+    // Validación de campos obligatorios
+    if (!id_usuario) return res.status(400).json({ error: 'El id_usuario es obligatorio' });
 
-        // Validación de campos obligatorios
-        if (!id_usuario) return res.status(400).json({ error: 'El id_usuario es obligatorio' });
-        if (!id_sensor) return res.status(400).json({ error: 'El id_sensor es obligatorio' });
+    // Eliminar espacios en blanco de la uuid
+    uuid = uuid.replace(/\s+/g, '');
 
-        try {
-            // Crear la relación entre usuario y sensor
-            const usuarioSensor = await UsuarioSensor.create({
-                id_usuario,
-                id_sensor
-            });
+    try {
+        // Crear el sensor en la tabla Sensor
+        const sensor = await Sensor.create({
+            estado,
+            num_referencia,
+            uuid,
+            nombre,
+            conexion,
+            bateria
+        });
 
-            // Crear el sensor en la tabla Sensor
-            const sensor = await Sensor.create({
-                id_sensor,
-                estado,
-                num_referencia,
-                uuid,
-                nombre,
-                conexion,
-                bateria
-            });
+        // Crear la relación entre usuario y sensor
+        const usuarioSensor = await UsuarioSensor.create({
+            id_usuario,
+            id_sensor: sensor.id_sensor
+        });
 
-            res.status(201).json({ usuarioSensor, sensor });
-        } catch (error) {
-            console.error("Error al registrar el sensor al usuario:", error);
-            res.status(500).json({ error: 'Error al registrar el sensor al usuario.' });
+        res.status(201).json({ usuarioSensor, sensor });
+    } catch (error) {
+        console.error("Error al registrar el sensor al usuario:", error);
+        res.status(500).json({ error: 'Error al registrar el sensor al usuario.' });
+    }
+};
+exports.actualizarSensor = async (req, res) => {
+    const { id_sensor, estado, conexion, bateria } = req.body;
+
+    if (!id_sensor) return res.status(400).json({ error: 'El id_sensor es obligatorio' });
+
+    try {
+        const sensor = await Sensor.findOne({ where: { id_sensor: id_sensor } });
+        if (sensor) {
+            await Sensor.update({ estado, conexion, bateria }, { where: { id_sensor: id_sensor } });
+            res.status(200).json({ message: 'Sensor actualizado correctamente' });
+        } else {
+            res.status(404).json({ error: 'Sensor no encontrado' });
         }
-    };
+    } catch (error) {
+        console.error("Error al actualizar el sensor:", error);
+        res.status(500).json({ error: 'Error al actualizar el sensor.' });
+    }
+}

@@ -1,12 +1,3 @@
-- Crear mediciones: POST
-http://localhost:3000/mediciones
-
-{
-  "valor": 23.5,
-  "fecha": "2024-10-22T12:00:00Z",
-  "latitud": 40.7128,
-  "longitud": -74.0060
-}
 ### Crear usuario
 POST http://localhost:3000/usuarios/registro
 Content-Type: application/json
@@ -43,6 +34,19 @@ Content-Type: application/json
   "telefono": "987654321"
 }
 
+### Obtener sensores
+GET http://localhost:3000/sensores
 
 
+### Obtener sensores del usuario
+GET http://localhost:3000/usuarios/mis-sensores
+Content-Type: application/json
 
+
+### Obtener medidas por sensor
+POST http://localhost:3000/mediciones/mediciones-por-sensor
+Content-Type: application/json
+
+{
+  "sensores": [2]
+}
