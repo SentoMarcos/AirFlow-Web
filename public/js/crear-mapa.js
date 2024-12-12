@@ -127,9 +127,6 @@ document.querySelector('#botones-mapa .leaflet-control-zoom-out').addEventListen
 }
 }
 
-    // Vincular el evento "keypress" para ambos inputs
-    document.getElementById('punto-inicial').addEventListener('keypress', handleInputSearch);
-    document.getElementById('punto-final').addEventListener('keypress', handleInputSearch);
 
     // Función para establecer marcadores en el mapa
     function setMarker(latlng, type) {

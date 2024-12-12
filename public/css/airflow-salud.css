@@ -261,7 +261,7 @@ h3 {
 }
 
 #dias span[data-status="peligroso"] {
-    background-color: var(--v3-naranja-mala);
+    background-color: var(--mocha-error-color);
 }
 #dias span.seleccionado {
     background-color: var(--v3-azul); /* Color resaltado para el día seleccionado */
@@ -280,6 +280,74 @@ h3 {
 #mes-actual{
     font-size: 25px;
 }
+.leaflet-popup-content-wrapper.peligroso{
+    background-color: var(--v3-naranja-mala);
+    background-image: url("../img/carita-peligrosa.png");
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: right center;
+}
+.leaflet-popup-content-wrapper.malo{
+    background-color: var(--v3-naranja-mala);
+    background-image: url("../img/carita-mala.png");
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: right center;
+}
+.leaflet-popup-content-wrapper.moderado{
+    background-color: var(--v3-amarillo-media);
+    color: var(--v3-negro);
+    background-image: url("../img/carita-media.png");
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: right center;
+}
+.leaflet-popup-content-wrapper.bueno{
+    background-color: var(--v3-verde-bueno);
+    background-image: url("../img/carita-buena.png");
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: right center;
+}
+.leaflet-popup-content-wrapper.excelente{
+    background-color: var(--v3-rosa-excelente);
+    background-image: url("../img/carita-excelente.png");
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: right center;
+}
+.custom-marker {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 2px solid white;
+    background-size: cover;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    background-image: url("../img/a-airflow.png");
+}
+
+.custom-marker.peligroso {
+    background-color: red;
+}
+
+.custom-marker.malo {
+    background-color: var(--v3-naranja-mala);
+}
+
+.custom-marker.moderado {
+    background-color: var(--v3-amarillo-media);
+}
+
+.custom-marker.bueno {
+    background-color: var(--v3-verde-bueno);
+}
+
+.custom-marker.excelente {
+    background-color: var(--v3-rosa-excelente);
+}
+
+
+
 
 
 @media (max-width: 1105px) {
