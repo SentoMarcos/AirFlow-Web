@@ -82,10 +82,12 @@
                     <div>
                     <label for="punto-inicial"><input type="search" id="punto-inicial" placeholder="Elige un punto de partida"></label>
                     <i class="bi bi-search"></i>
+                    <ul id="sugerencias-inicial" class="sugerencias"></ul>
                     </div>
                     <div>
                     <label for="punto-final"><input type="search" id="punto-final" placeholder="Elige un destino o haz click en el mapa"></label>
                     <i class="bi bi-search"></i>
+                    <ul id="sugerencias-final" class="sugerencias"></ul>
                     </div>
                 </div>
             </div>
@@ -119,15 +121,8 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="js/control-acceso.js" data-roles-restringidos="1"></script>
 <script src="js/mis-medidas.js"></script>
-<script src="js/freeMap.js"></script> <!-- Archivo JavaScript para cargar mapa básico-->
 <script src="js/premiumMap.js"></script>
-<script src="js/grafica-chart.js"></script>
-<script>
-    // Vincular el evento "keypress" para ambos inputs
-    document.getElementById('punto-inicial').addEventListener('keypress', handleInputSearch);
-    document.getElementById('punto-final').addEventListener('keypress', handleInputSearch);
-</script>
+<script src="js/freeMap.js"></script> <!-- Archivo JavaScript para cargar mapa básico-->
 <!--Calidad aire-->
-
 </body>
 </html>

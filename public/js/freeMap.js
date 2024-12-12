@@ -124,7 +124,8 @@ function centrarEnMiUbicacion() {
 // ---------------------------------------------------------
 // Función para realizar la geocodificación usando Nominatim
 async function geocodeAddress(query) {
-    const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=1`;
+    const apiKey = "1d8fc7e2f6014747b68feb71101c982a";
+    const url = `https://api.geoapify.com/v1/geocode/search?text=${encodeURIComponent(query)}&apiKey=${apiKey}`;
     try {
         const response = await fetch(url);
         if (!response.ok) {
@@ -138,38 +139,6 @@ async function geocodeAddress(query) {
     }
 }
 
-// Función para manejar la entrada de texto y mover el marcador
-async function handleInputSearch(event) {
-    if (event.key === 'Enter') { // Ejecutar cuando se presione Enter
-        const input = event.target;
-        const query = input.value;
-
-        // Realiza la búsqueda de la dirección
-        const location = await geocodeAddress(query);
-        if (location) {
-            const latlng = {
-                lat: parseFloat(location.lat),
-                lng: parseFloat(location.lon),
-            };
-
-            if (input.id === 'punto-inicial') {
-                setMarker(latlng, 'start');
-            } else if (input.id === 'punto-final') {
-                setMarker(latlng, 'end');
-            }
-
-            // Centrar el mapa en la ubicación
-            map.setView(latlng, 15);
-
-            // Si ambos puntos están definidos, trazar la ruta
-            if (startMarker && endMarker) {
-                traceRoute();
-            }
-        } else {
-            alert('Dirección no encontrada. Intente con otra.');
-        }
-    }
-}
 // ---------------------------------------------------------
 // CALIDAD DE AIRE
 // ---------------------------------------------------------
