@@ -124,7 +124,8 @@ function centrarEnMiUbicacion() {
 // ---------------------------------------------------------
 // Función para realizar la geocodificación usando Nominatim
 async function geocodeAddress(query) {
-    const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=1`;
+    const apiKey = "1d8fc7e2f6014747b68feb71101c982a";
+    const url = `https://api.geoapify.com/v1/geocode/search?text=${encodeURIComponent(query)}&apiKey=${apiKey}`;
     try {
         const response = await fetch(url);
         if (!response.ok) {

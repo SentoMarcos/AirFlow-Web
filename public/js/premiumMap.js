@@ -53,6 +53,55 @@ async function handleInputSearch(event) {
     }
 }
     // Función para trazar una ruta entre dos puntos
+
+// Evento para manejar sugerencias
+async function handleAutocomplete(event) {
+    const input = event.target;
+    const query = input.value.trim();
+    const suggestionsList = document.getElementById(
+        input.id === 'punto-inicial' ? 'sugerencias-inicial' : 'sugerencias-final'
+    );
+
+    // Limpiar sugerencias previas
+    suggestionsList.innerHTML = '';
+
+    if (query.length > 2) { // Buscar solo si hay más de 2 caracteres
+        const apiKey = "1d8fc7e2f6014747b68feb71101c982a";
+        const url = `https://api.geoapify.com/v1/geocode/autocomplete?text=${encodeURIComponent(query)}&apiKey=${apiKey}`;
+
+        try {
+            const response = await fetch(url);
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+            const results = await response.json();
+
+            // La propiedad 'features' contiene las ubicaciones sugeridas
+            results.features.forEach(location => {
+                const { formatted, lat, lon } = location.properties; // Usar propiedades relevantes
+                const listItem = document.createElement('li');
+                listItem.textContent = formatted;
+                listItem.addEventListener('click', () => {
+                    // Actualizar el valor del input y definir el marcador
+                    input.value = formatted;
+                    const latlng = {
+                        lat: parseFloat(lat),
+                        lng: parseFloat(lon),
+                    };
+                    setMarker(latlng, input.id === 'punto-inicial' ? 'start' : 'end');
+                    suggestionsList.innerHTML = ''; // Limpiar sugerencias
+                    map.setView(latlng, 15); // Centrar mapa en ubicación
+                });
+                suggestionsList.appendChild(listItem);
+            });
+        } catch (error) {
+            console.error('Error al buscar la dirección:', error);
+        }
+    }
+}
+
+// Vincular eventos de autocompletar a los inputs
+document.getElementById('punto-inicial').addEventListener('input', handleAutocomplete);
+document.getElementById('punto-final').addEventListener('input', handleAutocomplete);
+
     function traceRouteIndications() {
         // Si ya hay una ruta trazada, eliminarla
         if (routingControl) {
@@ -70,11 +119,11 @@ async function handleInputSearch(event) {
         }).addTo(map);
     }
     // Selecciona el botón de alternar y el contenedor de rutas
-    /*const toggleButton = document.querySelector('.toggle-routing');
+    const toggleButton = document.querySelector('.toggle-routing');
 
     // Agregar evento de clic para alternar el contenedor de rutas
     toggleButton.addEventListener('click', () => {
-        const routingContainer = document.querySelector('.leaflet-bottom.leaflet-routing-container');
+        const routingContainer = document.querySelector('.leaflet-routing-container');
         routingContainer.classList.toggle('open');
 
         // Cambiar el texto del botón según el estado
@@ -83,7 +132,7 @@ async function handleInputSearch(event) {
         } else {
             toggleButton.textContent = 'Mostrar Ruta';
         }
-    });*/
+    });
 
 // Configura Leaflet Routing Machine para agregar la clase necesaria
 // Función para trazar una ruta entre dos puntos
@@ -114,6 +163,8 @@ function verMedidasEnUbicacion(){
     const boton = document.getElementById('consultar-medición');
     const grafica = document.getElementById('gráfica');
     const cancelarBtn = document.getElementById('cancelar-consulta');
+    const input = document.getElementById('buscador-airflow');
+    input.focus();
 
     boton.style.display = 'none';
     grafica.style.display = 'flex';

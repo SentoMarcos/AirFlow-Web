@@ -9,6 +9,8 @@ h3 {
 /* Transiciones suaves */
 #mapa {
     transition: all 0.3s ease;
+    width: 100vw;
+    height: 100vh; /* Asegúrate de que tenga altura */
 }
 #header-container nav{
     background: var(--v3-blanco);
@@ -320,4 +322,27 @@ h3 {
 
 .custom-marker.excelente {
     background-color: var(--v3-rosa-excelente);
+}
+/* Estilo para las sugerencias */
+.sugerencias {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    /*border: 1px solid #ccc;*/
+    max-height: 150px;
+    overflow-y: auto;
+    position: absolute;
+    background: white;
+    width: calc(100% - 20px);
+    z-index: 1000;
+    top: 40px;
+}
+
+.sugerencias li {
+    padding: 5px;
+    cursor: pointer;
+}
+
+.sugerencias li:hover {
+    background: #f0f0f0;
 }
