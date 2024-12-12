@@ -23,7 +23,7 @@ h3 {
 #container-salud #main-salud>div{
     background: var(--v3-blanco);
     border-radius: 48px;
-    padding: 25px;
+    /*padding: 25px;*/
 }
 
 #container-salud #main-salud>div#info-salud{
@@ -235,5 +235,13 @@ h3 {
     color: var(--v3-blanco);
     font-weight: bold;
     border: 2px solid var(--v3-blanco);
+}
+
+#mapa{
+    height: 100%;
+    border-radius: 48px;
+}
+.leaflet-top{
+    display: none;
 }
 
