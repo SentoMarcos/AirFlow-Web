@@ -131,4 +131,32 @@ obtenerMisSensores()
         console.error("Error en el flujo de sensores y mediciones:", error);
     });
 
+async function obtenerMediciones() {
+    try {
+        const response = await fetch('http://localhost:3000/mediciones/mediciones-all'); // Asegúrate de usar la URL correcta
+
+        if (!response.ok) {
+            throw new Error(`Error en la solicitud: ${response.status}`);
+        }
+
+        const mediciones = await response.json();
+
+        // Crear el array para el mapa de calor con las coordenadas y la intensidad (valor de la medición)
+        const datosHeatmap = mediciones.map(medicion => {
+            return [
+                medicion.latitud,         // Latitud
+                medicion.longitud,        // Longitud
+                medicion.valor            // Intensidad (valor de la medición)
+            ];
+        });
+
+        return {mediciones, datosHeatmap}; // Devuelve los datos procesados para el mapa de calor
+
+    } catch (error) {
+        console.error('Error al obtener las mediciones:', error);
+        return [];  // Devuelve un array vacío si ocurre un error
+    }
+}
+
+
 
