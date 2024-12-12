@@ -1,6 +1,5 @@
 const Medicion = require('../modelos/medicion');
 const { Op } = require('sequelize');
-const { Op } = require("sequelize");
 
 /**
  * @module MedicionController
