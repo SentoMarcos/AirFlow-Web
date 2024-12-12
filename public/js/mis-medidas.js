@@ -154,7 +154,7 @@ async function obtenerMediciones() {
 
     } catch (error) {
         console.error('Error al obtener las mediciones:', error);
-        return { mediciones: [], datosHeatmap: [] };  // Devuelve un objeto vacío si ocurre un error
+        return [];  // Devuelve un array vacío si ocurre un error
     }
 }
 

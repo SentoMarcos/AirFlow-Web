@@ -208,7 +208,7 @@ async function getAirPollutionData(lat, lon) {
 // ---------------------------------------------------------
 // MAPA DE CALOR
 // ---------------------------------------------------------
-// Datos de ejemplo para el mapa de calor (Latitud, Longitud, Peso opcional)
+// Datos de ejemplo para el mapa de calor
 function asignarEstado(media) {
     // Define los intervalos para los estados
     if (!media) return 'vacio';
@@ -217,6 +217,16 @@ function asignarEstado(media) {
     if (media <= 150) return 'moderado';
     if (media <= 200) return 'malo';
     return 'peligroso'; // Si es mayor a 100
+}
+async function initMapa() {
+    const { mediciones, datosHeatmap } = await obtenerMediciones(); // Espera a obtener las mediciones
+
+    if (datosHeatmap.length > 0) {
+        mostrarMarcadores(mediciones); // Solo agrega el mapa si hay datos
+        agregarMapaDeCalor(datosHeatmap); // Solo agrega el mapa si hay datos
+    } else {
+        console.warn("No hay datos para mostrar en el mapa de calor.");
+    }
 }
 let currentZoom = map.getZoom();  // Guardar el zoom inicial
 let markers = [];  // Array para almacenar los marcadores
@@ -310,41 +320,14 @@ function mostrarMarcadores(mediciones) {
     actualizarMarcadores();
 }
 
-async function initMapa() {
-    const { mediciones, datosHeatmap } = await obtenerMediciones(); // Espera a obtener las mediciones
-
-    if (datosHeatmap.length > 0) {
-        mostrarMarcadores(mediciones); // Solo agrega los marcadores si hay datos
-        agregarMapaDeCalor(datosHeatmap); // Solo agrega el mapa si hay datos
-    } else {
-        console.warn("No hay datos para mostrar en el mapa de calor.");
-    }
-}
-initMapa();
-function obtenerColorPorValor(valor) {
-    // Asignar colores según el intervalo de valor
-    if (valor <= 50) {
-        return 'blue';    // Azul para valores entre 0 y 50
-    } else if (valor <= 100) {
-        return 'cyan';    // Cian para valores entre 51 y 100
-    } else if (valor <= 150) {
-        return 'lime';    // Lima para valores entre 101 y 150
-    } else if (valor <= 200) {
-        return 'yellow';  // Amarillo para valores entre 151 y 200
-    } else {
-        return 'red';     // Rojo para valores mayores de 200
-    }
-}
-
 function agregarMapaDeCalor(datosHeatmap) {
-    // Crear el mapa de calor utilizando los datos y los colores según el valor
-    L.heatLayer(datosHeatmap.map(([lat, lon, valor]) => {
-        return [lat, lon, valor];  // Crear el mapa de calor con los valores
-    }), {
+    // Agregar el mapa de calor usando los datos transformados
+    L.heatLayer(datosHeatmap, {
         radius: 25,      // Radio de cada punto
         blur: 40,        // Suavizado entre puntos
-        maxZoom: 10,     // Máximo nivel de zoom para mostrar calor
+        maxZoom: 10,      // Máximo nivel de zoom para mostrar calor
         zIndex: 1000,    // Asegura que el mapa de calor esté por encima
+        max: 1.0,
         gradient: {
             0.2: 'blue',    // Intensidad baja
             0.4: 'cyan',    // Intensidad moderada-baja
@@ -355,3 +338,5 @@ function agregarMapaDeCalor(datosHeatmap) {
     }).addTo(map);
 }
 
+// Llamada a la función de inicialización
+initMapa();
