@@ -53,7 +53,8 @@ function mostrarMisSensores(sensores) {
     headers.forEach((headerText, index) => {
         const headerCell = document.createElement('th');
         headerCell.textContent = headerText;
-        headerCell.addEventListener('click', () => sortTable(index, sensores)); // Escuchar el clic en el encabezado
+        headerCell.addEventListener('click', () => sortSensoresTable(index, sensores)); // Escuchar el clic en el encabezado
+        headerCell.style.cursor = 'pointer';
         headerRow.appendChild(headerCell);
     });
 
@@ -84,7 +85,7 @@ function mostrarMisSensores(sensores) {
     container.appendChild(table);
 }
 // Función para ordenar la tabla
-function sortTable(index, sensores) {
+function sortSensoresTable(index, sensores) {
     let sortedSensores;
 
     // Determinar el campo por el cual ordenar

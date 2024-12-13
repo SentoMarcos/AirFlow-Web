@@ -9,8 +9,6 @@ h3 {
 /* Transiciones suaves */
 #mapa {
     transition: all 0.3s ease;
-    width: 100vw;
-    height: 100vh; /* Asegúrate de que tenga altura */
 }
 #header-container nav{
     background: var(--v3-blanco);
@@ -345,4 +343,7 @@ h3 {
 
 .sugerencias li:hover {
     background: #f0f0f0;
+}
+.leaflet-routing-container{
+    display: none;
 }
