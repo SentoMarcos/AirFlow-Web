@@ -42,7 +42,8 @@ app.get('/', (req, res) => {
 app.use('/usuarios', usuarioRoutes);
 app.use('/mediciones', medicionRoutes);
 app.use('/sensores', sensorRoutes);
-app.use('/email', emailRoutes); 
+app.use('/email', emailRoutes);
+
 
 
 // Sincronizar la base de datos
