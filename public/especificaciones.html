@@ -7,83 +7,114 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Retrofit | Especificaciones del producto</title>
     <link rel="icon" href="img/icon_retrofit.png">
+    
+    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    
+    <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    
+    <!-- Tu propio archivo de estilos -->
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="css/especificaciones.css">
 </head>
 <body>
+
+<!-- Contenedor para el encabezado -->
 <div id="header-container"></div>
+
+<!-- Sección de especificaciones -->
 <section id="section-especificaciones">
   <div id="especificaciones">
+    
+    <!-- Título de la sección -->
     <h2>Especificaciones del Producto</h2>
-      <div id="especificaciones-container">
-          <div class="colum">
-              <h3>Procesador y Memoria</h3>
-              <div>
-                  <span>Microcontrolador</span>
-                  <p>Sparkfun Pro nRF82540 mini</p>
-              </div>
-              <div>
-                  <span>CPU</span>
-                  <p>32-bit ARM® Cortex™-M4 con <br>unidad de coma flotante a 64 MHz</p>
-              </div>
-              <div>
-                  <span>Memoria Flash</span>
-                  <p>1 MB</p>
-              </div>
-              <div>
-                  <span>RAM</span>
-                  <p>256 kB</p>
-              </div>
+    
+    <div id="especificaciones-container">
+        <!-- Columna 1: Procesador y Memoria -->
+        <div class="colum">
+            <h3>Procesador y Memoria</h3>
+            <div>
+                <span>Microcontrolador</span>
+                <p>Sparkfun Pro nRF82540 mini</p>
+            </div>
+            <div>
+                <span>CPU</span>
+                <p>32-bit ARM® Cortex™-M4 con <br>unidad de coma flotante a 64 MHz</p>
+            </div>
+            <div>
+                <span>Memoria Flash</span>
+                <p>1 MB</p>
+            </div>
+            <div>
+                <span>RAM</span>
+                <p>256 kB</p>
+            </div>
 
-              <h3>Reloj</h3>
-              <p>Reloj en tiempo real (RTC)</p>
-          </div>
-          <div class="grid">
-              <div>
-                  <h3>Conectividad</h3>
-                  <p>Radio integrada <br>(2.4 GHz) con soporte para:</p>
-                  <ul class="list">
-                      <li>Bluetooth Low Energy (BLE)</li>
-                      <li>Bluetooth 5</li>
-                      <li>ANT</li>
-                      <li>Protocolo RF propietario de Nordic</li>
-                  </ul>
-              </div>
-              <div>
-                  <h3>Interfaces</h3>
-                  <ul class="list">
-                      <li>USB 2.0</li>
-                      <li>UART</li>
-                      <li>SPI</li>
-                      <li>I2C</li>
-                  </ul>
-              </div>
-              <div>
-                  <h3>Entradas y Salidas</h3>
-                  <div>
-                      <span>ADC</span>
-                      <p>8 entradas analógicas</p>
-                  </div>
-                  <div>
-                      <span>PWM</span>
-                      <p>Soporte en cualquier pin</p>
-                  </div>
-              </div>
-              <div>
-                  <h3>Alimentación</h3>
-                  <p>Soporte para baterías LiPo,<br>incluye cargador integrado</p>
-              </div>
-          </div>
-      </div>
-      <a href="index.html#servicio">Volver</a>
+            <!-- Subtítulo y descripción de Reloj -->
+            <h3>Reloj</h3>
+            <p>Reloj en tiempo real (RTC)</p>
+        </div>
+
+        <!-- Columna 2: Conectividad -->
+        <div class="colum">
+            <h3>Conectividad</h3>
+                <p>Radio integrada <br>(2.4 GHz) con soporte para:</p>
+                <ul class="list">
+                    <li>Bluetooth Low Energy (BLE)</li>
+                    <li>Bluetooth 5</li>
+                    <li>ANT</li>
+                    <li>Protocolo RF propietario de Nordic</li>
+                </ul>
+                <h3>Entradas y Salidas</h3>
+                <div>
+                    <span>ADC</span>
+                    <p>8 entradas analógicas</p>
+                </div>
+                <div>
+                    <span>PWM</span>
+                    <p>Soporte en cualquier pin</p>
+                </div>
+        </div>
+
+        <!-- Columna 3: Interfaces -->
+        <div class="colum">
+            <h3>Interfaces</h3>
+            <div>
+                <ul class="list">
+                    <li>USB 2.0</li>
+                    <li>UART</li>
+                    <li>SPI</li>
+                    <li>I2C</li>
+                </ul>
+            </div>
+            <div>
+                <h3>Alimentación</h3>
+                <p>Soporte para baterías LiPo,<br>incluye cargador integrado</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Enlace para volver a la sección de servicio -->
+    <a href="index.html#servicio" class="label">
+        <span class="text-wrapper">Volver</span>
+    </a>
+    <a href="index.html#servicio" class="atras" 
+       onmouseover="this.querySelector('img').src='img/verdeEspecificaciones-1.png';"
+       onmouseout="this.querySelector('img').src='img/verdeEspecificaciones.png';">
+        <img src="img/verdeEspecificaciones.png" class="imagen" />
+    </a>
+
   </div>
 </section>
+
+<!-- Scripts de Bootstrap -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 <script src="js/header.js"></script>
 <script>
-    cargarHeader('header.html')
+    cargarHeader('header.html');
 </script>
+
+
 </body>
 </html>
