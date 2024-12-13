@@ -28,14 +28,14 @@ document.getElementById("registroForm").addEventListener("submit", function(even
     const contrasenya1 = document.getElementById("contrasenya1").value;
     const errormsg = document.getElementById('error-message');
 
-    // Validate password
+    // Validación de la contraseña
     if (!validatePassword(contrasenya)) {
         errormsg.textContent =
             "La contraseña debe tener entre 6 y 16 caracteres, incluir al menos un número y un carácter especial.";
         return;
     }
 
-    // Validate contraseña doble
+    // Validación de la contraseña doble
     if(contrasenya1!==contrasenya){
         errormsg.textContent =
             "Los campos contraseña deben coincidir";
@@ -74,10 +74,14 @@ document.getElementById("registroForm").addEventListener("submit", function(even
 });
 /**
  * @function validatePassword
- * @description Validates the password according to specified criteria.
- * @param {string} password - The password to validate.
- * @returns {boolean} True if valid, false otherwise.
+ * @description Valida la contraseña de acuerdo con los criterios de validación.
+ * @param {string} password - COntraseña a validar.
+ * @returns {boolean} Verdadero si es válido, falso si no lo es.
  */
+
+/*
+password-->validatePassword-->Verdadero/Faslo
+*/
 function validatePassword(password) {
     const minNumberofChars = 6;
     const maxNumberofChars = 16;
