@@ -47,9 +47,12 @@ function mostrarUsuarios(users) {
     const headers = ['ID', 'Nombre', 'Apellidos', 'Email', 'Teléfono'];
     headers.forEach((headerText, index) => {
         const headerCell = document.createElement('th');
+        const icon = document.createElement('i');
+        icon.className = 'bi bi-chevron-expand';
         headerCell.textContent = headerText;
         headerCell.addEventListener('click', () => sortTable(index, users)); // Escuchar el clic en el encabezado
         headerCell.style.cursor = 'pointer';
+        headerCell.appendChild(icon);
         headerRow.appendChild(headerCell);
     });
 
