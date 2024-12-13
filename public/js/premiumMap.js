@@ -4,8 +4,8 @@ let endMarker = null;
 let routingControl = null;
 
     // Vincular el evento "keypress" para ambos inputs
-    document.getElementById('punto-inicial').addEventListener('keypress', handleInputSearch);
-    document.getElementById('punto-final').addEventListener('keypress', handleInputSearch);
+    /*document.getElementById('punto-inicial').addEventListener('keypress', handleInputSearch);
+    document.getElementById('punto-final').addEventListener('keypress', handleInputSearch);*/
 
     // Función para establecer marcadores en el mapa
     function setMarker(latlng, type) {
@@ -21,7 +21,7 @@ let routingControl = null;
         }
     }
 // Función para manejar la entrada de texto y mover el marcador
-async function handleInputSearch(event) {
+/*async function handleInputSearch(event) {
     if (event.key === 'Enter') { // Ejecutar cuando se presione Enter
         const input = event.target;
         const query = input.value;
@@ -51,7 +51,7 @@ async function handleInputSearch(event) {
             alert('Dirección no encontrada. Intente con otra.');
         }
     }
-}
+}*/
     // Función para trazar una ruta entre dos puntos
 
 // Evento para manejar sugerencias
