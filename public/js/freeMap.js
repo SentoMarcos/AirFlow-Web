@@ -338,5 +338,26 @@ function agregarMapaDeCalor(datosHeatmap) {
     }).addTo(map);
 }
 
-// Llamada a la función de inicialización
+// ---------------------------------------------------------
+// DATOS AEMET
+// ---------------------------------------------------------
+
+function cargarDatosAemet() {
+    const AemetKey = 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwYWJsb3JlYm9sbG8wMkBnbWFpbC5jb20iLCJqdGkiOiJhYzc1ODlkNC1iNWVkLTQ5M2YtYTQ4ZS1mOGMxZjJmYWVjYzYiLCJpc3MiOiJBRU1FVCIsImlhdCI6MTczNDA0NTI1NywidXNlcklkIjoiYWM3NTg5ZDQtYjVlZC00OTNmLWE0OGUtZjhjMWYyZmFlY2M2Iiwicm9sZSI6IiJ9.ftBm8v1OGZII0zK23XNTgdjUlNA1s8exVusZcG5dfaw'; // Reemplaza con tu clave de API de Aemet
+    const url = `https://opendata.aemet.es/opendata/api/red/especial/contaminacionfondo/estacion/12?api_key=${AemetKey}`;
+    const datos = fetchAemetData(url);
+    const lat = 39.083910491542845; 
+    const lon = -1.1011464074163988;
+
+    // Crear el marcador en la latitud y longitud especificadas
+    L.marker([lat, lon]).addTo(map)
+        .bindPopup('Ubicación de la estación AEMET')
+        .openPopup(); // Muestra el popup cuando se crea el marcador
+
+    datos = actualizarAEMET(datos);
+    console.log(datos);
+}
+
+// Llamada a las funciones de inicialización
+cargarDatosAemet();
 initMapa();

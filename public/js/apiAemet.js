@@ -1,38 +1,59 @@
-const apiKey = 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwYWJsb3JlYm9sbG8wMkBnbWFpbC5jb20iLCJqdGkiOiJhYzc1ODlkNC1iNWVkLTQ5M2YtYTQ4ZS1mOGMxZjJmYWVjYzYiLCJpc3MiOiJBRU1FVCIsImlhdCI6MTczNDA0NTI1NywidXNlcklkIjoiYWM3NTg5ZDQtYjVlZC00OTNmLWE0OGUtZjhjMWYyZmFlY2M2Iiwicm9sZSI6IiJ9.ftBm8v1OGZII0zK23XNTgdjUlNA1s8exVusZcG5dfaw'; // Reemplaza con tu clave de API de Aemet
-const url = `https://opendata.aemet.es/opendata/api/red/especial/contaminacionfondo/estacion/12?api_key=${apiKey}`;
+// const apiKey = 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwYWJsb3JlYm9sbG8wMkBnbWFpbC5jb20iLCJqdGkiOiJhYzc1ODlkNC1iNWVkLTQ5M2YtYTQ4ZS1mOGMxZjJmYWVjYzYiLCJpc3MiOiJBRU1FVCIsImlhdCI6MTczNDA0NTI1NywidXNlcklkIjoiYWM3NTg5ZDQtYjVlZC00OTNmLWE0OGUtZjhjMWYyZmFlY2M2Iiwicm9sZSI6IiJ9.ftBm8v1OGZII0zK23XNTgdjUlNA1s8exVusZcG5dfaw'; // Reemplaza con tu clave de API de Aemet
+// const url = `https://opendata.aemet.es/opendata/api/red/especial/contaminacionfondo/estacion/12?api_key=${apiKey}`;
 
-// Función fetch para obtener datos de la API
-fetch(url, {
-    method: 'GET',
-    headers: {
-        'accept': 'application/json',
-        'api_key': this.apiKey
-    }
-})
-    .then(response => response.json())
-    .then(data => {
+async function fetchAemetData(url) {
+    try {
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'accept': 'application/json',
+                'api_key': this.apiKey
+            }
+        });
+
+        // Verificamos si la respuesta fue exitosa
+        if (!response.ok) {
+            throw new Error('Error en la solicitud: ' + response.statusText);
+        }
+
+        const data = await response.json();
+
         if (data.datos) {
-            return fetch(data.datos)
-                .then(response => response.text()) // Obtén el contenido como texto
-                .then(rawData => {
-                    console.log('Datos en bruto:', rawData);
-                    actualizarTablaFINN(rawData); // Actualizar la tabla directamente
-                });
+            // Si data.datos es un enlace válido, obtener el contenido de los datos
+            const datosResponse = await fetch(data.datos);
+            const rawData = await datosResponse.text(); // Obtener el contenido como texto
+
+            console.log('Datos en bruto:', rawData);
+
+            // Comprobar si rawData es una cadena antes de procesarlo
+            if (typeof rawData === 'string') {
+                const jsonOutput = actualizarAEMET(rawData); // Actualizar y generar el JSON
+                console.log('JSON generado:', jsonOutput); // Mostrar el JSON generado
+            } else {
+                throw new Error('El contenido de los datos no es una cadena válida');
+            }
+
         } else {
             throw new Error('No se encontró el enlace a los datos reales.');
         }
-    })
-    .catch(err => console.error('Error en la solicitud:', err));
+    } catch (err) {
+        console.error('Error en la solicitud:', err);
+    }
+}
 
-function actualizarTablaFINN(rawData) {
-    const tableBody = document.querySelector('table.table tbody');
-    tableBody.innerHTML = ''; // Vaciar la tabla antes de agregar nuevos datos
+function actualizarAEMET(rawData) {
+    // Comprobar que rawData es una cadena
+    if (typeof rawData !== 'string') {
+        throw new Error('rawData no es una cadena');
+    }
 
     const lines = rawData.split('\n'); // Dividir los datos en líneas
-    console.log("Líneas recibidas:", lines); // Ver qué líneas estamos procesando
 
     // Definir los parámetros de interés
     const parametrosInteres = ['O3(014)', 'SO2(001)', 'NO(007)', 'NO2(008)', 'PM10(010)'];
+
+    // Arreglo para almacenar los datos filtrados
+    const filteredData = [];
 
     lines.forEach(line => {
         const dateRegex = /^(\d{2})-(\d{2})-(\d{4}) (\d{2}):(\d{2})/; // Regex para fecha y hora
@@ -53,18 +74,14 @@ function actualizarTablaFINN(rawData) {
         if (dateMatch) {
             rowData.fecha = `${dateMatch[3]}-${dateMatch[2]}-${dateMatch[1]}`;
             rowData.hora = `${dateMatch[4]}:${dateMatch[5]}`;
-            console.log("Fecha y hora extraída:", rowData.fecha, rowData.hora);
         }
 
-        // Al fintrar los parámetros, no se están obteniendo los valores correctamente
+        // Al filtrar los parámetros, no se están obteniendo los valores correctamente
         let paramMatch;
         while ((paramMatch = paramRegex.exec(line)) !== null) {
 
-            console.log("paramMatch:", paramMatch); // Ver qué coincidencias estamos procesando 
             const key = paramMatch[1]; // Nombre del parámetro
             let value = paramMatch[2].trim(); // Valor numérico del parámetro
-
-            console.log(`Encontrado parámetro: ${key} con valor: ${value}`);
 
             // Limpiar el valor para quitar signos '+' y ceros innecesarios
             value = value.replace(/^[\+0]+/, '');
@@ -86,19 +103,19 @@ function actualizarTablaFINN(rawData) {
             }
         }
 
-        // Solo agregar la fila si alguno de los parámetros relevantes tiene un valor
+        // Solo agregar a filteredData si alguno de los parámetros relevantes tiene un valor
         if (Object.values(rowData).some(value => value !== '-')) {
-            const newRow = document.createElement('tr');
-            newRow.innerHTML = `
-                <td>${rowData.fecha}</td>
-                <td>${rowData.hora}</td>
-                <td>${rowData.O3}</td>
-                <td>${rowData.SO2}</td>
-                <td>${rowData.NO}</td>
-                <td>${rowData.NO2}</td>
-                <td>${rowData.PM10}</td>
-            `;
-            tableBody.appendChild(newRow);
+            filteredData.push(rowData);
         }
     });
+
+    // Elimina el último elemento si está vacío (siempre vacío en tu caso)
+    if (filteredData.length > 0) {
+        filteredData.pop();
+    }
+
+    // Crear el JSON
+    const jsonOutput = JSON.stringify(filteredData, null, 2); // Convertir el arreglo de objetos a JSON
+
+    return jsonOutput; // Retorna el JSON generado
 }
