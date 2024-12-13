@@ -69,6 +69,7 @@ function obtenerMedicionesPorFecha(idsSensores, fechaSeleccionada) {
     const fechaInicio = `${fechaSeleccionada} 00:00:00`; // Inicio del día
     const fechaFin = `${fechaSeleccionada} 23:59:59`; // Fin del día
 
+    // Hacer la solicitud a la API
     return fetch("http://localhost:3000/mediciones/mediciones-por-fecha", {
         method: "POST",
         headers: {
@@ -81,18 +82,40 @@ function obtenerMedicionesPorFecha(idsSensores, fechaSeleccionada) {
         }) // Pasar los IDs de los sensores y la fecha seleccionada
     })
         .then(response => {
+            // Verificar si la respuesta es exitosa
             if (!response.ok) {
                 throw new Error(`Error en la solicitud: ${response.status}`);
             }
             return response.json();
         })
         .then(mediciones => {
-            console.log("Mediciones obtenidas para la fecha:", mediciones);
-            return mediciones; // Devolver las mediciones
+            if (mediciones && mediciones.length > 0) {
+                console.log("Mediciones obtenidas para la fecha:", mediciones);
+
+                // Calcular la media de las mediciones
+                const totalValor = mediciones.reduce((sum, medicion) => sum + medicion.valor, 0);
+                const media = totalValor / mediciones.length;
+
+                // Devolver tanto las mediciones como la media calculada
+                return {
+                    mediciones: mediciones,
+                    media: media
+                };
+            } else {
+                console.warn("No se encontraron mediciones para la fecha seleccionada.");
+                return {
+                    mediciones: [],
+                    media: 0
+                }; // Devolver mediciones vacías y media como 0
+            }
         })
         .catch(error => {
             console.error("Error al obtener las mediciones:", error);
-            throw error;
+            // En caso de error, devolver mediciones vacías y media como 0
+            return {
+                mediciones: [],
+                media: 0
+            };
         });
 }
 
@@ -107,5 +130,33 @@ obtenerMisSensores()
     .catch(error => {
         console.error("Error en el flujo de sensores y mediciones:", error);
     });
+
+async function obtenerMediciones() {
+    try {
+        const response = await fetch('http://localhost:3000/mediciones/mediciones-all'); // Asegúrate de usar la URL correcta
+
+        if (!response.ok) {
+            throw new Error(`Error en la solicitud: ${response.status}`);
+        }
+
+        const mediciones = await response.json();
+
+        // Crear el array para el mapa de calor con las coordenadas y la intensidad (valor de la medición)
+        const datosHeatmap = mediciones.map(medicion => {
+            return [
+                medicion.latitud,         // Latitud
+                medicion.longitud,        // Longitud
+                medicion.valor            // Intensidad (valor de la medición)
+            ];
+        });
+
+        return {mediciones, datosHeatmap}; // Devuelve los datos procesados para el mapa de calor
+
+    } catch (error) {
+        console.error('Error al obtener las mediciones:', error);
+        return [];  // Devuelve un array vacío si ocurre un error
+    }
+}
+
 
 

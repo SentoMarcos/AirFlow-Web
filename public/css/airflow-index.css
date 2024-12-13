@@ -152,13 +152,27 @@ h3 {
 }
 
 /* Sección de gráfica */
-#container-airflow #columna #gráfica{
-    height: 65%; /* Altura del 65% del contenedor */
+#gráfica{
     display: none;
+    flex-direction: column;
+    height: 45%;
+    position: absolute;
+    z-index: 1001;
+    bottom: 10px;
+    left: 10px;
+    background-color: var(--v3-blanco);
+    width: 30%;
+    border-radius: 48px;
+    padding: 15px;
+}
+#ozoneChart{
+    display: block;
+    width: 100%;
+    height: 100%;
 }
 
 /* Contenedor del indicador de la gráfica */
-#container-airflow #columna #gráfica #indicador-gráfica{
+#gráfica #indicador-gráfica{
     display: flex;
     flex-direction: row; /* Flexbox en fila */
     justify-content: space-evenly; /* Espacio igual entre elementos */
@@ -167,17 +181,17 @@ h3 {
 }
 
 /* Estilos para el segundo párrafo dentro de texto-indicador */
-#container-airflow #columna #gráfica #indicador-gráfica #texto-indicador p:nth-child(2){
+#gráfica #indicador-gráfica #texto-indicador p:nth-child(2){
     color: var(--v3-rosa-excelente); /* Color rosa excelente */
 }
 
 /* Estilos generales para párrafos dentro de indicador de gráfica */
-#container-airflow #columna #gráfica #indicador-gráfica p{
+#gráfica #indicador-gráfica p{
     margin-bottom: unset; /* Sin margen inferior */
 }
 
 /* Estilos para las imágenes dentro de indicador de gráfica */
-#container-airflow #columna #gráfica #indicador-gráfica img{
+#gráfica #indicador-gráfica img{
     max-height: 60px; /* Altura máxima de 60 píxeles */
     max-width: 60px; /* Ancho máximo de 60 píxeles */
 }
@@ -187,4 +201,89 @@ h3 {
     width: 100%;
     height: 100%;
 }
+#botones-mapa{
+    position: absolute;
+    z-index: 1001;
+    bottom: 2vw;
+    right: 2vw;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 20px;
+}
+#botones-mapa>button{
+    border: none;
+}
+#botones-mapa>button#consultar-medición{
+    width: 75%;
+}
+#botones-mapa>button#cancelar-consulta{
+    width: 75%;
+}
+#botones-mapa #centrar-ubicacion{
+    font-size: 30px;
+    border-radius: 70px;
+    aspect-ratio: 1/1;
+    border: none;
+    background: var(--v3-azul);
+    color: var(--v3-blanco);
+    box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
+}
+#botones-mapa #cancelar-consulta{
+    display: none;
+}
+#zoom-botones{
+    display: flex;
+    flex-direction: column;
+    background: var(--v3-blanco);
+    border-radius: 5px;
+    box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
+    padding-inline: 3px;
+}
+#botones-mapa #zoom-botones a{
+    font-size: 50px;
+    text-decoration: none;
+    color: var(--v3-azul);
+}
+#botones-mapa #zoom-botones a:nth-child(1){
+    border-radius: 5px 5px 0 0;
+}
+#botones-mapa #zoom-botones a:nth-child(2){
+    border-radius: 0 0 5px 5px;
+}
+#botones-mapa #zoom-botones a:hover{
+    color: var(--v3-blanco);
+    background: var(--v3-azul);
+}
+.leaflet-touch .leaflet-control-zoom-in, .leaflet-touch .leaflet-control-zoom-out {
+    width: fit-content;
+}
 
+.custom-marker {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 2px solid white;
+    background-size: cover;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    background-image: url("../img/a-airflow.png");
+}
+.custom-marker.peligroso {
+    background-color: red;
+}
+
+.custom-marker.malo {
+    background-color: var(--v3-naranja-mala);
+}
+
+.custom-marker.moderado {
+    background-color: var(--v3-amarillo-media);
+}
+
+.custom-marker.bueno {
+    background-color: var(--v3-verde-bueno);
+}
+
+.custom-marker.excelente {
+    background-color: var(--v3-rosa-excelente);
+}
