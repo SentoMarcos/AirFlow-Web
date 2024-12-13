@@ -10,7 +10,9 @@ h3 {
 #mapa {
     transition: all 0.3s ease;
 }
-
+#header-container nav{
+    background: var(--v3-blanco);
+}
 /* Contenedor principal de Airflow */
 #container-airflow{
     display: flex;
@@ -185,3 +187,4 @@ h3 {
     width: 100%;
     height: 100%;
 }
+
