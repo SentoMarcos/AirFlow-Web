@@ -169,6 +169,7 @@ header .botones-header #mas-button{
     gap: 22px;
     text-decoration: none;
     color: black;
+    border: none;
 }
 input:not([type="checkbox"]) { border: none; background: var(--v3-gris); height: 50px; width: 100%; }
 label{
