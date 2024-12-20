@@ -293,7 +293,7 @@
     // Función para mostrar los marcadores y trazar la ruta con las mediciones
     function mostrarMisMarcadores(mediciones) {
         // Limpiar todos los marcadores anteriores del mapa
-        map.eachLayer(function(layer) {
+        map.eachLayer(function (layer) {
             if (layer instanceof L.Marker) {
                 map.removeLayer(layer); // Eliminar todos los marcadores
             }
@@ -301,9 +301,10 @@
 
         // Crear un array para almacenar las coordenadas de las mediciones
         const waypoints = [];
+        const bounds = L.latLngBounds(); // Para definir los límites del mapa
 
         // Añadir los marcadores para las mediciones
-        mediciones.forEach(function(medicion) {
+        mediciones.forEach(function (medicion) {
             const { latitud, longitud, tipo_gas, fecha, valor } = medicion;
 
             // Asegúrate de que las coordenadas son válidas
@@ -333,7 +334,7 @@
             `);
 
                 // Añadir la clase de estado al contenedor del popup al abrirlo
-                marcador.on('popupopen', function(e) {
+                marcador.on('popupopen', function (e) {
                     const popupContentWrapper = e.popup._container.querySelector('.leaflet-popup-content-wrapper');
                     if (popupContentWrapper) {
                         popupContentWrapper.classList.add(estado);
@@ -342,12 +343,20 @@
 
                 // Añadir el punto a la lista de waypoints (coordenadas para la ruta)
                 waypoints.push(latLng);
+
+                // Ampliar los límites del mapa para incluir este marcador
+                bounds.extend(latLng);
             }
         });
 
+        // Centrar y ajustar la vista del mapa para mostrar todos los marcadores
+        if (waypoints.length > 0) {
+            map.fitBounds(bounds); // Ajusta la vista para incluir todos los marcadores
+        }
+
         // Si hay más de un punto, trazar la ruta
         if (waypoints.length > 1) {
-            trazarRuta(waypoints);
+            //trazarRuta(waypoints);
         }
     }
 
