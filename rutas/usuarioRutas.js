@@ -31,5 +31,7 @@ router.get('/mis-sensores', usuarioControlador.getMisSensores); // Obtener todos
 router.post('/registrar-sensor', usuarioControlador.registrarSensor); // Registrar un sensor a un usuario
 router.post('/roles', usuarioControlador.getMisRoles); // Obtener todos mis roles
 router.put('/actualizar-sensor', usuarioControlador.actualizarSensor); // Actualizar un sensor
+router.post('/recuperar-contrasenya', usuarioControlador.recuperarContrasenya); // Recuperar contraseña
+
 
 module.exports = router;

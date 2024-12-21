@@ -11,6 +11,7 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
   <link rel="stylesheet" href="css/styles.css">
   <link rel="stylesheet" href="css/airflow-salud.css">
+  <link rel="stylesheet" href="css/airflow-index.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-routing-machine/3.2.12/leaflet-routing-machine.min.js"></script>
@@ -23,6 +24,7 @@
 <div id="container-salud">
     <div id="lado">
         <div id="calendario">
+            <h3>Salud</h3>
             <div id="dias-semana">
                 <span>Dom</span>
                 <span>Lun</span>
@@ -42,9 +44,21 @@
                     <button id="mes-siguiente">&gt;</button>
                 </div>
             </header>
+            <div id="calidad-aire-dia">
+                <div id="texto-calidad-aire">
+                    <p>Calidad Aire</p>
+                    <h4>calidad</h4>
+                </div>
+                <div id="calidad-aire-foto"></div>
+            </div>
         </div>
     </div>  <div id="main-salud">
       <div id="info-salud">
+          <div id="botones-mapa">
+              <button id="centrar-ubicacion" onclick="centrarEnMiUbicacion()"><i class="bi bi-crosshair"></i></button>
+              <button id="consultar-medición" onclick="verMedidasEnUbicacion()" class="button-primary">Ver medición</button>
+              <button id="cancelar-consulta" class="button-primary">Cancelar Consulta</button>
+          </div>
           <div id="mapa">
               <button class="toggle-routing">Mostrar Ruta</button>
           </div>
@@ -91,6 +105,7 @@
 <script src="js/mis-medidas.js"></script>
 <script src="js/crear-mapa.js"></script>
 <script>
+    let contadorMarcadores = 0; // Inicializa el contador para los IDs
     const diasContenedor = document.getElementById('dias');
     const mesActual = document.getElementById('mes-actual');
     const mesAnterior = document.getElementById('mes-anterior');
@@ -108,41 +123,72 @@
 
         const primerDiaMes = new Date(anio, mes, 1).getDay(); // Día de la semana del primer día del mes
         const diasEnMes = new Date(anio, mes + 1, 0).getDate(); // Número de días en el mes
-
-        // Número total de celdas (42: 6 filas x 7 días)
         const totalCeldas = 42;
 
         // Añadir días vacíos antes del primer día del mes
+        const diasFragment = document.createDocumentFragment();
         for (let i = 0; i < primerDiaMes; i++) {
-            diasContenedor.innerHTML += `<span></span>`;
+            diasFragment.appendChild(document.createElement('span'));
         }
 
-        // Añadir los días del mes con el atributo de fecha
-        for (let dia = 1; dia <= diasEnMes; dia++) {
-            const estado = asignarEstado(dia); // Lógica de estado
-            const fechaCompleta = `${anio}-${String(mes + 1).padStart(2, '0')}-${String(dia).padStart(2, '0')}`;
-            const esHoy = anio === hoy.getFullYear() && mes === hoy.getMonth() && dia === hoy.getDate();
+        // Obtener sensores y calcular estados
+        obtenerMisSensores()
+            .then(idsSensores => {
+                // Añadir días del mes con atributos y estado
+                for (let dia = 1; dia <= diasEnMes; dia++) {
+                    const fechaCompleta = `${anio}-${String(mes + 1).padStart(2, '0')}-${String(dia).padStart(2, '0')}`;
+                    const esHoy = anio === hoy.getFullYear() && mes === hoy.getMonth() && dia === hoy.getDate();
+                    const esPosterior = new Date(fechaCompleta) > hoy;
 
-            diasContenedor.innerHTML += `
-            <span data-date="${fechaCompleta}" data-status="${estado}">
-                ${dia}
-            </span>
-        `;
-        }
+                    const diaElemento = document.createElement('span');
+                    diaElemento.dataset.date = fechaCompleta;
+                    diaElemento.textContent = dia;
 
-        // Añadir días vacíos después del último día del mes
-        const celdasOcupadas = primerDiaMes + diasEnMes;
-        const diasFaltantes = totalCeldas - celdasOcupadas;
-        for (let i = 0; i < diasFaltantes; i++) {
-            diasContenedor.innerHTML += `<span></span>`;
-        }
+                    // Asignar clases iniciales
+                    diaElemento.className = [
+                        esHoy ? 'hoy' : '',
+                        esPosterior ? 'disabled' : '',
+                    ].filter(Boolean).join(' ');
 
-        // Deshabilitar el botón "siguiente" si estamos en el mes actual
-        mesSiguiente.disabled = (fecha.getFullYear() === hoy.getFullYear() && fecha.getMonth() === hoy.getMonth());
+                    diasFragment.appendChild(diaElemento);
 
-        // Agregar evento de clic a los días
-        agregarEventoSeleccion();
+                    // Calcular estado si el día no es futuro
+                    if (!esPosterior) {
+                        obtenerMedicionesPorFecha(idsSensores, fechaCompleta)
+                            .then(({ media }) => {
+                                const estado = asignarEstadoPorMedia(media);
+
+                                // Asignar estado y clase al día
+                                diaElemento.dataset.status = estado;
+                                diaElemento.classList.add(estado);
+                            })
+                            .catch(() => {
+                                console.warn(`No se pudo obtener las mediciones para ${fechaCompleta}`);
+                            });
+                    }
+                }
+
+                // Añadir días vacíos después del último día del mes
+                const celdasOcupadas = primerDiaMes + diasEnMes;
+                const diasFaltantes = totalCeldas - celdasOcupadas;
+                for (let i = 0; i < diasFaltantes; i++) {
+                    diasFragment.appendChild(document.createElement('span'));
+                }
+
+                diasContenedor.appendChild(diasFragment);
+
+                // Habilitar selección de días
+                agregarEventoSeleccion();
+            })
+            .catch(error => {
+                console.error("Error al cargar el calendario:", error);
+            });
+
+        // Deshabilitar botón "siguiente" si estamos en el mes actual
+        mesSiguiente.disabled = fecha.getFullYear() === hoy.getFullYear() && fecha.getMonth() === hoy.getMonth();
     }
+
+
 
 
     function agregarEventoSeleccion() {
@@ -162,12 +208,14 @@
     }
 
 
-    function asignarEstado(dia) {
-        // Lógica para asignar estado: puedes adaptarlo a tus necesidades
-        if (dia % 5 === 0) return 'malo';
-        if (dia % 3 === 0) return 'moderado';
-        if (dia % 2 === 0) return 'bueno';
-        return 'excelente';
+    function asignarEstadoPorMedia(media) {
+        // Define los intervalos para los estados
+        if (!media) return 'vacio';
+        if (media <= 50) return 'excelente';
+        if (media <= 100) return 'bueno';
+        if (media <= 150) return 'moderado';
+        if (media <= 200) return 'malo';
+        return 'peligroso'; // Si es mayor a 100
     }
 
     mesAnterior.addEventListener('click', () => {
@@ -204,16 +252,38 @@
                 .then(idsSensores => {
                     return obtenerMedicionesPorFecha(idsSensores, fechaSeleccionada); // Pasar los IDs de sensores y la fecha
                 })
-                .then(mediciones => {
+                .then(({ mediciones, media }) => {
+                    // Verificar si se han recibido mediciones
+                    if (mediciones.length === 0) {
+                        console.warn(`No hay mediciones disponibles para la fecha: ${fechaSeleccionada}`);
+                        // Mostrar un mensaje de advertencia o algo en la interfaz
+                        const textoEstado = document.getElementById('texto-calidad-aire').querySelector('h4');
+                        textoEstado.textContent = "No hay mediciones para esta fecha.";
+
+                        // Opcionalmente, podrías actualizar algún indicador de estado o hacer más acciones
+                        return; // Salir de la función si no hay mediciones
+                    }
+
                     console.log("Mediciones del día:", mediciones);
 
                     // Llamamos a la función mostrarMarcadores con las mediciones obtenidas
                     mostrarMisMarcadores(mediciones); // Mostrar los marcadores de las mediciones en el mapa
 
                     // Aquí puedes manejar las mediciones como desees (mostrar en el calendario, etc.)
+                    // Por ejemplo, actualizar la calidad del aire en la UI con la media:
+                    const estado = diaSeleccionado.getAttribute('data-status');
+                    const icono = document.getElementById('calidad-aire-foto');
+                    icono.className = estado; // Cambiar el icono según el estado
+
+                    // Actualizar el texto en la interfaz
+                    const texto = document.getElementById('texto-calidad-aire').querySelector('h4');
+                    texto.textContent = estado;
                 })
                 .catch(error => {
                     console.error("Error al obtener las mediciones:", error);
+                    // Mostrar un mensaje de error en caso de fallar la obtención de las mediciones
+                    const textoEstado = document.getElementById('texto-calidad-aire').querySelector('h4');
+                    textoEstado.textContent = "Error al obtener las mediciones.";
                 });
         } else {
             console.log("No se ha seleccionado ningún día.");
@@ -222,43 +292,75 @@
 
     // Función para mostrar los marcadores y trazar la ruta con las mediciones
     function mostrarMisMarcadores(mediciones) {
-        // Limpiar los marcadores anteriores del mapa
-        map.eachLayer(function(layer) {
+        // Limpiar todos los marcadores anteriores del mapa
+        map.eachLayer(function (layer) {
             if (layer instanceof L.Marker) {
-                map.removeLayer(layer);
+                map.removeLayer(layer); // Eliminar todos los marcadores
             }
         });
 
         // Crear un array para almacenar las coordenadas de las mediciones
         const waypoints = [];
+        const bounds = L.latLngBounds(); // Para definir los límites del mapa
 
         // Añadir los marcadores para las mediciones
-        mediciones.forEach(function(medicion) {
-            const { latitud, longitud, tipo_gas, fecha } = medicion;
+        mediciones.forEach(function (medicion) {
+            const { latitud, longitud, tipo_gas, fecha, valor } = medicion;
 
             // Asegúrate de que las coordenadas son válidas
             if (latitud && longitud) {
                 const latLng = [latitud, longitud];
+                const estado = asignarEstadoPorMedia(valor);
 
-                // Crear un marcador para cada medición con el icono personalizado
-                const marcador = L.marker(latLng, { icon: customIcon }).addTo(map);
+                // Crear un ícono personalizado con clase basada en el estado
+                const customIcon = L.divIcon({
+                    className: `custom-marker ${estado}`, // Clases personalizadas
+                    iconSize: [30, 30], // Tamaño del ícono
+                    iconAnchor: [15, 30], // Punto de anclaje del ícono
+                    popupAnchor: [0, -30], // Posición del popup respecto al ícono
+                });
 
-                // Añadir información al marcador (opcional)
-                marcador.bindPopup(`
+                // Crear un marcador con el ícono personalizado
+                const marcador = L.marker(latLng, {
+                    icon: customIcon,
+                }).addTo(map);
+
+                // Añadir información al marcador (popup) con la clase de estado
+                const popup = marcador.bindPopup(`
                 <b>Tipo de Gas:</b> ${tipo_gas}<br>
                 <b>Fecha:</b> ${fecha}<br>
+                <b>Valor:</b> ${valor}<br>
+                <b>Estado:</b> <span class="${estado}">${estado}</span>
             `);
+
+                // Añadir la clase de estado al contenedor del popup al abrirlo
+                marcador.on('popupopen', function (e) {
+                    const popupContentWrapper = e.popup._container.querySelector('.leaflet-popup-content-wrapper');
+                    if (popupContentWrapper) {
+                        popupContentWrapper.classList.add(estado);
+                    }
+                });
 
                 // Añadir el punto a la lista de waypoints (coordenadas para la ruta)
                 waypoints.push(latLng);
+
+                // Ampliar los límites del mapa para incluir este marcador
+                bounds.extend(latLng);
             }
         });
 
+        // Centrar y ajustar la vista del mapa para mostrar todos los marcadores
+        if (waypoints.length > 0) {
+            map.fitBounds(bounds); // Ajusta la vista para incluir todos los marcadores
+        }
+
         // Si hay más de un punto, trazar la ruta
         if (waypoints.length > 1) {
-            trazarRuta(waypoints);
+            //trazarRuta(waypoints);
         }
     }
+
+
     // Función para trazar la ruta entre los puntos
     function trazarRuta(waypoints) {
         // Si ya existe una ruta en el mapa, la eliminamos
@@ -266,31 +368,69 @@
             map.removeControl(routingControl);
         }
 
-        // Crear una nueva ruta utilizando los waypoints (puntos) obtenidos
+        // Función para calcular la distancia entre dos puntos (en metros)
+        function calcularDistancia(latLng1, latLng2) {
+            // Convertir a L.LatLng si no lo son ya
+            latLng1 = L.latLng(latLng1);
+            latLng2 = L.latLng(latLng2);
+            return latLng1.distanceTo(latLng2); // Utiliza el método distanceTo de L.LatLng
+        }
+
+        // Función para encontrar el punto más cercano en la lista de waypoints
+        function obtenerPuntoMasCercano(punto, puntosRestantes) {
+            let puntoCercano = null;
+            let distanciaMinima = Infinity;
+
+            puntosRestantes.forEach((puntoRestante) => {
+                const distancia = calcularDistancia(punto, puntoRestante);
+                if (distancia < distanciaMinima) {
+                    distanciaMinima = distancia;
+                    puntoCercano = puntoRestante;
+                }
+            });
+
+            return puntoCercano;
+        }
+
+        // Crear una lista de waypoints que no se han visitado
+        let puntosRestantes = waypoints.slice();
+        let rutaOrdenada = [];
+        let puntoActual = puntosRestantes.shift(); // Comenzamos desde el primer punto
+        rutaOrdenada.push(puntoActual);
+
+        // Encontrar la ruta más corta, asegurándonos de no pasar dos veces por el mismo punto
+        while (puntosRestantes.length > 0) {
+            const siguientePunto = obtenerPuntoMasCercano(puntoActual, puntosRestantes);
+            rutaOrdenada.push(siguientePunto);
+
+            // Eliminar el punto seleccionado de la lista de puntos restantes
+            puntosRestantes = puntosRestantes.filter((punto) => punto !== siguientePunto);
+
+            // Actualizar el punto actual
+            puntoActual = siguientePunto;
+        }
+
+        // Crear la ruta en Leaflet
         routingControl = L.Routing.control({
-            waypoints: waypoints.map(latLng => L.latLng(latLng)), // Convertir los puntos a formato L.LatLng
-            routeWhileDragging: true, // Permite modificar la ruta arrastrando los puntos
-            geocoder: L.Control.Geocoder.nominatim(), // Utiliza el geocodificador de Nominatim (si es necesario)
+            waypoints: rutaOrdenada.map(latLng => L.latLng(latLng)), // Convertir waypoints a L.LatLng
+            routeWhileDragging: true,
+            geocoder: L.Control.Geocoder.nominatim(),
             createMarker: function() {
-                return null;  // Evita que Leaflet Routing Machine cree los marcadores predeterminados
+                return null; // Evitar que se creen marcadores predeterminados
+            },
+            lineOptions: {
+                styles: [
+                    {
+                        color: '#52CCD7', // Asigna el color de la ruta
+                        weight: 6,        // Grosor de la línea
+                        opacity: 0.8      // Opacidad de la línea
+                    }
+                ]
             }
         }).addTo(map);
-
-        // Añadir los puntos con texto indicativo en orden
-        waypoints.forEach((waypoint, index) => {
-            const latLng = waypoint;
-
-            // Crear un marcador para cada waypoint con el icono personalizado
-            const marcador = L.marker(latLng, { icon: customIcon }).addTo(map);
-
-            // Crear texto indicativo para mostrar fuera de la ruta
-            const textoIndicaciones = `Punto ${index + 1} - Coordenadas: ${latLng[0].toFixed(5)}, ${latLng[1].toFixed(5)}`;
-            marcador.bindPopup(textoIndicaciones);
-
-            // Aquí puedes ajustar el texto o desplazamiento si es necesario
-            // Puedes incluir información adicional como distancias, direcciones, etc.
-        });
     }
+
+
 
 
 

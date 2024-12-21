@@ -78,8 +78,8 @@ document.getElementById("loginForm").addEventListener("submit", function(event) 
                     const roles = await response.json();
                     console.log(roles);
                     if (roles[0]===1){
-                        // Redirigir a sensores.html
-                        window.location.href = 'sensores.html'; // Redirección a la página de perfil
+                        // Redirigir a admin.html
+                        window.location.href = 'admin.html'; // Redirección a la página de perfil
                     }
                     else if (roles[0]===2){
                         // Redirigir a airflow-index.html

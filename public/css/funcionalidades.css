@@ -35,7 +35,7 @@ h2{width: fit-content;}
 #section-especificaciones #especificaciones h3{
     font-size: calc(1rem + .6vw); /* Tamaño de fuente responsive */
     font-weight: 600; /* Peso de fuente SemiBold */
-    color: var(--v3-gris-oscuro); /* Color del texto */
+    
 }
 
 /* Estilos para el contenedor de las columnas */
@@ -52,6 +52,7 @@ h2{width: fit-content;}
     display: flex;
     flex-direction: column; /* Organiza los elementos de forma vertical */
     width: fit-content; /* Asigna aproximadamente un 32% del ancho al  asegurando que quepan tres columnas */
+    height: 100%;
 }
 
 
@@ -59,6 +60,7 @@ h2{width: fit-content;}
 /* Ajuste adicional si el tamaño de las columnas en .grid necesita modificar su tamaño */
 #section-especificaciones #especificaciones #especificaciones-container .grid div {
     width: 100%; /* Asegura que los elementos dentro de la grid ocupen todo el ancho */
+    height: 100%;
 }
 
 /* Estilos para la tercera columna (si tienes una columna adicional similar a .colum) */
@@ -92,7 +94,7 @@ h2{width: fit-content;}
 .label .text-wrapper {
     font-family: "Poppins-Medium", Helvetica; /* Tipo de fuente */
     font-weight: 500; /* Peso de la fuente */
-    color: var(--v3-verde); /* Color del texto */
+    color: var(--cuadratica); /* Color del texto */
     font-size: 24px;
     letter-spacing: 0; /* Espaciado entre letras */
     line-height: normal;
@@ -104,7 +106,7 @@ h2{width: fit-content;}
 }
 
 .label:hover .text-wrapper {
-    color: var(--v3-verde); /* Cambia el color del texto al pasar el ratón */
+    color: var(--cuadratica); /* Cambia el color del texto al pasar el ratón */
 }
 
 a{
@@ -133,7 +135,17 @@ a{
     background-image: url('img/verdeHover.svg'); /* Imagen al hacer hover */
 }
 
+.tituloColor1 {
+    color: var(--cuadratica); /* Color para la columna 1 */
+}
 
+.tituloColor2 {
+    color: var(--cuadraticaRojo); /* Color para la columna 2 */
+}
+
+.tituloColor3 {
+    color: var(--v3-verde); /* Color para la columna 3 */
+}
 
 
 

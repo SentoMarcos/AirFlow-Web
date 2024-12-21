@@ -392,10 +392,10 @@ footer{
     margin-inline: 2vw;
     padding: 22px;
 }
-footer a{
+#info-adicional{
     color: var(--v3-azul);
 }
-footer a:hover{
+#info-adicional:hover{
     color: var(--v3-negro);
 }
 @media (max-width: 1200px) {
@@ -530,3 +530,10 @@ footer a:hover{
     }
 }
 
+#SomosUnaEmpresa{
+    width: 653px;
+    height: 216px;
+    font-family: 'Poppins-light';
+    font-weight: 300;
+    font-size: 36px;
+}

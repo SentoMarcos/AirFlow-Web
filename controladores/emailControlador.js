@@ -18,7 +18,7 @@ exports.enviarCorreo = async (req, res) => {
         });
 
         const mailOptions = {
-            from: 'airflowtest1234@gmail.com',
+            from: 'noreply@retrofit.com',
             to: email,
             subject: '¡Bienvenido a RetroFit!',
             html: `
@@ -26,7 +26,7 @@ exports.enviarCorreo = async (req, res) => {
   <table style="width: 100%; max-width: 600px; margin: 0 auto; border: 1px solid #ddd; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
     <tr>
       <td style="background-color: #52CCD7FF; padding: 15px; text-align: center; color: #fff; font-size: 24px; font-weight: bold; border-radius: 10px 10px 0 0;">
-        <!--<img src="../img/icon_retrofit.png" alt="Logo" style="height: 50px; vertical-align: middle; margin-right: 10px;">-->
+        <img src="https://drive.google.com/uc?id=1jo-bgg_vCYvRRXYg60yltveJHlf2ljPM" alt="Logo" style="height: 50px; vertical-align: middle; margin-right: 10px;">
         Bienvenido a RetroFit
       </td>
     </tr>
@@ -46,7 +46,7 @@ exports.enviarCorreo = async (req, res) => {
         <p>Atentamente,</p>
         <p style="font-size: 16px; font-weight: bold;">El Equipo de Soporte</p>
         <p>
-          <a href="mailto:airflowtest1234@gmail.com" style="color: #9F52D7; text-decoration: none;">airflowtest1234@gmail.com</a>
+          <a href="mailto:retrofit@gmail.com" style="color: #9F52D7; text-decoration: none;">airflowtest1234@gmail.com</a>
         </p>
       </td>
     </tr>
