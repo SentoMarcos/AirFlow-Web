@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Retrofit | Especificaciones del producto</title>
+    <link rel="icon" href="img/icon_retrofit.png">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    
+    <!-- Tu propio archivo de estilos -->
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/funcionalidades.css">
+</head>
+<body>
+
+<!-- Contenedor para el encabezado -->
+<div id="header-container"></div>
+
+<!-- Sección de especificaciones -->
+<section id="section-especificaciones">
+  <div id="especificaciones">
+    
+    <!-- Título de la sección -->
+    <h2>Funcionalidades del producto</h2>
+    
+    <div id="especificaciones-container">
+        <!-- Columna 1: Dispositivo -->
+        <div class="colum">
+            <h3 class="tituloColor1">Dispositivo</h3>
+            <ul class="list">
+                <li>Medición de O3</li>
+                <li>Medición de temperatura</li>
+                <li>Compatibilidad para ampliar con otros sensores</li>
+                <li>Vinculación Bluethoot</li>
+                <li>Acceso a leaderboard</li>
+        </div>
+
+        <!-- Columna 2: Membresía -->
+        <div class="colum">
+            <h3 class="tituloColor2">Membresía</h3>
+                <ul class="list">
+                    <li>Funcionalidades de Web</li>
+                    <li>Rutas seguras</li>
+                    <li>Seguimiento de salud</li>
+                    <li>Perfil</li>
+                </ul>            
+        </div>
+
+        <!-- Columna 3: Web -->
+        <div class="colum">
+            <h3 class="tituloColor3">Web</h3>
+            <div>
+                <ul class="list">
+                    <li>Mapa interactivo con zonas por colores según la calidad del aire</li>
+                    <li>Historial de calidad de aire por zonas</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    
+
+    <!-- Enlace para volver a la sección de servicio -->
+    <a href="index.html#servicio" class="label">
+        <span class="text-wrapper">Volver</span>
+    </a>
+<!-- HTML: mantener la etiqueta <img> -->
+<a href="index.html#servicio" class="atras" 
+   onmouseover="this.querySelector('img').src='img/moradoFuncionalidades-1.png';"
+   onmouseout="this.querySelector('img').src='img/moradoFuncionalidades.png';">
+    <img src="img/moradoFuncionalidades.png" class="imagen" />
+</a>
+
+
+
+
+</section>
+
+<!-- Scripts de Bootstrap -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+<script src="js/header.js"></script>
+<script>
+    cargarHeader('header.html') <!-- Cargar el contenido del header dinámicamente -->
+</script>
+
+</body>
+</html>

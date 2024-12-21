@@ -124,7 +124,8 @@ function centrarEnMiUbicacion() {
 // ---------------------------------------------------------
 // Función para realizar la geocodificación usando Nominatim
 async function geocodeAddress(query) {
-    const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=1`;
+    const apiKey = "1d8fc7e2f6014747b68feb71101c982a";
+    const url = `https://api.geoapify.com/v1/geocode/search?text=${encodeURIComponent(query)}&apiKey=${apiKey}`;
     try {
         const response = await fetch(url);
         if (!response.ok) {
@@ -138,38 +139,6 @@ async function geocodeAddress(query) {
     }
 }
 
-// Función para manejar la entrada de texto y mover el marcador
-async function handleInputSearch(event) {
-    if (event.key === 'Enter') { // Ejecutar cuando se presione Enter
-        const input = event.target;
-        const query = input.value;
-
-        // Realiza la búsqueda de la dirección
-        const location = await geocodeAddress(query);
-        if (location) {
-            const latlng = {
-                lat: parseFloat(location.lat),
-                lng: parseFloat(location.lon),
-            };
-
-            if (input.id === 'punto-inicial') {
-                setMarker(latlng, 'start');
-            } else if (input.id === 'punto-final') {
-                setMarker(latlng, 'end');
-            }
-
-            // Centrar el mapa en la ubicación
-            map.setView(latlng, 15);
-
-            // Si ambos puntos están definidos, trazar la ruta
-            if (startMarker && endMarker) {
-                traceRoute();
-            }
-        } else {
-            alert('Dirección no encontrada. Intente con otra.');
-        }
-    }
-}
 // ---------------------------------------------------------
 // CALIDAD DE AIRE
 // ---------------------------------------------------------
@@ -219,13 +188,27 @@ function asignarEstado(media) {
     return 'peligroso'; // Si es mayor a 100
 }
 async function initMapa() {
-    const { mediciones, datosHeatmap } = await obtenerMediciones(); // Espera a obtener las mediciones
+    try {
+        const { mediciones, datosHeatmap } = await obtenerMediciones(); // Espera a obtener las mediciones
 
-    if (datosHeatmap.length > 0) {
-        mostrarMarcadores(mediciones); // Solo agrega el mapa si hay datos
-        agregarMapaDeCalor(datosHeatmap); // Solo agrega el mapa si hay datos
-    } else {
-        console.warn("No hay datos para mostrar en el mapa de calor.");
+        // Inicializar el mapa si no está ya inicializado
+        if (typeof map === 'undefined' || !map) {
+            map = L.map('mapa').setView([39.5, -1.0], 8); // Ajusta la vista inicial del mapa
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19
+            }).addTo(map);
+        }
+
+        //await cargarDatosAemet();
+
+        if (datosHeatmap.length > 0) {
+            mostrarMarcadores(mediciones); // Solo agrega el mapa si hay datos
+            agregarMapaDeCalor(datosHeatmap); // Solo agrega el mapa si hay datos
+        } else {
+            console.warn("No hay datos para mostrar en el mapa de calor.");
+        }
+    } catch (error) {
+        console.error("Error en initMapa:", error);
     }
 }
 let currentZoom = map.getZoom();  // Guardar el zoom inicial
@@ -321,22 +304,73 @@ function mostrarMarcadores(mediciones) {
 }
 
 function agregarMapaDeCalor(datosHeatmap) {
-    // Agregar el mapa de calor usando los datos transformados
-    L.heatLayer(datosHeatmap, {
-        radius: 25,      // Radio de cada punto
-        blur: 40,        // Suavizado entre puntos
-        maxZoom: 10,      // Máximo nivel de zoom para mostrar calor
-        zIndex: 1000,    // Asegura que el mapa de calor esté por encima
-        max: 1.0,
-        gradient: {
-            0.2: 'blue',    // Intensidad baja
-            0.4: 'cyan',    // Intensidad moderada-baja
-            0.6: 'lime',    // Intensidad moderada-alta
-            0.8: 'yellow',  // Intensidad alta
-            1: 'red'        // Intensidad muy alta
-        }
-    }).addTo(map);
+    if (!datosHeatmap || datosHeatmap.length === 0) {
+        console.warn("No hay datos para el mapa de calor.");
+        return;
+    }
+
+    // Validar que el mapa está listo antes de añadir la capa
+    map.whenReady(() => {
+        L.heatLayer(datosHeatmap, {
+            radius: 25,
+            blur: 40,
+            maxZoom: 10,
+            zIndex: 1000,
+            max: 1.0,
+            gradient: {
+                0.2: 'blue',
+                0.4: 'cyan',
+                0.6: 'lime',
+                0.8: 'yellow',
+                1: 'red',
+            },
+        }).addTo(map);
+    });
 }
 
-// Llamada a la función de inicialización
-initMapa();
+
+// ---------------------------------------------------------
+// DATOS AEMET
+// ---------------------------------------------------------
+
+async function cargarDatosAemet() {
+    const AemetKey = 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwYWJsb3JlYm9sbG8wMkBnbWFpbC5jb20iLCJqdGkiOiJhYzc1ODlkNC1iNWVkLTQ5M2YtYTQ4ZS1mOGMxZjJmYWVjYzYiLCJpc3MiOiJBRU1FVCIsImlhdCI6MTczNDA0NTI1NywidXNlcklkIjoiYWM3NTg5ZDQtYjVlZC00OTNmLWE0OGUtZjhjMWYyZmFlY2M2Iiwicm9sZSI6IiJ9.ftBm8v1OGZII0zK23XNTgdjUlNA1s8exVusZcG5dfaw'; // Reemplaza con tu clave de API de Aemet
+    const url = `https://opendata.aemet.es/opendata/api/red/especial/contaminacionfondo/estacion/12?api_key=${AemetKey}`;
+    const lat = 39.083910491542845;
+    const lon = -1.1011464074163988;
+
+    try {
+        const response = await fetch(url);
+        if (!response.ok) {
+            throw new Error(`Error al obtener datos de AEMET: ${response.status}`);
+        }
+        const data = await response.json();
+        console.log("Datos de AEMET:", data);
+
+        // Asegúrate de que el mapa esté inicializado antes de agregar el marcador
+        if (typeof map !== 'undefined' && map) {
+            const marker = L.marker([lat, lon], {
+                id: 'aemet-station',       // Añade un ID personalizado al marcador
+                icon: L.divIcon({          // Utiliza un icono personalizado con clase
+                    className: 'aemet', // Añade tu clase personalizada
+                    iconSize: [30, 30], // Tamaño del ícono
+                    iconAnchor: [15, 30], // Punto de anclaje del ícono
+                    popupAnchor: [0, -30], // Posición del popup respecto al ícono
+                    html: '<div class="custom-marker-icon"></div>', // Personaliza el contenido del marcador
+                })
+            })
+                .addTo(map)
+                .bindPopup('Ubicación de la estación AEMET')
+                .openPopup(); // Muestra el popup cuando se crea el marcador
+
+            console.log("Marcador añadido con clase 'custom-marker'");
+        } else {
+            console.error("El mapa no está inicializado.");
+        }
+    } catch (error) {
+        console.error("Error al cargar datos de AEMET:", error);
+    }
+}
+// Llamada a las funciones de inicialización
+//cargarDatosAemet();
+initMapa().then(r => cargarDatosAemet());

@@ -346,7 +346,9 @@ h3 {
     background-color: var(--v3-rosa-excelente);
 }
 
-
+#consultar-medición{
+    display: none;
+}
 
 
 

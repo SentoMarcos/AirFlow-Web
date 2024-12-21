@@ -530,3 +530,10 @@ footer a:hover{
     }
 }
 
+#SomosUnaEmpresa{
+    width: 653px;
+    height: 216px;
+    font-family: 'Poppins-light';
+    font-weight: 300;
+    font-size: 36px;
+}
