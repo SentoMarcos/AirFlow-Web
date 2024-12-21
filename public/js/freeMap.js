@@ -11,14 +11,20 @@
 // INICIALIZACIÓN DEL MAPA
 // ---------------------------------------------------------
 // Inicializa el mapa con una ubicación inicial genérica
-var map = L.map('mapa', {
-    zoomControl: false // Deshabilita el control de zoom predeterminado
-}).setView([51.505, -0.09], 13); // Valencia como ubicación inicial
+fetch('/mapa/mapa-config')
+    .then(response => response.json())
+    .then(config => {
+        const map = L.map('mapa', {
+            zoomControl: config.zoomControl
+        }).setView(config.center, config.zoom);
 
-// Agrega el mapa base
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '© OpenStreetMap contributors'
-}).addTo(map);
+        // Agrega la capa base del mapa
+        L.tileLayer(config.tileLayer.url, {
+            attribution: config.tileLayer.attribution
+        }).addTo(map);
+    })
+    .catch(error => console.error("Error al cargar la configuración del mapa:", error));
+
 
 // Usa la geolocalización del navegador para obtener tu ubicación
 if (navigator.geolocation) {
@@ -203,7 +209,7 @@ async function initMapa() {
 
         if (datosHeatmap.length > 0) {
             //mostrarMarcadores(mediciones); // Solo agrega el mapa si hay datos
-            agregarMapaDeCalor(datosHeatmap); // Solo agrega el mapa si hay datos
+            agregarMapaDeCalorPorValores(datosHeatmap); // Solo agrega el mapa si hay datos
         } else {
             console.warn("No hay datos para mostrar en el mapa de calor.");
         }
@@ -303,9 +309,12 @@ function mostrarMarcadores(mediciones) {
     actualizarMarcadores();
 }
 
-function agregarMapaDeCalor(datosHeatmap) {
+// ---------------------------------------------------------
+// MAPA DE CALOR POR VALORES
+// ---------------------------------------------------------
+function agregarMapaDeCalorPorValores(datosHeatmap) {
     if (!datosHeatmap || datosHeatmap.length === 0) {
-        console.warn("No hay datos para el mapa de calor.");
+        console.warn("No hay datos para el mapa interpolado.");
         return;
     }
 
@@ -317,34 +326,57 @@ function agregarMapaDeCalor(datosHeatmap) {
     // Normalizar un valor en el rango [minValor, maxValor] a [0, 1]
     const normalizarValor = (valor) => (valor - minValor) / (maxValor - minValor);
 
-    // Transformar datos: [lat, lon, intensidad]
-    const datosTransformados = datosHeatmap.map((punto) => {
-        const [latitud, longitud, valor] = punto;
+    // Crear un grupo de capas para los puntos interpolados
+    const interpolatedLayerGroup = L.layerGroup();
+
+    datosHeatmap.forEach(([latitud, longitud, valor]) => {
         const intensidad = normalizarValor(valor); // Normalizar el campo "valor"
-        return [latitud, longitud, intensidad];
+
+        // Crear varios círculos con radios crecientes y opacidades decrecientes
+        const steps = 5; // Número de pasos en la interpolación
+        for (let i = 0; i < steps; i++) {
+            const radius = 100 + i * 100; // Incremento en el radio
+            const opacity = 0.8 - i * 0.15; // Decrece la opacidad
+            const color = obtenerColorPorIntensidad(intensidad);
+
+            const circle = L.circle([latitud, longitud], {
+                radius: radius,
+                color: color,
+                fillColor: color,
+                fillOpacity: opacity,
+                weight: 0,
+            });
+
+            // Añadir cada círculo al grupo de capas
+            circle.addTo(interpolatedLayerGroup);
+        }
     });
 
-    // Agregar capa de calor al mapa
-    map.whenReady(() => {
-        L.heatLayer(datosTransformados, {
-            radius: 5, // Ajusta el tamaño del radio del punto
-            blur: 0,    // Deshabilita el desenfoque para mayor precisión
-            maxZoom: null, // Desactiva la dependencia del zoom
-            max: 1.0, // Los valores normalizados están entre 0 y 1
-            gradient: {
-                0: 'blue',     // Valor mínimo
-                0.2: 'cyan',   // Transición
-                0.4: 'lime',
-                0.6: 'yellow',
-                0.8: 'orange',
-                1.0: 'red',    // Valor máximo
-            },
-        }).addTo(map);
-    });
+    // Agregar el grupo de capas interpoladas al mapa
+    interpolatedLayerGroup.addTo(map);
 }
 
+// Función para obtener el color basado en la intensidad
+function obtenerColorPorIntensidad(intensidad) {
+    // Define el gradiente de colores
+    const colores = {
+        0: 'blue',
+        0.2: 'cyan',
+        0.4: 'lime',
+        0.6: 'yellow',
+        0.8: 'orange',
+        1.0: 'red',
+    };
 
-
+    // Encuentra el color más cercano a la intensidad
+    let colorActual = 'blue';
+    for (const key in colores) {
+        if (intensidad >= parseFloat(key)) {
+            colorActual = colores[key];
+        }
+    }
+    return colorActual;
+}
 // ---------------------------------------------------------
 // DATOS AEMET
 // ---------------------------------------------------------
