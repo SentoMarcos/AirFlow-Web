@@ -8,5 +8,8 @@
     <orderEntry type="library" name="leaflet-routing-machine" level="application" />
     <orderEntry type="library" name="leaflet-control-geocoder" level="application" />
     <orderEntry type="library" name="leaflet.heat" level="application" />
+    <orderEntry type="library" name="leaflet-heatmap" level="application" />
+    <orderEntry type="library" name="heatmap.js" level="application" />
+    <orderEntry type="library" name="mapbox-gl" level="application" />
   </component>
 </module>

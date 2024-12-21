@@ -202,7 +202,7 @@ async function initMapa() {
         //await cargarDatosAemet();
 
         if (datosHeatmap.length > 0) {
-            mostrarMarcadores(mediciones); // Solo agrega el mapa si hay datos
+            //mostrarMarcadores(mediciones); // Solo agrega el mapa si hay datos
             agregarMapaDeCalor(datosHeatmap); // Solo agrega el mapa si hay datos
         } else {
             console.warn("No hay datos para mostrar en el mapa de calor.");
@@ -309,24 +309,40 @@ function agregarMapaDeCalor(datosHeatmap) {
         return;
     }
 
-    // Validar que el mapa está listo antes de añadir la capa
+    // Determinar los valores mínimos y máximos de "valor" para normalizar
+    const valores = datosHeatmap.map((punto) => punto[2]); // Tercer valor del array es "valor"
+    const minValor = Math.min(...valores);
+    const maxValor = Math.max(...valores);
+
+    // Normalizar un valor en el rango [minValor, maxValor] a [0, 1]
+    const normalizarValor = (valor) => (valor - minValor) / (maxValor - minValor);
+
+    // Transformar datos: [lat, lon, intensidad]
+    const datosTransformados = datosHeatmap.map((punto) => {
+        const [latitud, longitud, valor] = punto;
+        const intensidad = normalizarValor(valor); // Normalizar el campo "valor"
+        return [latitud, longitud, intensidad];
+    });
+
+    // Agregar capa de calor al mapa
     map.whenReady(() => {
-        L.heatLayer(datosHeatmap, {
-            radius: 25,
-            blur: 40,
-            maxZoom: 10,
-            zIndex: 1000,
-            max: 1.0,
+        L.heatLayer(datosTransformados, {
+            radius: 5, // Ajusta el tamaño del radio del punto
+            blur: 0,    // Deshabilita el desenfoque para mayor precisión
+            maxZoom: null, // Desactiva la dependencia del zoom
+            max: 1.0, // Los valores normalizados están entre 0 y 1
             gradient: {
-                0.2: 'blue',
-                0.4: 'cyan',
-                0.6: 'lime',
-                0.8: 'yellow',
-                1: 'red',
+                0: 'blue',     // Valor mínimo
+                0.2: 'cyan',   // Transición
+                0.4: 'lime',
+                0.6: 'yellow',
+                0.8: 'orange',
+                1.0: 'red',    // Valor máximo
             },
         }).addTo(map);
     });
 }
+
 
 
 // ---------------------------------------------------------
@@ -361,7 +377,7 @@ async function cargarDatosAemet() {
             })
                 .addTo(map)
                 .bindPopup('Ubicación de la estación AEMET')
-                .openPopup(); // Muestra el popup cuando se crea el marcador
+                //.openPopup(); // Muestra el popup cuando se crea el marcador
 
             console.log("Marcador añadido con clase 'custom-marker'");
         } else {
