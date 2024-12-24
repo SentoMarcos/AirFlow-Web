@@ -357,12 +357,11 @@ fetch('/mapa/mapa-config')
         function obtenerColorPorIntensidad(intensidad) {
             // Define el gradiente de colores
             const colores = {
-                0: 'blue',
-                0.2: 'cyan',
-                0.4: 'lime',
-                0.6: 'yellow',
-                0.8: 'orange',
-                1.0: 'red',
+                0: '#63B8D9',  // Azul más intenso
+                0.2: '#8FE1B0',  // Verde más intenso
+                0.4: '#F0F67B',  // Amarillo más intenso
+                0.6: '#F69C4E',  // Naranja más intenso
+                0.8: '#F78A7D',  // Rojo pastel más intenso
             };
 
             // Encuentra el color más cercano a la intensidad
