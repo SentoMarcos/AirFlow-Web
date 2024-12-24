@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="JavaScriptLibraryMappings">
-    <file url="PROJECT" libraries="{leaflet, leaflet-control-geocoder, leaflet-routing-machine, leaflet.heat}" />
+    <file url="PROJECT" libraries="{heatmap.js, leaflet, leaflet-control-geocoder, leaflet-heatmap, leaflet-routing-machine, leaflet.heat, mapbox-gl}" />
     <includedPredefinedLibrary name="Node.js Core" />
   </component>
 </project>

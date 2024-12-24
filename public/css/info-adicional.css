@@ -2,6 +2,9 @@ ul {
        list-style: none;
        padding-left: unset;
        height: 100%;
+       justify-content: center;
+       gap: 10px;
+       align-items: center;
 }
 #section-especificaciones #especificaciones{
     height: auto;
@@ -27,21 +30,28 @@ ul {
     flex: 1; /* Asegura que el contenedor ocupe el espacio disponible */
 }
 .colum ul li {
-    height: 25%;
+    width: 100%;
+    padding: 10px;
 }
 
 .colum ul li div.activo {
     color: var(--v3-azul);
     border: 4px solid var(--v3-azul);
     border-radius: 48px;
+    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+    width: 310px;
+    justify-content: center;
+    padding: 10px;
+
 }
 
 .colum ul li > div {
     display: flex;
     flex-direction: row;
-    max-height: 120px;
+    height: 120px;
     align-items: center;
-    padding: 10px;
+    padding: 0px 20px;
+    gap: 10px;
 }
 
 .colum ul li > div img {
@@ -56,7 +66,10 @@ ul {
     font-size: 12px;
     text-align: center;
     justify-content: space-around;
+    height: auto;
+    margin: 0;
 }
+
 .colum ul li > div div p{
     margin-bottom: unset;
 }
@@ -64,3 +77,91 @@ ul {
     max-height: 90px;
 }
 
+/*NO2, O3, SO2, CO*/
+.titulo{
+    text-align: center;
+    font-family: Poppins;
+    font-size: 40px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    margin: 0;
+    height: 40px;
+    width: 160px;
+}
+
+/*Dióxido de Nitrógeno, Ozono, etc*/
+.descripcion{
+width: 160px;
+ text-align: center;
+ font-weight: 700; 
+ line-height: normal;  
+ font-size: 14px;
+}
+
+/*Emisiones de vehículos, Centrál..., etc*/
+.textoInformativo{
+ width: 120px;
+ height: auto;
+ font-weight: 400;
+ font-size: 12px;
+ color: var(--v3-gris-oscuro);
+padding: 10px;
+}
+
+.alturaAuto{
+height: auto;
+}
+
+
+/* Estilos del botón "Volver" */
+.label {
+    width: 74px;
+    height: 36px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--v3-blanco); /* Fondo blanco */
+    border-radius: 5px; /* Bordes redondeados */
+    transition: background-color 0.3s ease, color 0.3s ease; /* Transiciones suaves */
+}
+
+/* Estilo del texto dentro del botón "Volver" */
+.label .text-wrapper {
+    font-family: "Poppins-Medium", Helvetica; /* Tipo de fuente */
+    font-weight: 500; /* Peso de la fuente */
+    color: var(--v3-azul); /* Color del texto */
+    font-size: 24px;
+    letter-spacing: 0; /* Espaciado entre letras */
+    line-height: normal;
+}
+
+/* Efecto hover para el botón */
+.label:hover {
+    background-color: var(--v3-blanco); /* Cambia el fondo al pasar el ratón */
+}
+
+.label:hover .text-wrapper {
+    color: var(--v3-azul); /* Cambia el color del texto al pasar el ratón */
+}
+
+a{
+    text-decoration: none; /* Elimina el subrayado en los enlaces */
+}
+
+/* Hover: cambio de imagen */
+.atras:hover {
+    background-image: url('img/verdeHover.svg'); /* Imagen al hacer hover */
+}
+
+.tituloColor1 {
+    color: var(--cuadratica); /* Color para la columna 1 */
+}
+
+.tituloColor2 {
+    color: var(--cuadraticaRojo); /* Color para la columna 2 */
+}
+
+.tituloColor3 {
+    color: var(--v3-verde); /* Color para la columna 3 */
+}

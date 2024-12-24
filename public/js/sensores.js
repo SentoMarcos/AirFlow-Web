@@ -10,7 +10,7 @@ async function obtenerSensores() {
             throw new Error(`Error en la red: ${response.status} ${response.statusText}`);
         }
         const sensores = await response.json();
-
+        console.log(sensores)
         // Filtrar solo los campos necesarios
         const filteredSensores = sensores.map(sensor => ({
             idSensor: sensor.id_sensor,
@@ -19,7 +19,8 @@ async function obtenerSensores() {
             uuid: sensor.uuid,
             nombre: sensor.nombre,
             conexion: sensor.conexion,
-            bateria: sensor.bateria
+            bateria: sensor.bateria,
+            ultima_medicion: sensor.ultima_medicion
         }));
 
         mostrarMisSensores(filteredSensores); // Pasar los sensores filtrados a la función de mostrar
@@ -49,7 +50,7 @@ function mostrarMisSensores(sensores) {
 
     // Crear la fila de encabezado
     const headerRow = table.insertRow();
-    const headers = ['ID Sensor', 'Estado', 'Número de Referencia', 'UUID', 'Nombre', 'Conexión', 'Batería'];
+    const headers = ['ID Sensor', 'Estado', 'Número de Referencia', 'UUID', 'Nombre', 'Conexión', 'Batería','Ultima Medición'];
     headers.forEach((headerText, index) => {
         const headerCell = document.createElement('th');
         const icon = document.createElement('i');
@@ -73,7 +74,8 @@ function mostrarMisSensores(sensores) {
             sensor.uuid,            // UUID
             sensor.nombre,          // Nombre
             sensor.conexion,        // Conexión
-            sensor.bateria          // Batería
+            sensor.bateria,          // Batería
+            sensor.ultima_medicion          // Última Medición
         ];
 
         cells.forEach(cellText => {
@@ -113,6 +115,9 @@ function sortSensoresTable(index, sensores) {
             break;
         case 6: // Batería
             sortedSensores = [...sensores].sort((a, b) => a.bateria - b.bateria);
+            break;
+        case 7: // Batería
+            sortedSensores = [...sensores].sort((a, b) => a.ultima_medicion - b.ultima_medicion);
             break;
         default:
             sortedSensores = sensores;
