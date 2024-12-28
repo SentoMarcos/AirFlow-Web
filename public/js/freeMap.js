@@ -49,6 +49,24 @@ fetch('/mapa/mapa-config')
             map.invalidateSize();
         }, 300);
 
+        // Inicializa grupos de capas
+        var capas = {
+            calidadAire: L.layerGroup(),
+            estacionesGVA: L.layerGroup(),
+            estacionesAEMET: L.layerGroup(),
+            mapaCalor: L.layerGroup(),
+        };
+
+        // Añade las capas al control de capas
+        var controlCapas = L.control.layers(null, {
+            "Calidad del Aire": capas.calidadAire,
+            "Estaciones GVA": capas.estacionesGVA,
+            "Estaciones AEMET": capas.estacionesAEMET,
+            "Mapa de Calor": capas.mapaCalor,
+        }).addTo(map);
+
+
+
         // ---------------------------------------------------------
         // BOTONES DE ZOOM
         // ---------------------------------------------------------
@@ -206,9 +224,7 @@ fetch('/mapa/mapa-config')
                         maxZoom: 19
                     }).addTo(map);
                 }
-
-                //await cargarDatosAemet();
-
+                initCapas();
                 if (datosHeatmap.length > 0) {
                     //mostrarMarcadores(mediciones); // Solo agrega el mapa si hay datos
                     agregarMapaDeCalorPorValores(datosHeatmap); // Solo agrega el mapa si hay datos
@@ -411,9 +427,10 @@ fetch('/mapa/mapa-config')
                                 html: `<div class="custom-marker-icon"></div>`, // Personaliza el marcador
                             })
                         })
-                            .addTo(map)
                             .bindPopup(`Estación: ${record.fields.nombre} <br> Tipo de emisiones: ${record.fields.tipoemisio} <br> Calidad del aire: ${record.fields.calidad_am}`)
-                            .openPopup(); // Opcional: abrir el popup al añadir el marcador
+                            //.openPopup(); // Opcional: abrir el popup al añadir el marcador
+                            capas.estacionesGVA.addLayer(marker); // Añade el marcador a la capa
+
 
                         console.log(`Marcador añadido para la estación: ${estacion}`);
                     });
@@ -427,7 +444,17 @@ fetch('/mapa/mapa-config')
         // ---------------------------------------------------------
         // DATOS AEMET
         // ---------------------------------------------------------
+        async function initCapas() {
+            // Carga y asigna datos a las capas
+            //await obtenerCalidadAire(39.5, -1.0);
+            await cargarDatosGVA();
+            await cargarDatosAemet();
+            //agregarMapaDeCalorPorValores([[39.5, -1.0, 0.8], [39.6, -1.1, 0.6]]); // Ejemplo de datos
 
+            // Agrega las capas al mapa (pueden estar activas por defecto o no)
+            capas.estacionesAEMET.addTo(map);
+            capas.estacionesGVA.addTo(map);
+        }
         async function cargarDatosAemet() {
             const AemetKey = 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwYWJsb3JlYm9sbG8wMkBnbWFpbC5jb20iLCJqdGkiOiJhYzc1ODlkNC1iNWVkLTQ5M2YtYTQ4ZS1mOGMxZjJmYWVjYzYiLCJpc3MiOiJBRU1FVCIsImlhdCI6MTczNDA0NTI1NywidXNlcklkIjoiYWM3NTg5ZDQtYjVlZC00OTNmLWE0OGUtZjhjMWYyZmFlY2M2Iiwicm9sZSI6IiJ9.ftBm8v1OGZII0zK23XNTgdjUlNA1s8exVusZcG5dfaw'; // Reemplaza con tu clave de API de Aemet
             const url = `https://opendata.aemet.es/opendata/api/red/especial/contaminacionfondo/estacion/12?api_key=${AemetKey}`;
@@ -454,9 +481,9 @@ fetch('/mapa/mapa-config')
                             html: '<div class="custom-marker-icon"></div>', // Personaliza el contenido del marcador
                         })
                     })
-                        .addTo(map)
                         .bindPopup('Ubicación de la estación AEMET')
-                    //.openPopup(); // Muestra el popup cuando se crea el marcador
+                        capas.estacionesAEMET.addLayer(marker); // Añade el marcador a la capa
+                     //.openPopup(); // Muestra el popup cuando se crea el marcador
 
                     console.log("Marcador añadido con clase 'custom-marker'");
                 } else {

@@ -401,15 +401,12 @@ const capas = {
     }),
     "Claro": L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-    })
+    }),
+    "Minimalista": L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="https://carto.com/attributions">CartoDB</a>'
+    }),
+
 };
-
-// Agregar una capa inicial
-capas["Callejero"].addTo(map);
-
-// Crear grupos de capas para marcadores y mapa de calor
-const markersLayer = L.layerGroup().addTo(map);
-const heatmapLayer = L.layerGroup().addTo(map);
 
 // Función para cambiar la capa base sin eliminar marcadores ni mapa de calor
 document.getElementById('capas-mapa').addEventListener('change', function (event) {
@@ -421,10 +418,6 @@ document.getElementById('capas-mapa').addEventListener('change', function (event
 
     // Agregar la nueva capa base
     capas[selectedLayer].addTo(map);
-
-    // Reagregar las capas de marcadores y mapa de calor
-    markersLayer.addTo(map);
-    heatmapLayer.addTo(map);
 });
 
 
