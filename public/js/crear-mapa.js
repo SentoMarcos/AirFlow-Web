@@ -141,7 +141,7 @@ document.querySelector('#botones-mapa .leaflet-control-zoom-out').addEventListen
     }
 
 // Añade el evento de clic al botón para centrar en la ubicación del usuario
-function centrarEnMiUbicacion() {
+/*function centrarEnMiUbicacion() {
     // Eliminar el marcador anterior si existe
     map.eachLayer(function (layer) {
         if (layer.options && layer.options.id === 'mi-ubicacion') {
@@ -172,7 +172,7 @@ function centrarEnMiUbicacion() {
     } else {
         console.error('Geolocalización no es compatible con este navegador.');
     }
-}
+}*/
 
 function verMedidasEnUbicacion(){
    const boton = document.getElementById('consultar-medición');

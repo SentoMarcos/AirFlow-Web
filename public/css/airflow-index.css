@@ -152,7 +152,7 @@ h3 {
 }
 
 /* Sección de gráfica */
-#gráfica{
+#container-airflow #gráfica{
     display: none;
     flex-direction: column;
     height: 45%;
@@ -165,14 +165,28 @@ h3 {
     border-radius: 48px;
     padding: 15px;
 }
-#ozoneChart{
+/* Sección de gráfica */
+#container-airflow #panel-personalizar-mapa{
+    display: none;
+    flex-direction: column;
+    height: 45%;
+    position: absolute;
+    z-index: 1001;
+    bottom: 10px;
+    left: 10px;
+    background-color: var(--v3-blanco);
+    width: 30%;
+    border-radius: 48px;
+    padding: 15px;
+}
+#container-airflow #gráfica #ozoneChart{
     display: block;
     width: 100%;
     height: 100%;
 }
 
 /* Contenedor del indicador de la gráfica */
-#gráfica #indicador-gráfica{
+#container-airflow #gráfica #indicador-gráfica{
     display: flex;
     flex-direction: row; /* Flexbox en fila */
     justify-content: space-evenly; /* Espacio igual entre elementos */
@@ -209,6 +223,16 @@ h3 {
     display: flex;
     flex-direction: column;
     align-items: flex-end;
+    gap: 20px;
+}
+#botones-mapa-complementos{
+    position: absolute;
+    z-index: 1001;
+    bottom: 2vw;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
     gap: 20px;
 }
 #botones-mapa>button{
@@ -356,5 +380,16 @@ h3 {
     background-size: cover;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
     background-image: url("../img/aemet.webp");
+    background-position: center center;
+}
+.gva{
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 2px solid white;
+    background: white;
+    background-size: cover;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    background-image: url("../img/ajuntament.png");
     background-position: center center;
 }

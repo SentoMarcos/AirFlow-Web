@@ -11,10 +11,11 @@
 // INICIALIZACIÓN DEL MAPA
 // ---------------------------------------------------------
 // Inicializa el mapa con una ubicación inicial genérica
+var map;
 fetch('/mapa/mapa-config')
     .then(response => response.json())
     .then(config => {
-        const map = L.map('mapa', {
+        map = L.map('mapa', {
             zoomControl: config.zoomControl
         }).setView(config.center, config.zoom);
 
@@ -87,7 +88,6 @@ fetch('/mapa/mapa-config')
             e.preventDefault();
             map.zoomOut();
         });
-
         // Añade el evento de clic al botón para centrar en la ubicación del usuario
         function centrarEnMiUbicacion() {
             // Eliminar el marcador anterior si existe
@@ -121,6 +121,11 @@ fetch('/mapa/mapa-config')
                 console.error('Geolocalización no es compatible con este navegador.');
             }
         }
+
+        document.querySelector('#centrar-ubicacion').addEventListener('click', function (e) {
+            e.preventDefault();
+            centrarEnMiUbicacion();
+        });
 
         // ---------------------------------------------------------
         // BUSCADOR
@@ -373,6 +378,52 @@ fetch('/mapa/mapa-config')
             }
             return colorActual;
         }
+
+        //
+        //
+        //
+        async function cargarDatosGVA() {
+            const url = 'https://valencia.opendatasoft.com/api/records/1.0/search/?dataset=estacions-contaminacio-atmosferiques-estaciones-contaminacion-atmosfericas&rows=20';
+
+            try {
+                const response = await fetch(url);
+                if (!response.ok) {
+                    throw new Error(`Error al obtener datos de GVA: ${response.status}`);
+                }
+                const datos = await response.json();
+
+                console.log("Datos de GVA:", datos);
+
+                // Asegúrate de que el mapa esté inicializado antes de agregar el marcador
+                if (typeof map !== 'undefined' && map) {
+                    datos.records.forEach(record => {
+                        const lat = record.fields.geo_point_2d[0];
+                        const lon = record.fields.geo_point_2d[1];
+                        const estacion = record.fields.nombre_estacion;
+
+                        const marker = L.marker([lat, lon], {
+                            id: `estacion-${record.recordid}`, // ID único para cada estación
+                            icon: L.divIcon({
+                                className: 'gva', // Clase personalizada
+                                iconSize: [30, 30],
+                                iconAnchor: [15, 30],
+                                popupAnchor: [0, -30],
+                                html: `<div class="custom-marker-icon"></div>`, // Personaliza el marcador
+                            })
+                        })
+                            .addTo(map)
+                            .bindPopup(`Estación: ${record.fields.nombre} <br> Tipo de emisiones: ${record.fields.tipoemisio} <br> Calidad del aire: ${record.fields.calidad_am}`)
+                            .openPopup(); // Opcional: abrir el popup al añadir el marcador
+
+                        console.log(`Marcador añadido para la estación: ${estacion}`);
+                    });
+                } else {
+                    console.error("El mapa no está inicializado.");
+                }
+            } catch (error) {
+                console.error("Error al cargar datos de GVA:", error);
+            }
+        }
         // ---------------------------------------------------------
         // DATOS AEMET
         // ---------------------------------------------------------
@@ -417,6 +468,6 @@ fetch('/mapa/mapa-config')
         }
         // Llamada a las funciones de inicialización
         //cargarDatosAemet();
-        initMapa().then(r => cargarDatosAemet());
+        initMapa().then(r => cargarDatosAemet().then(cargarDatosGVA()));
     })
     .catch(error => console.error("Error al cargar la configuración del mapa:", error));
