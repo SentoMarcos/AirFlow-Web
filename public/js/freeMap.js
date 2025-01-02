@@ -12,6 +12,7 @@
 // ---------------------------------------------------------
 // Inicializa el mapa con una ubicación inicial genérica
 var map;
+var capas;
 fetch('/mapa/mapa-config')
     .then(response => response.json())
     .then(config => {
@@ -50,7 +51,7 @@ fetch('/mapa/mapa-config')
         }, 300);
 
         // Inicializa grupos de capas
-        var capas = {
+        capas = {
             calidadAire: L.layerGroup(),
             estacionesGVA: L.layerGroup(),
             estacionesAEMET: L.layerGroup(),
@@ -370,8 +371,7 @@ fetch('/mapa/mapa-config')
                 }
             });
 
-            // Agregar el grupo de capas interpoladas al mapa
-            interpolatedLayerGroup.addTo(map);
+            capas.mapaCalor.addLayer(interpolatedLayerGroup);
         }
 
         // Función para obtener el color basado en la intensidad
@@ -454,6 +454,7 @@ fetch('/mapa/mapa-config')
             // Agrega las capas al mapa (pueden estar activas por defecto o no)
             capas.estacionesAEMET.addTo(map);
             capas.estacionesGVA.addTo(map);
+            capas.mapaCalor.addTo(map);
         }
         async function cargarDatosAemet() {
             const AemetKey = 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwYWJsb3JlYm9sbG8wMkBnbWFpbC5jb20iLCJqdGkiOiJhYzc1ODlkNC1iNWVkLTQ5M2YtYTQ4ZS1mOGMxZjJmYWVjYzYiLCJpc3MiOiJBRU1FVCIsImlhdCI6MTczNDA0NTI1NywidXNlcklkIjoiYWM3NTg5ZDQtYjVlZC00OTNmLWE0OGUtZjhjMWYyZmFlY2M2Iiwicm9sZSI6IiJ9.ftBm8v1OGZII0zK23XNTgdjUlNA1s8exVusZcG5dfaw'; // Reemplaza con tu clave de API de Aemet

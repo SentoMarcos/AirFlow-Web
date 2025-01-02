@@ -8,13 +8,12 @@ document.head.appendChild(script);  // Agregarlo al documento*/
 let startMarker = null;
 let endMarker = null;
 let routingControl = null;
+const inicial = document.getElementById('punto-inicial');
+const final = document.getElementById('punto-final');
+const capasMapa = document.getElementById('capas-mapa');
 
-    // Vincular el evento "keypress" para ambos inputs
-    /*document.getElementById('punto-inicial').addEventListener('keypress', handleInputSearch);
-    document.getElementById('punto-final').addEventListener('keypress', handleInputSearch);*/
-
-    // Función para establecer marcadores en el mapa
-    function setMarker(latlng, type) {
+// Función para establecer marcadores en el mapa
+function setMarker(latlng, type) {
         if (type === 'start') {
             if (startMarker) map.removeLayer(startMarker);
             startMarker = L.marker(latlng).addTo(map);
@@ -25,40 +24,7 @@ let routingControl = null;
             document.getElementById('punto-final').value = `${latlng.lat.toFixed(5)}, ${latlng.lng.toFixed(5)}`;
             traceRouteIndications();
         }
-    }
-// Función para manejar la entrada de texto y mover el marcador
-/*async function handleInputSearch(event) {
-    if (event.key === 'Enter') { // Ejecutar cuando se presione Enter
-        const input = event.target;
-        const query = input.value;
-
-        // Realiza la búsqueda de la dirección
-        const location = await geocodeAddress(query);
-        if (location) {
-            const latlng = {
-                lat: parseFloat(location.lat),
-                lng: parseFloat(location.lon),
-            };
-
-            if (input.id === 'punto-inicial') {
-                setMarker(latlng, 'start');
-            } else if (input.id === 'punto-final') {
-                setMarker(latlng, 'end');
-            }
-
-            // Centrar el mapa en la ubicación
-            map.setView(latlng, 15);
-
-            // Si ambos puntos están definidos, trazar la ruta
-            if (startMarker && endMarker) {
-                traceRoute();
-            }
-        } else {
-            alert('Dirección no encontrada. Intente con otra.');
-        }
-    }
-}*/
-    // Función para trazar una ruta entre dos puntos
+}
 
 // Evento para manejar sugerencias
 async function handleAutocomplete(event) {
@@ -103,10 +69,11 @@ async function handleAutocomplete(event) {
         }
     }
 }
-
+if(inicial && final){
 // Vincular eventos de autocompletar a los inputs
 document.getElementById('punto-inicial').addEventListener('input', handleAutocomplete);
 document.getElementById('punto-final').addEventListener('input', handleAutocomplete);
+}
 
     function traceRouteIndications() {
         // Si ya hay una ruta trazada, eliminarla
@@ -124,21 +91,6 @@ document.getElementById('punto-final').addEventListener('input', handleAutocompl
             geocoder: L.Control.Geocoder.nominatim() // Geocodificador de Nominatim
         }).addTo(map);
     }
-    // Selecciona el botón de alternar y el contenedor de rutas
-    const toggleButton = document.querySelector('.toggle-routing');
-
-    // Agregar evento de clic para alternar el contenedor de rutas
-    toggleButton.addEventListener('click', () => {
-        const routingContainer = document.querySelector('.leaflet-routing-container');
-        routingContainer.classList.toggle('open');
-
-        // Cambiar el texto del botón según el estado
-        if (routingContainer.classList.contains('open')) {
-            toggleButton.textContent = 'Ocultar Ruta';
-        } else {
-            toggleButton.textContent = 'Mostrar Ruta';
-        }
-    });
 
 // Configura Leaflet Routing Machine para agregar la clase necesaria
 // Función para trazar una ruta entre dos puntos
@@ -164,31 +116,15 @@ function traceRoute() {
         routingContainer.classList.add('leaflet-bottom');
     }
 }        
-/*
-function verMedidasEnUbicacion(){
-    const boton = document.getElementById('consultar-medición');
-    const grafica = document.getElementById('gráfica');
-    const cancelarBtn = document.getElementById('cancelar-consulta');
-    const input = document.getElementById('buscador-airflow');
-    input.focus();
 
-    boton.style.display = 'none';
-    grafica.style.display = 'flex';
-    cancelarBtn.style.display = 'block';
-
-    cancelarBtn.onclick = function () {
-        grafica.style.display = 'none';
-        cancelarBtn.style.display = 'none';
-        boton.style.display = 'block';
-    };
-
-    const botonesComplementos = document.getElementById('botones-mapa-complementos');
-    const leafletBottomLeft = document.getElementsByClassName('leaflet-left');
-    leafletBottomLeft.appedChild(botonesComplementos);
-}*/
 function togglePanelPersonalizar() {
-    const panel = document.getElementById('panel-personalizar-mapa');
-    panel.style.display = panel.style.display === 'block' ? 'none' : 'block';
+    const panel = document.getElementById('panel-contenedor');
+    // Cambia entre mostrar y ocultar el panel
+    if (panel.style.bottom === '-41.2vh') {
+        panel.style.bottom = '10px'; // Mostrar el panel
+    } else {
+        panel.style.bottom = '-41.2vh'; // Ocultar el panel
+    }
 
     const estacionescheck = document.getElementById('check-estaciones');
     estacionescheck.addEventListener('change', () => {
@@ -205,36 +141,8 @@ function togglePanelPersonalizar() {
         toggleVisibility(aemet, estacionescheck.checked);
         toggleVisibility(gva, estacionescheck.checked);
     });
-
-    // Inicializa valores predeterminados
-    const slider = document.getElementById('slider-temporal');
-    const sliderValor = document.getElementById('slider-valor');
-
-// Actualiza la etiqueta con el valor del rango
-    slider.addEventListener('input', function () {
-        const value = slider.value;
-
-        if (value == 0) {
-            sliderValor.textContent = 'Tiempo real';
-        } else if (value <= 33) {
-            sliderValor.textContent = 'Últimas 24 horas';
-        } else if (value <= 66) {
-            sliderValor.textContent = 'Media semanal';
-        } else {
-            sliderValor.textContent = 'Media mensual';
-        }
-    });
-
-// Selección de fechas
-    document.getElementById('fecha-inicio').addEventListener('change', function (e) {
-        console.log('Fecha de inicio:', e.target.value);
-    });
-
-    document.getElementById('fecha-fin').addEventListener('change', function (e) {
-        console.log('Fecha de fin:', e.target.value);
-    });
-
 }
+
 
 async function obtenerMedicionesPorFecha() {
     const fechaInicioInput = document.getElementById('fecha-inicio');
@@ -273,14 +181,14 @@ async function obtenerMedicionesPorFecha() {
         console.log("Mediciones obtenidas:", mediciones);
 
         // Aquí puedes usar los datos obtenidos para renderizarlos en el mapa
-        //actualizarMapaConMediciones(mediciones);
+        actualizarMapaConMediciones(mediciones);
 
     } catch (error) {
         console.error("Error al obtener mediciones:", error);
         alert(`Error: ${error.message}`);
     }
 }
-/*
+
 function actualizarMapaConMediciones(mediciones) {
     if (typeof map === 'undefined' || !map) {
         console.error("El mapa no está inicializado.");
@@ -322,7 +230,10 @@ function agregarMapaDeCalorPorValores(datosHeatmap) {
         console.warn("No hay datos para el mapa interpolado.");
         return;
     }
-
+    // Asegurarse de que capas.mapaCalor esté inicializado
+    if (capas.mapaCalor) {
+        capas.mapaCalor.clearLayers(); // Limpia los datos previos
+    }
     // Determinar los valores mínimos y máximos de "valor" para normalizar
     const valores = datosHeatmap.map((punto) => punto[2]); // Tercer valor del array es "valor"
     const minValor = Math.min(...valores);
@@ -358,7 +269,7 @@ function agregarMapaDeCalorPorValores(datosHeatmap) {
     });
 
     // Agregar el grupo de capas interpoladas al mapa
-    interpolatedLayerGroup.addTo(map);
+    capas.mapaCalor.addLayer(interpolatedLayerGroup);
 }
 
 
@@ -381,7 +292,7 @@ function obtenerColorPorIntensidad(intensidad) {
     }
     return colorActual;
 }
-*/
+
 
 
 //-----------------------------------------------------
@@ -389,7 +300,7 @@ function obtenerColorPorIntensidad(intensidad) {
 //-----------------------------------------------------
 // Crear las capas base con proveedores de mapas
 // Crear las capas base
-const capas = {
+const capasEstilo = {
     "Callejero": L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     }),
@@ -409,16 +320,18 @@ const capas = {
 };
 
 // Función para cambiar la capa base sin eliminar marcadores ni mapa de calor
-document.getElementById('capas-mapa').addEventListener('change', function (event) {
-    // Obtener la capa base seleccionada
-    const selectedLayer = event.target.value;
+if(capasMapa) {
+    capasMapa.addEventListener('change', function (event) {
+        // Obtener la capa base seleccionada
+        const selectedLayer = event.target.value;
 
-    // Eliminar solo las capas base
-    Object.values(capas).forEach((capa) => map.hasLayer(capa) && map.removeLayer(capa));
+        // Eliminar solo las capas base
+        Object.values(capasEstilo).forEach((capa) => map.hasLayer(capa) && map.removeLayer(capa));
 
-    // Agregar la nueva capa base
-    capas[selectedLayer].addTo(map);
-});
+        // Agregar la nueva capa base
+        capasEstilo[selectedLayer].addTo(map);
+    });
+}
 
 
 

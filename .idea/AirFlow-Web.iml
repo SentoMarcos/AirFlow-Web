@@ -12,5 +12,8 @@
     <orderEntry type="library" name="heatmap.js" level="application" />
     <orderEntry type="library" name="mapbox-gl" level="application" />
     <orderEntry type="library" name="leaflet.gridlayer.googlemutant" level="application" />
+    <orderEntry type="library" name="html2canvas" level="application" />
+    <orderEntry type="library" name="jspdf" level="application" />
+    <orderEntry type="library" name="pdf-lib" level="application" />
   </component>
 </module>
