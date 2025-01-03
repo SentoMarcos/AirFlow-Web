@@ -26,6 +26,8 @@ router.post('/mediciones-por-fecha', getMedicionesPorFecha);
 router.post('/mediciones/add', medicionControlador.createMedicion);
 router.get('/mediciones/:id', medicionControlador.getMedicionesOfSensor);
 router.get('/mediciones-all', medicionControlador.getAllMediciones);
+router.get('/getMediaMedicionesUsuario/:idUsuario', medicionControlador.getMediaMedicionesUsuario);
+router.get('/getAllMedicionesUsuario/:idUsuario', medicionControlador.getAllMedicionesUsuario);
 
 // Aquí puedes agregar más rutas para Mediciones
 
