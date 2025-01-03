@@ -9,6 +9,7 @@ h3 {
 /* Transiciones suaves */
 #mapa {
     transition: all 0.3s ease;
+    transform: none; /* Elimina cualquier transformación */
 }
 #header-container nav{
     background: var(--v3-blanco);

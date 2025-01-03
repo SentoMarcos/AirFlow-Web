@@ -144,10 +144,9 @@ function togglePanelPersonalizar() {
 }
 
 
-async function obtenerMedicionesPorFecha() {
+async function obtenerMedicionesPorIntervalo() {
     const fechaInicioInput = document.getElementById('fecha-inicio');
     const fechaFinInput = document.getElementById('fecha-fin');
-    const sensores = [1, 2, 3]; // IDs de los sensores a consultar, actualiza según tus necesidades
 
     // Verificar que las fechas no estén vacías
     const fechaInicio = fechaInicioInput.value;
@@ -159,13 +158,12 @@ async function obtenerMedicionesPorFecha() {
     }
 
     try {
-        const response = await fetch('http://localhost:3000/mediciones/mediciones-por-fecha', {
+        const response = await fetch('http://localhost:3000/mediciones/mediciones-por-intervalo', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                sensores,
                 fechaInicio,
                 fechaFin
             })

@@ -185,3 +185,33 @@ exports.getMedicionesPorFecha = async (req, res) => {
         res.status(500).json({ error: "Error al obtener las mediciones.", detalles: error.message });
     }
 };
+
+exports.getMedicionesPorIntervaloFecha = async (req, res) => {
+    try {
+        const { fechaInicio, fechaFin } = req.body; // Extraer las fechas del cuerpo de la solicitud
+
+        // Asegúrate de que las fechas se encuentren en el formato correcto
+        const mediciones = await Medicion.findAll({
+            where: {
+                fecha: {
+                    [Op.between]: [new Date(fechaInicio), new Date(fechaFin)] // Filtrar por las fechas proporcionadas
+                }
+            },
+            attributes: ['id', 'id_sensor', 'tipo_gas', 'latitud', 'longitud', 'fecha', 'valor'] // Campos a devolver
+        });
+
+        // Si no se encuentran mediciones
+        if (mediciones.length === 0) {
+            return res.status(404).json({ error: "No se encontraron mediciones para el intervalo de fechas proporcionado." });
+        }
+
+        // Transformar las instancias de Sequelize en un formato más limpio
+        const medicionesData = mediciones.map(medicion => medicion.toJSON());
+
+        res.status(200).json(medicionesData);
+    } catch (error) {
+        console.error("Error al obtener las mediciones:", error);
+        res.status(500).json({ error: "Error al obtener las mediciones.", detalles: error.message });
+    }
+};
+

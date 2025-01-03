@@ -63,74 +63,180 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
-
+<!--
 <script>
     cargarHeader('header_airflow.html', 'headerAir-1')
-</script>
+</script>-->
 <script src="js/mis-medidas.js"></script>
 <script src="js/freeMap.js"></script>
 <script src="js/premiumMap.js"></script>
 
 <script>
-
+    const fechaInicioInput = document.getElementById('fecha-inicio');
+    const fechaFinInput = document.getElementById('fecha-fin');
+    const fechaInicio = fechaInicioInput.value;
+    const fechaFinal = fechaFinInput.value;
     document.getElementById('generar-pdf').addEventListener("click", generarPDF);
-    document.getElementById('ver-medidas').addEventListener("click", obtenerMedicionesPorFecha);
+    document.getElementById('ver-medidas').addEventListener("click", obtenerMedicionesPorIntervalo);
     async function generarPDF() {
-        const fechaInicio = document.getElementById('fecha-inicio').value;
-        const fechaFin = document.getElementById('fecha-fin').value;
-        const sensores = [1,2,3];
-
-        // Asegurarse de que el mapa esté completamente renderizado antes de capturarlo
-        await new Promise((resolve) => setTimeout(resolve, 1500)); // Esperar un segundo para que termine de cargar
 
         document.getElementById('generar-pdf').addEventListener("click", async () => {
-            const pdfDoc = await PDFLib.PDFDocument.create();
+            const fechaInicio = new Date(document.getElementById('fecha-inicio').value);
+            const fechaFin = new Date(document.getElementById('fecha-fin').value);
 
-            // Configura las dimensiones de la página
-            const pageWidth = 800;  // Ancho de la página en puntos
-            const pageHeight = 600; // Alto de la página en puntos
-            const page = pdfDoc.addPage([pageWidth, pageHeight]);
+            if (!fechaInicio || !fechaFin || fechaInicio > fechaFin) {
+                alert("Por favor, selecciona un intervalo de fechas válido.");
+                return;
+            }
 
-            // Título del PDF
-            page.drawText('Histórico de Mapas', {
-                x: 50,
-                y: pageHeight - 50,
-                size: 24,
-            });
+            const pdfDoc = await PDFLib.PDFDocument.create(); // Crear un nuevo PDF
+            const diasIntervalo = [];
+            const sensores = [1,2,3];
 
-            // Renderizar el contenido del mapa
-            html2canvas(document.getElementById('mapa'), { useCORS: true, scale: 2 }).then(async (canvas) => {
+            // Generar un array con todas las fechas del intervalo
+            for (let d = fechaInicio; d <= fechaFin; d.setDate(d.getDate() + 1)) {
+                diasIntervalo.push(new Date(d)); // Agregar cada día al array
+            }
+
+            for (const dia of diasIntervalo) {
+                const diaISO = dia.toISOString().split('T')[0]; // Formato: "YYYY-MM-DD"
+
+                // Filtrar las mediciones para el día actual
+                let response = await obtenerMedicionesPorFecha(sensores, diaISO);
+
+                // Extraer la propiedad "mediciones" si es un objeto
+                let mediciones = Array.isArray(response) ? response : response?.mediciones || [];
+
+                if (!Array.isArray(mediciones)) {
+                    console.error(`Error: Las mediciones no son un array para el día ${diaISO}.`, response);
+                    mediciones = []; // Asegurarse de que sea un array vacío
+                }
+
+                if (mediciones.length === 0) {
+                    console.log(`No hay mediciones para el día: ${diaISO}`);
+                    continue;
+                }
+
+                console.log(mediciones);
+
+                await actualizarMapaConMediciones(mediciones);
+                map.invalidateSize(); // Asegura que el mapa y sus marcadores se rendericen correctamente
+                await new Promise(resolve => setTimeout(resolve, 5000));
+
+                // Capturar el mapa como imagen
+                const canvas = await html2canvas(document.getElementById('mapa'), { useCORS: true, scale: 2 });
                 const imgData = canvas.toDataURL('image/png');
                 const img = await pdfDoc.embedPng(imgData);
 
-                // Tamaño de la imagen dentro del PDF
-                const imgWidth = pageWidth - 100; // Dejar márgenes de 50 puntos a cada lado
-                const imgHeight = (img.height * imgWidth) / img.width; // Mantener proporción
+                // Tamaño y posición de la imagen en el PDF
+                const pageWidth = 1000;
+                const pageHeight = 800;
+                const imgWidth = pageWidth - 50;
+                const imgHeight = (img.height * imgWidth) / img.width;
 
-                // Posición de la imagen
-                const xPos = (pageWidth - imgWidth) / 2; // Centrar horizontalmente
-                const yPos = (pageHeight - imgHeight) / 2; // Centrar verticalmente
-
-                // Dibujar la imagen en la página
+                const page = pdfDoc.addPage([pageWidth, pageHeight]);
+                page.drawText(`Fecha: ${diaISO}`, { x: 20, y: pageHeight - 30, size: 16 });
                 page.drawImage(img, {
-                    x: xPos,
-                    y: yPos,
+                    x: 25,
+                    y: 50,
                     width: imgWidth,
                     height: imgHeight,
                 });
+            }
 
-                // Descargar el PDF
-                const pdfBytes = await pdfDoc.save();
-                const blob = new Blob([pdfBytes], { type: "application/pdf" });
-                const url = URL.createObjectURL(blob);
-                const link = document.createElement('a');
-                link.href = url;
-                link.download = 'Historico_Mapas.pdf';
-                link.click();
-            });
+
+
+            // Descargar el PDF
+            const pdfBytes = await pdfDoc.save();
+            const blob = new Blob([pdfBytes], { type: "application/pdf" });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'Historico_Mediciones.pdf';
+            link.click();
         });
 
     }
+
+    /*document.getElementById('generar-pdf').addEventListener("click", async () => {
+
+    for (const dia of diasIntervalo) {
+        // Filtrar las mediciones para el día actual
+        const mediciones = await obtenerMedicionesPorFecha(dia);
+
+        if (mediciones.length === 0) {
+            console.log(`No hay mediciones para el día: ${dia.toISOString().split('T')[0]}`);
+            continue;
+        }
+
+        // Renderizar el mapa para el día actual
+        await renderizarMapaConMediciones(mediciones);
+
+        // Esperar para asegurar que las capas del mapa estén completamente cargadas
+        await new Promise(resolve => setTimeout(resolve, 1000));
+
+        // Capturar el mapa como imagen
+        const canvas = await html2canvas(document.getElementById('mapa'), { useCORS: true, scale: 2 });
+        const imgData = canvas.toDataURL('image/png');
+        const img = await pdfDoc.embedPng(imgData);
+
+        // Tamaño y posición de la imagen en el PDF
+        const pageWidth = 800;
+        const pageHeight = 600;
+        const imgWidth = pageWidth - 50;
+        const imgHeight = (img.height * imgWidth) / img.width;
+
+        const page = pdfDoc.addPage([pageWidth, pageHeight]);
+        page.drawText(`Fecha: ${dia.toISOString().split('T')[0]}`, { x: 20, y: pageHeight - 30, size: 16 });
+        page.drawImage(img, {
+            x: 25,
+            y: 50,
+            width: imgWidth,
+            height: imgHeight,
+        });
+    }
+
+    // Descargar el PDF
+    const pdfBytes = await pdfDoc.save();
+    const blob = new Blob([pdfBytes], { type: "application/pdf" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'Historico_Mediciones.pdf';
+    link.click();
+});
+
+// Función para obtener mediciones por fecha
+async function obtenerMedicionesPorFecha(fecha) {
+    const response = await fetch(`/api/mediciones/por-fecha`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ fecha: fecha.toISOString().split('T')[0] })
+    });
+
+    if (!response.ok) {
+        console.error("Error al obtener mediciones:", await response.text());
+        return [];
+    }
+
+    return await response.json();
+}
+
+// Función para renderizar el mapa con mediciones
+async function renderizarMapaConMediciones(mediciones) {
+    const map = L.map('mapa').setView([40.416775, -3.703790], 6); // Centrado en Madrid
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+
+    mediciones.forEach(medicion => {
+        const { latitud, longitud, tipo_gas, valor } = medicion;
+        L.marker([latitud, longitud])
+            .bindPopup(`<b>${tipo_gas}</b><br>Valor: ${valor}`)
+            .addTo(map);
+    });
+}
+*/
 </script>
 </body>
 </html>
