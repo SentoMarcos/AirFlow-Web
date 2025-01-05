@@ -86,14 +86,17 @@ exports.createMedicion = async (req, res) => {
  */
 exports.getAllMediciones = async (req, res) => {
     try {
-        const mediciones = await Medicion.findAll();
+        // Obtener todas las mediciones ordenadas por el campo 'id'
+        const mediciones = await Medicion.findAll({
+            order: [['id', 'ASC']]  // Ordenar por 'id' en orden ascendente
+        });
+
         res.status(200).json(mediciones);
     } catch (error) {
         console.error("Error al obtener las mediciones:", error);
         res.status(500).json({ error: 'Error al obtener las mediciones.' });
     }
 }
-
 
 //-----------------------------------------------------
 //--Medición<Objeto>-->getMedicionesOfSensor()-->Medición<Arreglo>

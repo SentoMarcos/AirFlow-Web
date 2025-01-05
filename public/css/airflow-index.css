@@ -1,3 +1,24 @@
+header {
+    display: none;
+    /* Esto oculta el header completamente */
+}
+
+/* Cambiar el tamaño de los radio buttons */
+.leaflet-control-layers-selector {
+    width: 16px !important;
+    /* Ajusta el ancho */
+    height: 16px !important;
+    /* Ajusta la altura */
+    transform: scale(0.5) !important;
+    /* Reducir el tamaño con transform */
+}
+
+/* Cambiar el tamaño del texto asociado a los radio buttons */
+.leaflet-control-layers span {
+    font-size: 12px !important;
+    /* Ajustar el tamaño del texto */
+}
+/*-----------------------------------------*/
 h3 {
     font-size: 24px;
 }
@@ -56,6 +77,11 @@ h3 {
     position: absolute;
     bottom: 20px; /* Espacio desde la parte inferior */
     right: 20px;   /* Espacio desde el borde izquierdo */
+}
+
+.leaflet-control-layers {
+    display: block !important;
+    /* Forzamos que siempre se muestre */
 }
 
 /* Sección de características */

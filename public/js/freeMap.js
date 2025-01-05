@@ -9,18 +9,20 @@
 // ---------------------------------------------------------
 // ---------------------------------------------------------
 // INICIALIZACIÓN DEL MAPA
-// ---------------------------------------------------------
+// --------------------------------------------------------
+
+let map; // Variable global para el mapa
+
 // Inicializa el mapa con una ubicación inicial genérica
 fetch('/mapa/mapa-config')
     .then(response => response.json())
     .then(config => {
-        const map = L.map('mapa', {
+            map = L.map('mapa', {
             zoomControl: config.zoomControl
         }).setView(config.center, config.zoom);
 
-        // Agrega la capa base del mapa
-        L.tileLayer(config.tileLayer.url, {
-            attribution: config.tileLayer.attribution
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19
         }).addTo(map);
 
         // Usa la geolocalización del navegador para obtener tu ubicación
@@ -148,6 +150,7 @@ fetch('/mapa/mapa-config')
         const apiKey = "bc28af6f5f9fbf476f6ee1d5836b002a";
         const airPollutionEndpoint = "https://api.openweathermap.org/data/2.5/air_pollution";
 
+        
         // Función para obtener datos de contaminación y añadirlos al mapa
         async function getAirPollutionData(lat, lon) {
             const url = `${airPollutionEndpoint}?lat=${lat}&lon=${lon}&appid=${apiKey}`;
@@ -162,13 +165,12 @@ fetch('/mapa/mapa-config')
 
                 // Crear un popup con información
                 const popupContent = `
-            <b>Calidad del Aire</b><br>
-            AQI (Índice de Calidad del Aire): ${main.aqi}<br>
-            PM2.5: ${components.pm2_5} µg/m³<br>
-            PM10: ${components.pm10} µg/m³<br>
-            O3: ${components.o3} µg/m³<br>
-            NO2: ${components.no2} µg/m³<br>
-        `;
+                <b>Calidad del Aire</b><br>
+                AQI (Índice de Calidad del Aire): ${main.aqi}<br>
+                PM2.5: ${components.pm2_5} µg/m³<br>
+                PM10: ${components.pm10} µg/m³<br>
+                O3: ${components.o3} µg/m³<br>
+                NO2: ${components.no2} µg/m³<br>`;
 
                 // Añadir un marcador en el mapa
                 L.marker([lat, lon]).addTo(map).bindPopup(popupContent).openPopup();
@@ -176,157 +178,81 @@ fetch('/mapa/mapa-config')
                 console.error("Error al obtener datos de calidad del aire:", error);
             }
         }
+        
 
         // ---------------------------------------------------------
         // MAPA DE CALOR
         // ---------------------------------------------------------
-        // Datos de ejemplo para el mapa de calor
-        function asignarEstado(media) {
-            // Define los intervalos para los estados
-            if (!media) return 'vacio';
-            if (media <= 50) return 'excelente';
-            if (media <= 100) return 'bueno';
-            if (media <= 150) return 'moderado';
-            if (media <= 200) return 'malo';
-            return 'peligroso'; // Si es mayor a 100
-        }
+            /*
+                // Datos de ejemplo para el mapa de calor
+                function asignarEstado(media) {
+                    // Define los intervalos para los estados
+                    if (!media) return 'vacio';
+                    if (media <= 50) return 'excelente';
+                    if (media <= 100) return 'bueno';
+                    if (media <= 150) return 'moderado';
+                    if (media <= 200) return 'malo';
+                    return 'peligroso'; // Si es mayor a 100
+                }
+            */
         async function initMapa() {
             try {
-                const { mediciones, datosHeatmap } = await obtenerMediciones(); // Espera a obtener las mediciones
+                const { mediciones, datosPorGas } = await obtenerMediciones(); // Espera a obtener las mediciones
 
-                // Inicializar el mapa si no está ya inicializado
-                if (typeof map === 'undefined' || !map) {
-                    map = L.map('mapa').setView([39.5, -1.0], 8); // Ajusta la vista inicial del mapa
-                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                        maxZoom: 19
-                    }).addTo(map);
-                }
-
-                //await cargarDatosAemet();
-
-                if (datosHeatmap.length > 0) {
-                    //mostrarMarcadores(mediciones); // Solo agrega el mapa si hay datos
-                    agregarMapaDeCalorPorValores(datosHeatmap); // Solo agrega el mapa si hay datos
+                // Crear los grupos de capas
+                let interpolatedLayerGroup = L.layerGroup();
+                let co2LayerGroup = L.layerGroup(); // Capa para CO2
+                let no2LayerGroup = L.layerGroup(); // Capa para NO2
+                let o3LayerGroup = L.layerGroup();  // Capa para O3
+                
+                if (datosPorGas.general.length > 0) {
+                    // Agregar los datos al mapa de calor
+                    agregarMapaDeCalorPorValores(datosPorGas.general, interpolatedLayerGroup);
+                    agregarMapaDeCalorPorValores(datosPorGas.CO2, co2LayerGroup);
+                    agregarMapaDeCalorPorValores(datosPorGas.NO2, no2LayerGroup);
+                    agregarMapaDeCalorPorValores(datosPorGas.O3, o3LayerGroup);
                 } else {
                     console.warn("No hay datos para mostrar en el mapa de calor.");
                 }
+
+                // Crear el control de capas para añadir al mapa
+                const controlCapas = L.control.layers(
+                    {
+                        "Mapa de Calor (Todos los Gases)": interpolatedLayerGroup,
+                        "Mapa CO2": co2LayerGroup,
+                        "Mapa NO2": no2LayerGroup,
+                        "Mapa O3": o3LayerGroup
+                    }
+                ).addTo(map);
+
+                // Capa visible por defecto
+                interpolatedLayerGroup.addTo(map);
+
             } catch (error) {
                 console.error("Error en initMapa:", error);
             }
-        }
-        let currentZoom = map.getZoom();  // Guardar el zoom inicial
-        let markers = [];  // Array para almacenar los marcadores
-
-        function mostrarMarcadores(mediciones) {
-            // Limpiar todos los marcadores anteriores del mapa
-            map.eachLayer(function (layer) {
-                if (layer instanceof L.Marker) {
-                    map.removeLayer(layer); // Eliminar todos los marcadores
-                }
-            });
-
-            // Crear un array para almacenar las coordenadas de las mediciones
-            const waypoints = [];
-
-            // Añadir los marcadores para las mediciones
-            mediciones.forEach(function (medicion) {
-                const { latitud, longitud, tipo_gas, fecha, valor } = medicion;
-
-                // Asegúrate de que las coordenadas son válidas
-                if (latitud && longitud) {
-                    const latLng = [latitud, longitud];
-                    const estado = asignarEstado(valor);
-
-                    // Crear un ícono personalizado con clase basada en el estado
-                    const customIcon = L.divIcon({
-                        className: `custom-marker ${estado}`, // Clases personalizadas
-                        iconSize: [30, 30], // Tamaño del ícono
-                        iconAnchor: [15, 30], // Punto de anclaje del ícono
-                        popupAnchor: [0, -30], // Posición del popup respecto al ícono
-                    });
-
-                    // Crear un marcador con el ícono personalizado
-                    const marcador = L.marker(latLng, {
-                        icon: customIcon,
-                        latLng: latLng,  // Guardamos las coordenadas
-                    });
-
-                    // Añadir información al marcador (popup) con la clase de estado
-                    marcador.bindPopup(`
-                <b>Tipo de Gas:</b> ${tipo_gas}<br>
-                <b>Fecha:</b> ${fecha}<br>
-                <b>Valor:</b> ${valor}<br>
-                <b>Estado:</b> <span class="${estado}">${estado}</span>
-            `);
-
-                    // Añadir el marcador al array de marcadores
-                    markers.push(marcador);
-
-                    // Añadir la clase de estado al contenedor del popup al abrirlo
-                    marcador.on('popupopen', function (e) {
-                        const popupContentWrapper = e.popup._container.querySelector('.leaflet-popup-content-wrapper');
-                        if (popupContentWrapper) {
-                            popupContentWrapper.classList.add(estado);
-                        }
-                    });
-
-                    // Añadir el punto a la lista de waypoints (coordenadas para la ruta)
-                    waypoints.push(latLng);
-                }
-            });
-
-            // Función para actualizar la visibilidad de los marcadores según el nivel de zoom
-            function actualizarMarcadores() {
-                const zoom = map.getZoom();  // Obtener el zoom actual
-                const center = map.getCenter();  // Obtener el centro del mapa
-                const radio = 5000 / zoom;  // Radio de visibilidad (ajustar según necesidad)
-
-                // Iterar sobre los marcadores y mostrar/ocultar según la distancia del centro
-                markers.forEach(marcador => {
-                    const distance = center.distanceTo(marcador.getLatLng());  // Calcular la distancia desde el centro
-
-                    // Si la distancia es menor que el radio, mostramos el marcador, si no lo ocultamos
-                    if (distance < radio) {
-                        marcador.addTo(map);  // Mostrar marcador
-                    } else {
-                        map.removeLayer(marcador);  // Ocultar marcador
-                    }
-                });
-            }
-
-            // Inicializar los marcadores en el mapa
-            markers.forEach(marcador => {
-                marcador.addTo(map);
-            });
-
-            // Actualizar los marcadores cada vez que el zoom cambie
-            map.on('zoomend', actualizarMarcadores);
-
-            // Llamar a la función una vez al cargar para asegurar que el estado de los marcadores es correcto
-            actualizarMarcadores();
         }
 
         // ---------------------------------------------------------
         // MAPA DE CALOR POR VALORES
         // ---------------------------------------------------------
-        function agregarMapaDeCalorPorValores(datosHeatmap) {
-            if (!datosHeatmap || datosHeatmap.length === 0) {
+        function agregarMapaDeCalorPorValores(datos, layerGroup) {
+            if (!datos || datos.length === 0) {
                 console.warn("No hay datos para el mapa interpolado.");
                 return;
             }
 
+            console.log("Datos para mapa interpolado:", datos); // Asegúrate de que los datos sean correctos
+
             // Determinar los valores mínimos y máximos de "valor" para normalizar
-            const valores = datosHeatmap.map((punto) => punto[2]); // Tercer valor del array es "valor"
+            const valores = datos.map((punto) => punto[2]); // Tercer valor del array es "valor"
             const minValor = Math.min(...valores);
             const maxValor = Math.max(...valores);
 
             // Normalizar un valor en el rango [minValor, maxValor] a [0, 1]
             const normalizarValor = (valor) => (valor - minValor) / (maxValor - minValor);
-
-            // Crear un grupo de capas para los puntos interpolados
-            const interpolatedLayerGroup = L.layerGroup();
-
-            datosHeatmap.forEach(([latitud, longitud, valor]) => {
+            
+            datos.forEach(([latitud, longitud, valor]) => {
                 const intensidad = normalizarValor(valor); // Normalizar el campo "valor"
 
                 // Crear varios círculos con radios crecientes y opacidades decrecientes
@@ -345,23 +271,20 @@ fetch('/mapa/mapa-config')
                     });
 
                     // Añadir cada círculo al grupo de capas
-                    circle.addTo(interpolatedLayerGroup);
+                    circle.addTo(layerGroup);
                 }
             });
-
-            // Agregar el grupo de capas interpoladas al mapa
-            interpolatedLayerGroup.addTo(map);
         }
 
         // Función para obtener el color basado en la intensidad
         function obtenerColorPorIntensidad(intensidad) {
             // Define el gradiente de colores
             const colores = {
-                0: '#63B8D9',  // Azul más intenso
-                0.2: '#8FE1B0',  // Verde más intenso
-                0.4: '#F0F67B',  // Amarillo más intenso
-                0.6: '#F69C4E',  // Naranja más intenso
-                0.8: '#F78A7D',  // Rojo pastel más intenso
+                0: '#63B8D9',  // Azul pastel
+                0.2: '#8FE1B0',  // Verde pastel
+                0.4: '#F0F67B',  // Amarillo pastel
+                0.6: '#F69C4E',  // Naranja pastel
+                0.8: '#F78A7D',  // Rojo pastel
             };
 
             // Encuentra el color más cercano a la intensidad
@@ -373,6 +296,103 @@ fetch('/mapa/mapa-config')
             }
             return colorActual;
         }
+
+        // ---------------------------------------------------------
+        // MARCADORES DE MEDICIONES
+        // ---------------------------------------------------------
+        /*
+                let currentZoom = map.getZoom();  // Guardar el zoom inicial
+        let markers = [];  // Array para almacenar los marcadores
+        
+            function mostrarMarcadores(mediciones) {
+                // Limpiar todos los marcadores anteriores del mapa
+                map.eachLayer(function (layer) {
+                    if (layer instanceof L.Marker) {
+                        map.removeLayer(layer); // Eliminar todos los marcadores
+                    }
+                });
+
+                // Crear un array para almacenar las coordenadas de las mediciones
+                const waypoints = [];
+
+                // Añadir los marcadores para las mediciones
+                mediciones.forEach(function (medicion) {
+                    const { latitud, longitud, tipo_gas, fecha, valor } = medicion;
+
+                    // Asegúrate de que las coordenadas son válidas
+                    if (latitud && longitud) {
+                        const latLng = [latitud, longitud];
+                        const estado = asignarEstado(valor);
+
+                        // Crear un ícono personalizado con clase basada en el estado
+                        const customIcon = L.divIcon({
+                            className: `custom-marker ${estado}`, // Clases personalizadas
+                            iconSize: [30, 30], // Tamaño del ícono
+                            iconAnchor: [15, 30], // Punto de anclaje del ícono
+                            popupAnchor: [0, -30], // Posición del popup respecto al ícono
+                        });
+
+                        // Crear un marcador con el ícono personalizado
+                        const marcador = L.marker(latLng, {
+                            icon: customIcon,
+                            latLng: latLng,  // Guardamos las coordenadas
+                        });
+
+                        // Añadir información al marcador (popup) con la clase de estado
+                        marcador.bindPopup(`
+                    <b>Tipo de Gas:</b> ${tipo_gas}<br>
+                    <b>Fecha:</b> ${fecha}<br>
+                    <b>Valor:</b> ${valor}<br>
+                    <b>Estado:</b> <span class="${estado}">${estado}</span>
+                `);
+
+                        // Añadir el marcador al array de marcadores
+                        markers.push(marcador);
+
+                        // Añadir la clase de estado al contenedor del popup al abrirlo
+                        marcador.on('popupopen', function (e) {
+                            const popupContentWrapper = e.popup._container.querySelector('.leaflet-popup-content-wrapper');
+                            if (popupContentWrapper) {
+                                popupContentWrapper.classList.add(estado);
+                            }
+                        });
+
+                        // Añadir el punto a la lista de waypoints (coordenadas para la ruta)
+                        waypoints.push(latLng);
+                    }
+                });
+
+                // Función para actualizar la visibilidad de los marcadores según el nivel de zoom
+                function actualizarMarcadores() {
+                    const zoom = map.getZoom();  // Obtener el zoom actual
+                    const center = map.getCenter();  // Obtener el centro del mapa
+                    const radio = 5000 / zoom;  // Radio de visibilidad (ajustar según necesidad)
+
+                    // Iterar sobre los marcadores y mostrar/ocultar según la distancia del centro
+                    markers.forEach(marcador => {
+                        const distance = center.distanceTo(marcador.getLatLng());  // Calcular la distancia desde el centro
+
+                        // Si la distancia es menor que el radio, mostramos el marcador, si no lo ocultamos
+                        if (distance < radio) {
+                            marcador.addTo(map);  // Mostrar marcador
+                        } else {
+                            map.removeLayer(marcador);  // Ocultar marcador
+                        }
+                    });
+                }
+
+                // Inicializar los marcadores en el mapa
+                markers.forEach(marcador => {
+                    marcador.addTo(map);
+                });
+
+                // Actualizar los marcadores cada vez que el zoom cambie
+                map.on('zoomend', actualizarMarcadores);
+
+                // Llamar a la función una vez al cargar para asegurar que el estado de los marcadores es correcto
+                actualizarMarcadores();
+            }
+        */
         // ---------------------------------------------------------
         // DATOS AEMET
         // ---------------------------------------------------------
