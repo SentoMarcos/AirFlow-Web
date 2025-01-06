@@ -12,9 +12,6 @@
 // --------------------------------------------------------
 
 let map; // Variable global para el mapa
-
-// Inicializa el mapa con una ubicación inicial genérica
-var map;
 var capas;
 fetch('/mapa/mapa-config')
     .then(response => response.json())
