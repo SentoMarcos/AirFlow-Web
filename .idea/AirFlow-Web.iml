@@ -15,5 +15,6 @@
     <orderEntry type="library" name="html2canvas" level="application" />
     <orderEntry type="library" name="jspdf" level="application" />
     <orderEntry type="library" name="pdf-lib" level="application" />
+    <orderEntry type="library" name="leaflet-image" level="application" />
   </component>
 </module>

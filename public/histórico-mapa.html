@@ -121,7 +121,7 @@
 
                 await actualizarMapaConMediciones(mediciones);
                 map.invalidateSize(); // Asegura que el mapa y sus marcadores se rendericen correctamente
-                await new Promise(resolve => setTimeout(resolve, 5000));
+                await new Promise(resolve => setTimeout(resolve, 3000));
 
                 // Capturar el mapa como imagen
                 const canvas = await html2canvas(document.getElementById('mapa'), { useCORS: true, scale: 2 });
