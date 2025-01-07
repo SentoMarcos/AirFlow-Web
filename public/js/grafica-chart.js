@@ -22,23 +22,31 @@ while (data.length < 24) {
 data.sort(() => Math.random() - 0.5);
 
 const backgroundColors = data.map(value => {
-    if (value <= 25) return 'rgba(255, 132, 224, 1)'; // Rosa
-    if (value <= 50) return 'rgba(82, 215, 131, 1)';  // Verde
-    if (value <= 75) return 'rgba(255, 253, 132, 1)';  // Amarillo
-    if (value <= 100) return 'rgba(255, 146, 132, 1)'; // Rojo
-    return 'rgba(255, 146, 132, 1)'; // Rojo para valores mayores a 100
+    if (value <= 50) return 'rgba(255, 132, 224, 1)'; // Rosa
+    if (value <= 100) return 'rgba(82, 215, 131, 1)';  // Verde
+    if (value <= 150) return 'rgba(255, 253, 132, 1)';  // Amarillo
+    if (value <= 200) return 'rgba(255, 146, 132, 1)'; // Rojo
+    return 'rgb(255,32,0)'; // Rojo para valores mayores a 100
 });
 const borderColors = backgroundColors;
-
+function asignarEstadoPorMedia(media) {
+    // Define los intervalos para los estados
+    if (!media) return 'vacio';
+    if (media <= 50) return 'excelente';
+    if (media <= 100) return 'bueno';
+    if (media <= 150) return 'moderado';
+    if (media <= 200) return 'malo';
+    return 'peligroso'; // Si es mayor a 100
+}
 const ozoneChart = new Chart(ctx, {
     type: 'bar',
     data: {
         labels: Array.from({ length: 24 }, (_, i) => `${i}h`),
         datasets: [{
             label: 'µg/m³',
-            data: data,
-            backgroundColor: backgroundColors,
-            borderColor: borderColors,
+            data: Array(24).fill(0), // Datos iniciales vacíos
+            backgroundColor: Array(24).fill('rgba(255, 132, 224, 1)'), // Colores iniciales
+            borderColor: Array(24).fill('rgba(255, 132, 224, 1)'),
             borderWidth: 1
         }]
     },

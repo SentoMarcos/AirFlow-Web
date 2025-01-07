@@ -25,7 +25,7 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
     <script src="https://unpkg.com/leaflet.heat/dist/leaflet-heat.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.heat/0.2.0/leaflet-heat.js"></script>
-    
+
     <style>
         /* Contenedor desplegable en la parte inferior */
         .leaflet-bottom.leaflet-routing-container {
@@ -95,7 +95,7 @@
                 </div>
             </div>
     </div>
-    <div id="gráfica">
+    <!--<div id="gráfica">
         <h3>Gases</h3>
         <div id="indicador-gráfica">
             <img src="img/logo-ozono.png" alt="logo ozono">
@@ -108,14 +108,56 @@
         <div id="chart">
             <canvas id="ozoneChart"></canvas>
         </div>
+    </div>-->
+    <div id="panel-contenedor">
+        <button onclick="togglePanelPersonalizar()" class="">Personalizar Mapa</button>
+        <div id="panel-personalizar-mapa">
+        <!--<h3>Personalizar vista del mapa</h3>-->
+        <div id="opciones-personalización">
+            <!-- Checkbox para mostrar u ocultar estaciones -->
+            <label for="check-estaciones">
+                <input type="checkbox" checked id="check-estaciones">
+                Estaciones de medida oficiales
+            </label>
+
+            <!-- Selector para cambiar las capas del mapa -->
+            <label for="capas-mapa">Capa del mapa:</label>
+            <select id="capas-mapa">
+                <option value="Callejero">Callejero</option>
+                <option value="Satélite">Satélite</option>
+                <option value="Oscuro">Oscuro</option>
+                <option value="Claro">Claro</option>
+                <option value="Minimalista">Minimalista</option>
+            </select>
+
+            <!-- Controles de rango temporal -->
+            <div id="rango-temporal">
+                <label for="fecha-inicio">Fecha de inicio:</label>
+                <input type="date" id="fecha-inicio">
+
+                <label for="fecha-fin">Fecha de fin:</label>
+                <input type="date" id="fecha-fin">
+
+                <label for="slider-temporal">Rango de tiempo:</label>
+                <input type="range" id="slider-temporal" min="0" max="100" step="1" value="50">
+                <span id="slider-valor">Tiempo real</span>
+                <button onclick="obtenerMedicionesPorIntervalo()">Consultar Mediciones</button>
+            </div>
+        </div>
     </div>
+    </div>
+
     <div id="botones-mapa">
-    <button id="centrar-ubicacion" onclick="centrarEnMiUbicacion()"><i class="bi bi-crosshair"></i></button>
-    <button id="consultar-medición" onclick="verMedidasEnUbicacion()" class="button-primary">Ver medición</button>
-    <button id="cancelar-consulta" class="button-primary">Cancelar Consulta</button>
+    <button id="centrar-ubicacion"><i class="bi bi-crosshair"></i></button>
+    <!--<button id="consultar-medición" onclick="verMedidasEnUbicacion()" class="button-primary">Ver medición</button>
+    <button id="cancelar-consulta" class="button-primary">Cancelar Consulta</button>-->
+    </div>
+    <div id="botones-mapa-complementos">
+        <!--<button onclick=""><i class="bi bi-crosshair"></i></button>-->
+        <!--<button class="button-primary">Cancelar Consulta</button>-->
     </div>
     <div id="mapa">
-        <button class="toggle-routing">Mostrar Ruta</button>
+        <!--<button class="toggle-routing">Mostrar Ruta</button>-->
     </div>
 </div>
 <script src="js/header.js"></script>
@@ -124,9 +166,9 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="js/control-acceso.js" data-roles-restringidos="1"></script>
 <script src="js/mis-medidas.js"></script>
+<script src="js/freeMap.js"></script> <!-- Archivo JavaScript para cargar mapa básico-->
 <script src="js/premiumMap.js"></script>
 <script src="js/apiAemet.js"></script>
-<script src="js/freeMap.js"></script> <!-- Archivo JavaScript para cargar mapa básico-->
 <script src="js/grafica-chart.js"></script>
 <!--Calidad aire-->
 </body>
