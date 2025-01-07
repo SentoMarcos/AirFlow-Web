@@ -18,11 +18,11 @@ fetch('/mapa/mapa-config')
     .then(response => response.json())
     .then(config => {
             map = L.map('mapa', {
-            zoomControl: config.zoomControl
+            zoomControl: config.zoomControl,
         }).setView(config.center, config.zoom);
 
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 19
+        L.tileLayer(config.tileLayer.url, {
+            maxZoom: config.maxZoom,
         }).addTo(map);
 
         // Usa la geolocalización del navegador para obtener tu ubicación
@@ -232,7 +232,6 @@ fetch('/mapa/mapa-config')
                 console.error("Error en initMapa:", error);
             }
         }
-
         // ---------------------------------------------------------
         // MAPA DE CALOR POR VALORES
         // ---------------------------------------------------------
@@ -301,7 +300,7 @@ fetch('/mapa/mapa-config')
         // MARCADORES DE MEDICIONES
         // ---------------------------------------------------------
         /*
-                let currentZoom = map.getZoom();  // Guardar el zoom inicial
+        let currentZoom = map.getZoom();  // Guardar el zoom inicial
         let markers = [];  // Array para almacenar los marcadores
         
             function mostrarMarcadores(mediciones) {
