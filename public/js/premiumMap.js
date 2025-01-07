@@ -176,6 +176,7 @@ async function obtenerMedicionesPorIntervalo() {
 
         const mediciones = await response.json();
 
+
         console.log("Mediciones obtenidas:", mediciones);
 
         // Aquí puedes usar los datos obtenidos para renderizarlos en el mapa
@@ -221,16 +222,16 @@ function actualizarMapaConMediciones(mediciones) {
     });
 
     // Llamar a la función para agregar el mapa de calor con los datos de mediciones
-    agregarMapaDeCalorPorValores(datosHeatmap);
+    agregarValoresMapaCalor(datosHeatmap);
 }
-function agregarMapaDeCalorPorValores(datosHeatmap) {
+function agregarValoresMapaCalor(datosHeatmap) {
     if (!datosHeatmap || datosHeatmap.length === 0) {
         console.warn("No hay datos para el mapa interpolado.");
         return;
     }
     // Asegurarse de que capas.mapaCalor esté inicializado
-    if (capas.mapaCalor) {
-        capas.mapaCalor.clearLayers(); // Limpia los datos previos
+    if (capasGases.interpolatedLayerGroup) {
+        capasGases.interpolatedLayerGroup.clearLayers(); // Limpia los datos previos
     }
     // Determinar los valores mínimos y máximos de "valor" para normalizar
     const valores = datosHeatmap.map((punto) => punto[2]); // Tercer valor del array es "valor"
@@ -267,7 +268,7 @@ function agregarMapaDeCalorPorValores(datosHeatmap) {
     });
 
     // Agregar el grupo de capas interpoladas al mapa
-    capas.mapaCalor.addLayer(interpolatedLayerGroup);
+    capasGases.interpolatedLayerGroup.addLayer(interpolatedLayerGroup);
 }
 
 

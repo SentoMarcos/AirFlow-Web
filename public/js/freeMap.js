@@ -12,7 +12,8 @@
 // --------------------------------------------------------
 
 let map; // Variable global para el mapa
-var capas;
+let capas;
+let capasGases;
 fetch('/mapa/mapa-config')
     .then(response => response.json())
     .then(config => {
@@ -57,13 +58,20 @@ fetch('/mapa/mapa-config')
             mapaCalor: L.layerGroup(),
         };
 
+        capasGases = {
+            // Crear los grupos de capas
+            interpolatedLayerGroup : L.layerGroup(),
+            co2LayerGroup : L.layerGroup(), // Capa para CO2
+            no2LayerGroup : L.layerGroup(), // Capa para NO2
+            o3LayerGroup : L.layerGroup(),  // Capa para O3
+        }
         // Añade las capas al control de capas
-        var controlCapas = L.control.layers(null, {
+        /*var controlCapas = L.control.layers(null, {
             "Calidad del Aire": capas.calidadAire,
             "Estaciones GVA": capas.estacionesGVA,
             "Estaciones AEMET": capas.estacionesAEMET,
             "Mapa de Calor": capas.mapaCalor,
-        }).addTo(map);
+        }).addTo(map);*/
 
 
 
@@ -221,17 +229,17 @@ fetch('/mapa/mapa-config')
                 const { mediciones, datosPorGas } = await obtenerMediciones(); // Espera a obtener las mediciones
 
                 // Crear los grupos de capas
-                let interpolatedLayerGroup = L.layerGroup();
+                /*let interpolatedLayerGroup = L.layerGroup();
                 let co2LayerGroup = L.layerGroup(); // Capa para CO2
                 let no2LayerGroup = L.layerGroup(); // Capa para NO2
-                let o3LayerGroup = L.layerGroup();  // Capa para O3
-                
+                let o3LayerGroup = L.layerGroup();  // Capa para O3*/
+                await initCapas();
                 if (datosPorGas.general.length > 0) {
                     // Agregar los datos al mapa de calor
-                    agregarMapaDeCalorPorValores(datosPorGas.general, interpolatedLayerGroup);
-                    agregarMapaDeCalorPorValores(datosPorGas.CO2, co2LayerGroup);
-                    agregarMapaDeCalorPorValores(datosPorGas.NO2, no2LayerGroup);
-                    agregarMapaDeCalorPorValores(datosPorGas.O3, o3LayerGroup);
+                    agregarMapaDeCalorPorValores(datosPorGas.general, capasGases.interpolatedLayerGroup);
+                    agregarMapaDeCalorPorValores(datosPorGas.CO2, capasGases.co2LayerGroup);
+                    agregarMapaDeCalorPorValores(datosPorGas.NO2, capasGases.no2LayerGroup);
+                    agregarMapaDeCalorPorValores(datosPorGas.O3, capasGases.o3LayerGroup);
                 } else {
                     console.warn("No hay datos para mostrar en el mapa de calor.");
                 }
@@ -239,15 +247,15 @@ fetch('/mapa/mapa-config')
                 // Crear el control de capas para añadir al mapa
                 const controlCapas = L.control.layers(
                     {
-                        "Mapa de Calor (Todos los Gases)": interpolatedLayerGroup,
-                        "Mapa CO2": co2LayerGroup,
-                        "Mapa NO2": no2LayerGroup,
-                        "Mapa O3": o3LayerGroup
+                        "Mapa de Calor (Todos los Gases)": capasGases.interpolatedLayerGroup,
+                        "Mapa CO2": capasGases.co2LayerGroup,
+                        "Mapa NO2": capasGases.no2LayerGroup,
+                        "Mapa O3": capasGases.o3LayerGroup
                     }
                 ).addTo(map);
 
                 // Capa visible por defecto
-                interpolatedLayerGroup.addTo(map);
+                capasGases.interpolatedLayerGroup.addTo(map);
 
             } catch (error) {
                 console.error("Error en initMapa:", error);
@@ -318,9 +326,9 @@ fetch('/mapa/mapa-config')
             return colorActual;
         }
 
+        // ---------------------------------------------------------
         //
-        //
-        //
+        // ---------------------------------------------------------
         async function cargarDatosGVA() {
             const url = 'https://valencia.opendatasoft.com/api/records/1.0/search/?dataset=estacions-contaminacio-atmosferiques-estaciones-contaminacion-atmosfericas&rows=20';
 
