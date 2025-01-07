@@ -242,7 +242,7 @@ function agregarValoresMapaCalor(datosHeatmap) {
     const normalizarValor = (valor) => (valor - minValor) / (maxValor - minValor);
 
     // Crear un grupo de capas para los puntos interpolados
-    const interpolatedLayerGroup = L.layerGroup();
+    const interpolatedLayer = L.layerGroup();
 
     datosHeatmap.forEach(([latitud, longitud, valor]) => {
         const intensidad = normalizarValor(valor); // Normalizar el campo "valor"
@@ -263,12 +263,12 @@ function agregarValoresMapaCalor(datosHeatmap) {
             });
 
             // Añadir cada círculo al grupo de capas
-            circle.addTo(interpolatedLayerGroup);
+            circle.addTo(interpolatedLayer);
         }
     });
 
     // Agregar el grupo de capas interpoladas al mapa
-    capasGases.interpolatedLayerGroup.addLayer(interpolatedLayerGroup);
+    capasGases.interpolatedLayerGroup.addLayer(interpolatedLayer);
 }
 
 

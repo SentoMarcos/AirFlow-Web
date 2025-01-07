@@ -79,8 +79,6 @@
     document.getElementById('generar-pdf').addEventListener("click", generarPDF);
     document.getElementById('ver-medidas').addEventListener("click", obtenerMedicionesPorIntervalo);
     async function generarPDF() {
-
-        document.getElementById('generar-pdf').addEventListener("click", async () => {
             const fechaInicio = new Date(document.getElementById('fecha-inicio').value);
             const fechaFin = new Date(document.getElementById('fecha-fin').value);
 
@@ -154,8 +152,6 @@
             link.href = url;
             link.download = 'Historico_Mediciones.pdf';
             link.click();
-        });
-
     }
 
     /*document.getElementById('generar-pdf').addEventListener("click", async () => {
