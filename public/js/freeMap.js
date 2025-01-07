@@ -73,8 +73,6 @@ fetch('/mapa/mapa-config')
             "Mapa de Calor": capas.mapaCalor,
         }).addTo(map);*/
 
-
-
         // ---------------------------------------------------------
         // BOTONES DE ZOOM
         // ---------------------------------------------------------
@@ -228,11 +226,12 @@ fetch('/mapa/mapa-config')
             try {
                 const { mediciones, datosPorGas } = await obtenerMediciones(); // Espera a obtener las mediciones
 
-                // Crear los grupos de capas
+                // Crear los grupos de capas (copiado arriba del archivo)
                 /*let interpolatedLayerGroup = L.layerGroup();
                 let co2LayerGroup = L.layerGroup(); // Capa para CO2
                 let no2LayerGroup = L.layerGroup(); // Capa para NO2
                 let o3LayerGroup = L.layerGroup();  // Capa para O3*/
+
                 await initCapas();
                 if (datosPorGas.general.length > 0) {
                     // Agregar los datos al mapa de calor
@@ -269,8 +268,6 @@ fetch('/mapa/mapa-config')
                 console.warn("No hay datos para el mapa interpolado.");
                 return;
             }
-
-            console.log("Datos para mapa interpolado:", datos); // Asegúrate de que los datos sean correctos
 
             // Determinar los valores mínimos y máximos de "valor" para normalizar
             const valores = datos.map((punto) => punto[2]); // Tercer valor del array es "valor"
@@ -326,7 +323,66 @@ fetch('/mapa/mapa-config')
         }
 
         // ---------------------------------------------------------
-        //
+        // DATOS AEMET
+        // ---------------------------------------------------------
+        async function initCapas() {
+            // Carga y asigna datos a las capas
+            //await obtenerCalidadAire(39.5, -1.0);
+            await cargarDatosGVA();
+            await cargarDatosAemet();
+            //agregarMapaDeCalorPorValores([[39.5, -1.0, 0.8], [39.6, -1.1, 0.6]]); // Ejemplo de datos
+
+            // Agrega las capas al mapa (pueden estar activas por defecto o no)
+            capas.estacionesAEMET.addTo(map);
+            capas.estacionesGVA.addTo(map);
+            capas.mapaCalor.addTo(map);
+        }
+        async function cargarDatosAemet() {
+            const AemetKey = 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwYWJsb3JlYm9sbG8wMkBnbWFpbC5jb20iLCJqdGkiOiJhMDNkNGY3MS1hMWI4LTQ4OWEtODM3YS1kNzFkMmNmMTU5OTIiLCJpc3MiOiJBRU1FVCIsImlhdCI6MTczNjI3NjU2OCwidXNlcklkIjoiYTAzZDRmNzEtYTFiOC00ODlhLTgzN2EtZDcxZDJjZjE1OTkyIiwicm9sZSI6IiJ9.CWvCCuTHlttrTzPeXflUIIr3QdaKhlBE6SC1C2nYwJA'; // Reemplaza con tu clave de API de Aemet
+            const url = `https://opendata.aemet.es/opendata/api/red/especial/contaminacionfondo/estacion/12?api_key=${AemetKey}`;
+            const lat = 39.083910491542845;
+            const lon = -1.1011464074163988;
+
+            try {
+                const response = await fetch(url);
+                if (!response.ok) {
+                    throw new Error(`Error al obtener datos de AEMET: ${response.status}`);
+                }
+                const data = await response.json();
+                console.log("Datos de AEMET:", data);
+
+                // Asegúrate de que el mapa esté inicializado antes de agregar el marcador
+                if (typeof map !== 'undefined' && map) {
+                    const marker = L.marker([lat, lon], {
+                        id: 'aemet-station',       // Añade un ID personalizado al marcador
+                        icon: L.divIcon({          // Utiliza un icono personalizado con clase
+                            className: 'aemet', // Añade tu clase personalizada
+                            iconSize: [30, 30], // Tamaño del ícono
+                            iconAnchor: [15, 30], // Punto de anclaje del ícono
+                            popupAnchor: [0, -30], // Posición del popup respecto al ícono
+                            html: '<div class="custom-marker-icon"></div>', // Personaliza el contenido del marcador
+                        })
+                    })
+                        .bindPopup('Ubicación de la estación AEMET')
+                    capas.estacionesAEMET.addLayer(marker); // Añade el marcador a la capa
+                    //.openPopup(); // Muestra el popup cuando se crea el marcador
+
+                    console.log("Marcador añadido con clase 'custom-marker'");
+                } else {
+                    console.error("El mapa no está inicializado.");
+                }
+            } catch (error) {
+                console.error("Error al cargar datos de AEMET:", error);
+            }
+        }
+        // Llamada a las funciones de inicialización
+        //cargarDatosAemet();
+        initMapa().then(r => cargarDatosAemet().then(cargarDatosGVA()));
+    })
+    .catch(error => console.error("Error al cargar la configuración del mapa:", error));
+
+        // ---------------------------------------------------------
+        // DATOS GVA
         // ---------------------------------------------------------
         async function cargarDatosGVA() {
             const url = 'https://valencia.opendatasoft.com/api/records/1.0/search/?dataset=estacions-contaminacio-atmosferiques-estaciones-contaminacion-atmosfericas&rows=20';
@@ -467,61 +523,3 @@ fetch('/mapa/mapa-config')
                 actualizarMarcadores();
             }
         */
-        // ---------------------------------------------------------
-        // DATOS AEMET
-        // ---------------------------------------------------------
-        async function initCapas() {
-            // Carga y asigna datos a las capas
-            //await obtenerCalidadAire(39.5, -1.0);
-            await cargarDatosGVA();
-            await cargarDatosAemet();
-            //agregarMapaDeCalorPorValores([[39.5, -1.0, 0.8], [39.6, -1.1, 0.6]]); // Ejemplo de datos
-
-            // Agrega las capas al mapa (pueden estar activas por defecto o no)
-            capas.estacionesAEMET.addTo(map);
-            capas.estacionesGVA.addTo(map);
-            capas.mapaCalor.addTo(map);
-        }
-        async function cargarDatosAemet() {
-            const AemetKey = 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwYWJsb3JlYm9sbG8wMkBnbWFpbC5jb20iLCJqdGkiOiJhYzc1ODlkNC1iNWVkLTQ5M2YtYTQ4ZS1mOGMxZjJmYWVjYzYiLCJpc3MiOiJBRU1FVCIsImlhdCI6MTczNDA0NTI1NywidXNlcklkIjoiYWM3NTg5ZDQtYjVlZC00OTNmLWE0OGUtZjhjMWYyZmFlY2M2Iiwicm9sZSI6IiJ9.ftBm8v1OGZII0zK23XNTgdjUlNA1s8exVusZcG5dfaw'; // Reemplaza con tu clave de API de Aemet
-            const url = `https://opendata.aemet.es/opendata/api/red/especial/contaminacionfondo/estacion/12?api_key=${AemetKey}`;
-            const lat = 39.083910491542845;
-            const lon = -1.1011464074163988;
-
-            try {
-                const response = await fetch(url);
-                if (!response.ok) {
-                    throw new Error(`Error al obtener datos de AEMET: ${response.status}`);
-                }
-                const data = await response.json();
-                console.log("Datos de AEMET:", data);
-
-                // Asegúrate de que el mapa esté inicializado antes de agregar el marcador
-                if (typeof map !== 'undefined' && map) {
-                    const marker = L.marker([lat, lon], {
-                        id: 'aemet-station',       // Añade un ID personalizado al marcador
-                        icon: L.divIcon({          // Utiliza un icono personalizado con clase
-                            className: 'aemet', // Añade tu clase personalizada
-                            iconSize: [30, 30], // Tamaño del ícono
-                            iconAnchor: [15, 30], // Punto de anclaje del ícono
-                            popupAnchor: [0, -30], // Posición del popup respecto al ícono
-                            html: '<div class="custom-marker-icon"></div>', // Personaliza el contenido del marcador
-                        })
-                    })
-                        .bindPopup('Ubicación de la estación AEMET')
-                        capas.estacionesAEMET.addLayer(marker); // Añade el marcador a la capa
-                     //.openPopup(); // Muestra el popup cuando se crea el marcador
-
-                    console.log("Marcador añadido con clase 'custom-marker'");
-                } else {
-                    console.error("El mapa no está inicializado.");
-                }
-            } catch (error) {
-                console.error("Error al cargar datos de AEMET:", error);
-            }
-        }
-        // Llamada a las funciones de inicialización
-        //cargarDatosAemet();
-        initMapa().then(r => cargarDatosAemet().then(cargarDatosGVA()));
-    })
-    .catch(error => console.error("Error al cargar la configuración del mapa:", error));
