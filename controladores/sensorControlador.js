@@ -46,3 +46,21 @@ exports.getAllSensoresOfUser = async (req, res) => {
         res.status(500).json({ error: 'Error al obtener los sensores.' });
     }
 }
+
+//funcion para cambiar el nombre a un sensor
+exports.changeNameSensor = async (req, res) => {
+    const { id, nombre } = req.body;
+    try {
+        const sensor = await Sensor.findOne({
+            where: {
+                id_sensor: id
+            }
+        });
+        sensor.nombre = nombre;
+        await sensor.save();
+        res.status(200).json(sensor);
+    } catch (error) {
+        console.error("Error al cambiar el nombre del sensor:", error);
+        res.status(500).json({ error: 'Error al cambiar el nombre del sensor.' });
+    }
+}
