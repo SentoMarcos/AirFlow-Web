@@ -9,7 +9,7 @@
 
 const express = require('express');
 const medicionControlador = require('../controladores/medicionControlador');
-const { createMedicion, getMedicionesPorSensores, getMedicionesPorFecha} = require('../controladores/medicionControlador');
+const { createMedicion, getMedicionesPorSensores, getMedicionesPorFecha, getMedicionesPorIntervaloFecha} = require('../controladores/medicionControlador');
 const router = express.Router();
 
 /**
@@ -23,6 +23,7 @@ const router = express.Router();
 router.post('/mediciones', createMedicion);
 router.post('/mediciones-por-sensor', getMedicionesPorSensores);
 router.post('/mediciones-por-fecha', getMedicionesPorFecha);
+router.post('/mediciones-por-intervalo', getMedicionesPorIntervaloFecha);
 router.post('/mediciones/add', medicionControlador.createMedicion);
 router.get('/mediciones/:id', medicionControlador.getMedicionesOfSensor);
 router.get('/mediciones-all', medicionControlador.getAllMediciones);

@@ -52,18 +52,39 @@
                 <div id="calidad-aire-foto"></div>
             </div>
         </div>
-    </div>  <div id="main-salud">
-      <div id="info-salud">
-          <div id="botones-mapa">
-              <button id="centrar-ubicacion" onclick="centrarEnMiUbicacion()"><i class="bi bi-crosshair"></i></button>
-              <button id="consultar-medición" onclick="verMedidasEnUbicacion()" class="button-primary">Ver medición</button>
-              <button id="cancelar-consulta" class="button-primary">Cancelar Consulta</button>
-          </div>
-          <div id="mapa">
-              <button class="toggle-routing">Mostrar Ruta</button>
-          </div>
-      </div>
-      <div id="exposición">
+    </div>
+    <div id="main-salud">
+    <div id="tabs">
+        <button onclick="mostrarInfoSalud()" class="tab-button"><i class="bi bi-map-fill"></i>Mapa</button>
+        <button onclick="mostrarGrafica()" class="tab-button"><i class="bi bi-bar-chart-line-fill"></i>Gráfica</button>
+    </div>
+
+    <div id="info-salud" class="tab-content active">
+        <div id="botones-mapa">
+            <button id="centrar-ubicacion" onclick="centrarEnMiUbicacion()"><i class="bi bi-crosshair"></i></button>
+            <button id="consultar-medición" onclick="" class="button-primary">Ver medición</button>
+            <button id="cancelar-consulta" class="button-primary">Cancelar Consulta</button>
+        </div>
+        <div id="mapa">
+            <button class="toggle-routing">Mostrar Ruta</button>
+        </div>
+        <div id="gráfica" class="tab-content">
+            <h3>Gases</h3>
+            <div id="indicador-gráfica">
+                <img src="img/logo-ozono.png" alt="logo ozono">
+                <div id="texto-indicador">
+                    <p>Ozono 53 µg/m</p>
+                    <p>Calidad excelente</p>
+                </div>
+                <img src="img/carita-excelente.png" alt="calidad aire">
+            </div>
+            <div id="chart">
+                <canvas id="ozoneChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div id="exposición">
           <div id="exp-total">
               <p>Exposición total</p>
               <div class="expo-nivel">
@@ -98,12 +119,65 @@
 
 <script src="js/header.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
   cargarHeader('header_airflow.html', 'headerAir-2')
 </script>
 <script src="js/control-acceso.js" data-roles-restringidos="1"></script>
 <script src="js/mis-medidas.js"></script>
-<script src="js/crear-mapa.js"></script>
+<script src="js/grafica-chart.js"></script>
+<script>
+   function mostrarInfoSalud() {
+       ocultarTextoExplicativo();
+        document.getElementById('mapa').classList.add('active');
+        document.getElementById('gráfica').classList.remove('active');
+        actualizarBotones('mapa');
+       // Recalcular tamaño del mapa
+       setTimeout(() => {
+           if (window.map) { // Asegúrate de que el mapa esté inicializado
+               window.map.invalidateSize();
+           }
+       }, 100); // Dale un breve tiempo para asegurarte de que el contenedor se haya mostrado
+    }
+
+    function mostrarGrafica() {
+        ocultarTextoExplicativo();
+        document.getElementById('gráfica').classList.add('active');
+        document.getElementById('mapa').classList.remove('active');
+        actualizarBotones('gráfica');
+    }
+
+    function actualizarBotones(activeTab) {
+        const buttons = document.querySelectorAll('.tab-button');
+        buttons.forEach(button => {
+            if (button.innerHTML.includes(activeTab === 'mapa' ? 'Mapa' : 'Gráfica')) {
+                button.classList.add('active');
+            } else {
+                button.classList.remove('active');
+            }
+        });
+    }
+   // Ocultar el texto explicativo
+   function ocultarTextoExplicativo() {
+       const textoExplicativo = document.getElementById('texto-explicativo');
+       if (textoExplicativo) {
+           textoExplicativo.style.display = 'none';
+       }
+   }
+
+   // Configurar el texto explicativo como visible al cargar la página
+   document.addEventListener('DOMContentLoaded', () => {
+       const div = document.getElementById('info-salud');
+       // Mostrar el texto explicativo como contenido inicial
+       const textoExplicativo = document.createElement('p');
+       textoExplicativo.id = 'texto-explicativo';
+       textoExplicativo.textContent = 'En este panel puedes ver la información recogida por tus sensores en el día seleccionado en el calendario. Mediante los botones superiores, puedes cambiar la vista de estos, puedes ver la ubicación de las medidas en el mapa o ver la media de tus datos recogidos por horas.';
+       div.appendChild(textoExplicativo);
+       if (textoExplicativo) {
+           textoExplicativo.style.display = 'block';
+       }
+   });
+</script>
 <script>
     let contadorMarcadores = 0; // Inicializa el contador para los IDs
     const diasContenedor = document.getElementById('dias');
@@ -265,7 +339,7 @@
                     }
 
                     console.log("Mediciones del día:", mediciones);
-
+                    actualizarGrafica(ozoneChart,mediciones);
                     // Llamamos a la función mostrarMarcadores con las mediciones obtenidas
                     mostrarMisMarcadores(mediciones); // Mostrar los marcadores de las mediciones en el mapa
 
@@ -289,6 +363,42 @@
             console.log("No se ha seleccionado ningún día.");
         }
     });
+
+    // Función para actualizar los datos de la gráfica
+    function actualizarGrafica(chart, mediciones) {
+        // Crear arreglos para acumular valores y contar mediciones por cada hora
+        const acumulados = Array(24).fill(0); // Suma de valores por hora
+        const conteos = Array(24).fill(0);    // Conteo de mediciones por hora
+
+        // Agrupar mediciones por hora
+        mediciones.forEach(medicion => {
+            const hora = new Date(medicion.fecha).getHours(); // Obtener la hora de la medición
+            acumulados[hora] += medicion.valor; // Sumar el valor de la medición a la hora correspondiente
+            console.log(medicion, hora)
+            conteos[hora] += 1; // Incrementar el conteo de mediciones para esa hora
+        });
+
+        // Calcular la media para cada hora
+        const valores = acumulados.map((suma, hora) => {
+            return conteos[hora] > 0 ? suma / conteos[hora] : 0; // Media o 0 si no hay mediciones
+        });
+
+        // Actualizar los datos del gráfico
+        chart.data.datasets[0].data = valores;
+
+        // Actualizar los colores de fondo basados en los valores
+        chart.data.datasets[0].backgroundColor = valores.map(value => {
+            if (value <= 50) return 'rgba(255, 132, 224, 1)'; // Rosa
+            if (value <= 100) return 'rgba(82, 215, 131, 1)';  // Verde
+            if (value <= 150) return 'rgba(255, 253, 132, 1)';  // Amarillo
+            if (value <= 200) return 'rgba(255, 146, 132, 1)'; // Rojo
+            return 'rgba(255, 146, 132, 1)'; // Rojo para valores mayores a 100
+        });
+
+        // Refrescar el gráfico
+        chart.update();
+    }
+
 
     // Función para mostrar los marcadores y trazar la ruta con las mediciones
     function mostrarMisMarcadores(mediciones) {
@@ -410,30 +520,18 @@
             puntoActual = siguientePunto;
         }
 
-        // Crear la ruta en Leaflet
+        // Crear la ruta con los puntos ordenados
         routingControl = L.Routing.control({
-            waypoints: rutaOrdenada.map(latLng => L.latLng(latLng)), // Convertir waypoints a L.LatLng
-            routeWhileDragging: true,
-            geocoder: L.Control.Geocoder.nominatim(),
-            createMarker: function() {
-                return null; // Evitar que se creen marcadores predeterminados
-            },
-            lineOptions: {
-                styles: [
-                    {
-                        color: '#52CCD7', // Asigna el color de la ruta
-                        weight: 6,        // Grosor de la línea
-                        opacity: 0.8      // Opacidad de la línea
-                    }
-                ]
-            }
+            waypoints: rutaOrdenada.map(latLng => L.latLng(latLng)),
+            routeWhileDragging: false, // No permite arrastrar puntos
+            createMarker: () => null, // No crear marcadores adicionales
+            addWaypoints: false, // No permitir agregar más puntos
         }).addTo(map);
+
+        // Ajustar la vista del mapa para mostrar la ruta completa
+        const routeBounds = L.latLngBounds(rutaOrdenada);
+        map.fitBounds(routeBounds);
     }
-
-
-
-
-
 </script>
 </body>
 </html>

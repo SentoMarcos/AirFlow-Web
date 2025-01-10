@@ -1,3 +1,24 @@
+header {
+    display: none;
+    /* Esto oculta el header completamente */
+}
+
+/* Cambiar el tamaño de los radio buttons */
+.leaflet-control-layers-selector {
+    width: 16px !important;
+    /* Ajusta el ancho */
+    height: 16px !important;
+    /* Ajusta la altura */
+    transform: scale(0.5) !important;
+    /* Reducir el tamaño con transform */
+}
+
+/* Cambiar el tamaño del texto asociado a los radio buttons */
+.leaflet-control-layers span {
+    font-size: 12px !important;
+    /* Ajustar el tamaño del texto */
+}
+/*-----------------------------------------*/
 h3 {
     font-size: 24px;
 }
@@ -9,6 +30,7 @@ h3 {
 /* Transiciones suaves */
 #mapa {
     transition: all 0.3s ease;
+    transform: none; /* Elimina cualquier transformación */
 }
 #header-container nav{
     background: var(--v3-blanco);
@@ -56,6 +78,11 @@ h3 {
     position: absolute;
     bottom: 20px; /* Espacio desde la parte inferior */
     right: 20px;   /* Espacio desde el borde izquierdo */
+}
+
+.leaflet-control-layers {
+    display: block !important;
+    /* Forzamos que siempre se muestre */
 }
 
 /* Sección de características */
@@ -152,7 +179,7 @@ h3 {
 }
 
 /* Sección de gráfica */
-#gráfica{
+#container-airflow #gráfica{
     display: none;
     flex-direction: column;
     height: 45%;
@@ -165,14 +192,52 @@ h3 {
     border-radius: 48px;
     padding: 15px;
 }
-#ozoneChart{
+/* Contenedor principal del panel */
+#container-airflow #panel-contenedor {
+    display: flex;
+    flex-direction: column;
+    height: 45%;
+    position: absolute;
+    z-index: 1001;
+    bottom: -41.2vh;
+    left: 10px;
+    width: 30%;
+    border-radius: 24px;
+    padding: 0px 15px 15px 0px;
+    overflow: hidden; /* Asegura que el contenido no se desborde */
+    transition: bottom 0.3s ease-in-out; /* Animación suave */
+}
+#container-airflow #panel-contenedor>button{
+    background: var(--v3-negro);
+    color: var(--v3-blanco);
+    font-family: "IBM Plex Mono", sans-serif;
+    width: 45%;
+    height: 10%;
+    border-radius: 24px 24px 0px 0px;
+}
+#container-airflow #panel-contenedor>button:hover{
+    background: var(--cuadratica);
+    border: var(--v3-blanco);
+}
+/* Panel de personalización oculto */
+#container-airflow #panel-personalizar-mapa {
+    display: block;
+    flex-direction: column;
+    height: 100%;
+    position: relative;
+    background-color: var(--v3-blanco);
+    border-radius: 0px 24px 24px 24px;
+    padding: 15px;
+    overflow-y: auto; /* Permite desplazarse si el contenido es mayor que el panel */
+}
+#container-airflow #gráfica #ozoneChart{
     display: block;
     width: 100%;
     height: 100%;
 }
 
 /* Contenedor del indicador de la gráfica */
-#gráfica #indicador-gráfica{
+#container-airflow #gráfica #indicador-gráfica{
     display: flex;
     flex-direction: row; /* Flexbox en fila */
     justify-content: space-evenly; /* Espacio igual entre elementos */
@@ -209,6 +274,16 @@ h3 {
     display: flex;
     flex-direction: column;
     align-items: flex-end;
+    gap: 20px;
+}
+#botones-mapa-complementos{
+    position: absolute;
+    z-index: 1001;
+    bottom: 2vw;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
     gap: 20px;
 }
 #botones-mapa>button{
@@ -356,5 +431,16 @@ h3 {
     background-size: cover;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
     background-image: url("../img/aemet.webp");
+    background-position: center center;
+}
+.gva{
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 2px solid white;
+    background: white;
+    background-size: cover;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    background-image: url("../img/ajuntament.png");
     background-position: center center;
 }
