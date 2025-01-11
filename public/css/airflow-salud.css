@@ -29,6 +29,14 @@ h3 {
 
 #container-salud #main-salud>div#info-salud{
     height: 70%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+#container-salud #main-salud>div#info-salud #texto-explicativo{
+    max-width: 80%;
+    font-family: Poppins, sans-serif;
 }
 
 #container-salud #main-salud>div#info-salud .scroll-y{
@@ -272,7 +280,12 @@ h3 {
 
 #mapa{
     height: 100%;
+    width: 100%;
     border-radius: 48px;
+    display: none;
+}
+#mapa.active{
+    display: block;
 }
 .leaflet-top{
     display: none;
@@ -346,10 +359,67 @@ h3 {
     background-color: var(--v3-rosa-excelente);
 }
 
+#consultar-medición{
+    display: none;
+}
+.tab-content {
+    display: none;
+}
+.tab-content.active {
+    display: block;
+}
 
+.tab-button {
+    padding: 10px 20px;
+    margin: 5px;
+    background-color: #f0f0f0;
+    border: 1px solid #ddd;
+    cursor: pointer;
+    border-radius: 48px;
+    font-family: "IBM Plex Mono", sans-serif;
+}
 
+.tab-button:hover {
+    background-color: #e0e0e0;
+}
 
+.tab-button.active {
+    background-color: #52CCD7FF;
+    color: white;
+    border: none;
+}
 
+#gráfica{
+    display: none;
+    width: 30%;
+    padding: 25px;
+    position: absolute;
+    top: 20vh;
+    z-index: 1005;
+    background: var(--v3-blanco);
+    border-radius: 48px;
+}
+#gráfica.active{
+    display: block;
+}
+/* Contenedor del indicador de la gráfica */
+#gráfica #indicador-gráfica{
+    display: flex;
+    flex-direction: row; /* Flexbox en fila */
+    justify-content: space-evenly; /* Espacio igual entre elementos */
+    align-items: center; /* Alineación de elementos centrada verticalmente */
+    max-height: 60px; /* Altura máxima de 60 píxeles */
+}
+#gráfica #chart{
+    height: 70%;
+}
+#gráfica #chart #ozoneChart{
+    /*height: 70%;*/
+}
+#tabs{
+    position: absolute;
+    z-index: 1002;
+}
 @media (max-width: 1105px) {
     #container-salud #main-salud>div#info-salud .grid{
         grid-template-columns: repeat(3, 1fr); /* 5 columnas iguales */

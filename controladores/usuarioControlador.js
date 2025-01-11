@@ -219,6 +219,51 @@ exports.loginUsuario = async (req, res) => {
         }
     };
 
+    /**
+ * @function recuperarContrasenya
+ * @description Generar y actualizar una nueva contraseña para el usuario y enviarla por correo.
+ * @async
+ * @param {Object} req - Objeto de solicitud de Express.
+ * @param {Object} res - Objeto de respuesta de Express.
+ */
+
+// {Object}: req, {Object}: res => recuperarContrasenya() => void
+
+exports.recuperarContrasenya = async (req, res) => {
+    const { email, nuevaContrasenya } = req.body;
+    console.log("Datos recibidos:", req.body);
+
+    // Comprobar parámetros obligatorios
+    if (!email || !nuevaContrasenya) {
+        console.error("Faltan parámetros obligatorios");
+        return res.status(400).json({ error: 'Email y nueva contraseña son obligatorios.' });
+    }
+
+    try {
+        // Buscar el usuario por correo electrónico
+        const usuario = await Usuario.findOne({ where: { email: email } });
+        if (!usuario) {
+            console.error("Usuario no encontrado");
+            return res.status(404).json({ error: 'Usuario no encontrado.' });
+        }
+
+        // Encriptar la nueva contraseña
+        const hashedPassword = await bcrypt.hash(nuevaContrasenya, 10); // 10 es el número de salt rounds
+        console.log("Nueva contraseña encriptada:", hashedPassword);
+
+        // Actualizar la contraseña en la base de datos
+        await Usuario.update({ contrasenya: hashedPassword }, { where: { email: email } });
+
+        console.log("Contraseña actualizada correctamente");
+        res.status(200).json({ message: 'Contraseña actualizada correctamente.' });
+
+    } catch (error) {
+        console.error("Error al actualizar la contraseña:", error);
+        res.status(500).json({ error: 'Error interno del servidor.' });
+    }
+};
+
+
 /**
  * @function getMisSensores
  * @description Obtener los sensores de un usuario específico
