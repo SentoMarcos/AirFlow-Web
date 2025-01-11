@@ -17,6 +17,7 @@ const usuarioRoutes = require('./rutas/usuarioRutas'); // Importa las rutas de u
 const medicionRoutes = require('./rutas/medicionRutas'); // Importa las rutas de mediciones
 const sensorRoutes = require('./rutas/sensoresRutes'); // Importa las rutas de mediciones
 const emailRoutes = require('./rutas/emailRutas'); // Importa las rutas de email
+const mapaRoutes = require('./rutas/mapaRutas'); // Importa las rutas de email
 const bodyParser = require('body-parser'); // Editar correos
 
 
@@ -42,7 +43,9 @@ app.get('/', (req, res) => {
 app.use('/usuarios', usuarioRoutes);
 app.use('/mediciones', medicionRoutes);
 app.use('/sensores', sensorRoutes);
-app.use('/email', emailRoutes); 
+app.use('/email', emailRoutes);
+app.use('/mapa', mapaRoutes);
+
 
 
 // Sincronizar la base de datos

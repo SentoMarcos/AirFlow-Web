@@ -186,7 +186,7 @@ document.getElementById("saveBtn").addEventListener("click", function() {
         const password= document.getElementById("inputPassword").value;
         const newPassword1= document.getElementById("newPassword1").value;
         const newPassword2= document.getElementById("newPassword2").value;
-
+        errorPassword.textContent = '';
         // Validar campos correctos
         if (!/^(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*_.\-:])[a-zA-Z0-9!@#$%^&*_.\-:]{6,16}$/.test(newPassword1)) {
             errorPassword.textContent = "La contraseña debe tener entre 6 y 16 caracteres e incluir al menos: una letra mayúscula, un número, y un carácter especial (!@#$%^&*_.-:).";
@@ -219,7 +219,7 @@ document.getElementById("saveBtn").addEventListener("click", function() {
             .then(response => response.json())
             .then(data => {
                 if (data.error) {
-                    alert(data.error); // Muestra el error si lo hay
+                    //alert(data.error); // Muestra el error si lo hay
                     errorPassword.textContent = data.error;
                 } else {
                     console.log("Contraseña cambiada con éxito");

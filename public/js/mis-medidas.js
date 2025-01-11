@@ -133,7 +133,7 @@ obtenerMisSensores()
 
 async function obtenerMediciones() {
     try {
-        const response = await fetch('http://localhost:3000/mediciones/mediciones-all'); // Asegúrate de usar la URL correcta
+        const response = await fetch('http://localhost:3000/mediciones/mediciones-all');
 
         if (!response.ok) {
             throw new Error(`Error en la solicitud: ${response.status}`);
@@ -141,20 +141,51 @@ async function obtenerMediciones() {
 
         const mediciones = await response.json();
 
-        // Crear el array para el mapa de calor con las coordenadas y la intensidad (valor de la medición)
-        const datosHeatmap = mediciones.map(medicion => {
-            return [
-                medicion.latitud,         // Latitud
-                medicion.longitud,        // Longitud
-                medicion.valor            // Intensidad (valor de la medición)
-            ];
+        // Procesar los datos para el mapa de calor por capas
+        const datosPorGas = {
+            general: [],
+            CO2: [],
+            NO2: [],
+            O3: [],
+        }
+
+        mediciones.forEach(element => {
+            const punto = [element.latitud, element.longitud, element.valor];
+
+            // Validar que tipo_gas tenga un valor válido (no undefined, null, o vacío)
+            const gas = element.tipo_gas && element.tipo_gas.trim(); // Asegurarse que no sea undefined, null o vacío
+
+            // Asegurarse de que tipo_gas tiene un valor válido
+            if (!gas) {
+                console.warn(`Tipo de gas no reconocido: ${element.tipo_gas}`);
+                return; // Si no hay un tipo de gas, se ignora esta medición
+            }
+
+            // Agregar el punto al array correspondiente según el tipo de gas
+            datosPorGas.general.push(punto);
+
+            //Calificar el tipo de gas
+            switch (gas) {
+                case 'CO2':
+                    datosPorGas.CO2.push(punto);
+                    break;
+                case 'NO2':
+                    datosPorGas.NO2.push(punto);
+                    break;
+                case 'O3':
+                    datosPorGas.O3.push(punto);
+                    break;
+                default:
+                    console.warn(`Tipo de gas no reconocido: ${element.tipo_gas}`);
+                    break;
+            }
         });
 
-        return {mediciones, datosHeatmap}; // Devuelve los datos procesados para el mapa de calor
+        return {mediciones, datosPorGas}; // Devuelve los datos procesados para el mapa de calor
 
     } catch (error) {
         console.error('Error al obtener las mediciones:', error);
-        return [];  // Devuelve un array vacío si ocurre un error
+        return { mediciones: [], datosPorGas: {} };  // Devuelve un array vacío si ocurre un error
     }
 }
 

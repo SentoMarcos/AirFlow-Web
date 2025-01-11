@@ -50,3 +50,7 @@ Content-Type: application/json
 {
   "sensores": [2]
 }
+
+### Obtener mapa html
+GET http://localhost:3000/mapa/getMapaHtml
+Content-Type: application/json

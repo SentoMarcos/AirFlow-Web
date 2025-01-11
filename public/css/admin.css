@@ -1,0 +1,19 @@
+#admin-container{
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    padding-top: 13vh;
+}
+#sensores-container,#users-container{
+    width: 100vw;
+    padding-inline: 2vw;
+    padding-bottom: 2vw;
+}
+.navbar-nav{
+    display: none;
+}
+th{
+    background: var(--v3-azul);
+    color: var(--v3-blanco);
+    font-weight: bold;
+}
