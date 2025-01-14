@@ -12,6 +12,7 @@
     --v3-naranja-mala: #FF9284;
     --gris-texto:#A0A0A0;
     --v3-gris-oscuro:#444444;
+    --gris-claro:#F7F7F5;
 }
 @font-face {
     font-family: 'Poppins';
@@ -107,7 +108,7 @@ header .collapsing .botones-header{
 header .navbar-collapse{
     justify-content: space-between;
 }
-header .botones-header #login-button{
+header .botones-header #login-button {
     background: var(--v3-blanco);
     padding: 10px 24px;
     border-radius: 100px;
@@ -119,7 +120,16 @@ header .botones-header #login-button{
     line-height: normal;
     text-decoration: none;
     cursor: pointer;
+    transition: background 0.3s ease, color 0.3s ease; /* Agregado para una transición suave */
 }
+
+header .botones-header #login-button:hover {
+    border-radius: 100px;
+    background: var(--V3_Azul, #52CCD7); /* Color de fondo al hacer hover */
+    color: white; /* Cambiar el color del texto si lo deseas */
+}
+
+
 header #logout-button {
     background: #ff4b4b;
     padding: 10px 24px;
@@ -157,20 +167,101 @@ header .botones-header #mas-button{
     text-decoration: none;
     color: white;
 }
-.button-secondary{
-    background: var(--v3-azul);
-    box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
+.button-primary:hover {
+    background: var(--V3_Blanco, #FFF);
+    border: 3px solid var(--v3-azul);
     border-radius: 48px;
+    transition: ease-in;
+    color: var(--v3-negro)
+}
+.button-secondary.mapa {
+    background: var(--v3-azul);
+    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+    border-radius: 100px;
     display: flex;
-    width: 207px;
-    padding: 10px 20px;
-    justify-content: center;
     align-items: center;
-    gap: 22px;
+    justify-content: center;
+    width: 52px;
+    height: 52px; /* Ajusta según el diseño deseado */
     text-decoration: none;
     color: black;
     border: none;
+    padding: 10px 20px;
+    position: relative;
+    gap: 10px;
+    transition: ease-in;
+    background-image: url('img/ubicacion01.svg'); /* Ruta a la imagen inicial */
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
 }
+
+.img-hover {
+    display: none; /* Oculta la imagen de hover por defecto */
+}
+
+.button-secondary.mapa:hover {
+    background: var(--V3_Blanco, #FFF);
+    border: 3px solid var(--v3-azul);
+    background-image: url('img/ubicacion02.svg'); /* Ruta a la imagen de hover */
+    border-radius: 100px;
+    transition: ease-in;
+}
+
+.button-secondary.mapa:hover .img-default {
+    display: none; /* Oculta la imagen inicial al hacer hover */
+}
+
+.button-secondary.mapa:hover .img-hover {
+    display: block; /* Muestra la imagen de hover */
+}
+
+
+.button-terciario {
+    background: var(--V3_Morado, #BE84FF);
+    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+    border-radius: 100px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 52px;
+    height: 52px; /* Ajusta según el diseño deseado */
+    text-decoration: none;
+    color: black;
+    border: none;
+    padding: 10px 20px;
+    position: relative;
+    gap: 10px;
+    transition: ease-in;
+    background-image: url('img/informacionLetra-1.svg'); /* Ruta a la imagen inicial */
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+}
+
+.img-hover {
+    display: none; /* Oculta la imagen de hover por defecto */
+}
+
+.button-terciario:hover {
+    background: var(--V3_Blanco, #FFF);
+    border: 3px solid var(--V3_Morado, #BE84FF);
+    background-image: url('img/informacionLetra.svg'); /* Ruta a la imagen al hacer hover */
+    border-radius: 100px;
+    transition: ease-in;
+ }
+
+.button-terciario:hover .img-default {
+    display: none; /* Oculta la imagen inicial al hacer hover */
+}
+
+.button-terciario:hover .img-hover {
+    display: block; /* Muestra la imagen de hover */
+}
+
+
+
 input:not([type="checkbox"]) { border: none; background: var(--v3-gris); height: 50px; width: 100%; }
 label{
     width: 100%;
