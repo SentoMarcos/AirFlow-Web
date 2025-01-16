@@ -192,20 +192,24 @@ fetch('/mapa/mapa-config')
 
                 await initCapas();
                 if (datosPorGas.general.length > 0) {
-                    // Filtrar los datos para eliminar valores cercanos
-                    const datosFiltradosGeneral = filtrarDatosPorProximidad(datosPorGas.general, 1);
-                    const datosFiltradosCO2 = filtrarDatosPorProximidad(datosPorGas.CO2, 1);
-                    const datosFiltradosNO2 = filtrarDatosPorProximidad(datosPorGas.NO2, 1);
-                    const datosFiltradosO3 = filtrarDatosPorProximidad(datosPorGas.O3, 1);
-
                     // Agregar los datos al mapa de calor
-                    agregarMapaDeCalorPorValores(datosFiltradosGeneral, capasGases.interpolatedLayerGroup);
-                    agregarMapaDeCalorPorValores(datosFiltradosCO2, capasGases.co2LayerGroup);
-                    agregarMapaDeCalorPorValores(datosFiltradosNO2, capasGases.no2LayerGroup);
-                    agregarMapaDeCalorPorValores(datosFiltradosO3, capasGases.o3LayerGroup);
+                    agregarMapaDeCalorPorValores(datosPorGas.general, capasGases.interpolatedLayerGroup);
+                    agregarMapaDeCalorPorValores(datosPorGas.CO2, capasGases.co2LayerGroup);
+                    agregarMapaDeCalorPorValores(datosPorGas.NO2, capasGases.no2LayerGroup);
+                    agregarMapaDeCalorPorValores(datosPorGas.O3, capasGases.o3LayerGroup);
                 } else {
                     console.warn("No hay datos para mostrar en el mapa de calor.");
                 }
+
+                // Crear el control de capas para añadir al mapa
+                const controlCapas = L.control.layers(
+                    {
+                        "Mapa de Calor (Todos los Gases)": capasGases.interpolatedLayerGroup,
+                        "Mapa CO2": capasGases.co2LayerGroup,
+                        "Mapa NO2": capasGases.no2LayerGroup,
+                        "Mapa O3": capasGases.o3LayerGroup
+                    }
+                ).addTo(map);
 
                 // Capa visible por defecto
                 capasGases.interpolatedLayerGroup.addTo(map);
