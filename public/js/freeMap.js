@@ -72,7 +72,9 @@ fetch('/mapa/mapa-config')
                 "Mapa CO2": capasGases.co2LayerGroup,
                 "Mapa NO2": capasGases.no2LayerGroup,
                 "Mapa O3": capasGases.o3LayerGroup
-            }
+            },
+            null, 
+            { position: 'bottomleft' }
         ).addTo(map);
 
         // Añade las capas al control de capas
@@ -180,6 +182,7 @@ fetch('/mapa/mapa-config')
                 return null;
             }
         }
+
         // ---------------------------------------------------------
         // MAPA DE CALOR
         // ---------------------------------------------------------
@@ -253,7 +256,6 @@ fetch('/mapa/mapa-config')
                     }
                 }
             });
-
             return filtrados;
         }
 
@@ -295,69 +297,7 @@ fetch('/mapa/mapa-config')
             // Añadir la capa IDW al grupo especificado
             idwLayer.addTo(layerGroup);
         }
-        // ---------------------------------------------------------
-        // MAPA DE CALOR POR CIRCULOS
-        // ---------------------------------------------------------
-        /*
-        function agregarMapaDeCalorPorCirculos(datos, layerGroup) {
-            if (!datos || datos.length === 0) {
-                console.warn("No hay datos para el mapa interpolado.");
-                return;
-            }
 
-            // Determinar los valores mínimos y máximos de "valor" para normalizar
-            const valores = datos.map((punto) => punto[2]); // Tercer valor del array es "valor"
-            const minValor = Math.min(...valores);
-            const maxValor = Math.max(...valores);
-
-            // Normalizar un valor en el rango [minValor, maxValor] a [0, 1]
-            const normalizarValor = (valor) => (valor - minValor) / (maxValor - minValor);
-            
-            datos.forEach(([latitud, longitud, valor]) => {
-                const intensidad = normalizarValor(valor); // Normalizar el campo "valor"
-
-                // Crear varios círculos con radios crecientes y opacidades decrecientes
-                const steps = 5; // Número de pasos en la interpolación
-                for (let i = 0; i < steps; i++) {
-                    const radius = 100 + i * 100; // Incremento en el radio
-                    const opacity = 0.8 - i * 0.15; // Decrece la opacidad
-                    const color = obtenerColorPorIntensidad(intensidad);
-
-                    const circle = L.circle([latitud, longitud], {
-                        radius: radius,
-                        color: color,
-                        fillColor: color,
-                        fillOpacity: opacity,
-                        weight: 0,
-                    });
-
-                    // Añadir cada círculo al grupo de capas
-                    circle.addTo(layerGroup);
-                }
-            });
-        }
-
-        // Función para obtener el color basado en la intensidad
-        function obtenerColorPorIntensidad(intensidad) {
-            // Define el gradiente de colores
-            const colores = {
-                0: '#63B8D9',  // Azul pastel
-                0.2: '#8FE1B0',  // Verde pastel
-                0.4: '#F0F67B',  // Amarillo pastel
-                0.6: '#F69C4E',  // Naranja pastel
-                0.8: '#F78A7D',  // Rojo pastel
-            };
-
-            // Encuentra el color más cercano a la intensidad
-            let colorActual = 'blue';
-            for (const key in colores) {
-                if (intensidad >= parseFloat(key)) {
-                    colorActual = colores[key];
-                }
-            }
-            return colorActual;
-        }
-        */
         // ---------------------------------------------------------
         // DATOS AEMET
         // ---------------------------------------------------------
@@ -463,68 +403,3 @@ fetch('/mapa/mapa-config')
                 console.error("Error al cargar datos de GVA:", error);
             }
         }
-        // ---------------------------------------------------------
-                            popupAnchor: [0, -30], // Posición del popup respecto al ícono
-                        });
-
-                        // Crear un marcador con el ícono personalizado
-                        const marcador = L.marker(latLng, {
-                            icon: customIcon,
-                            latLng: latLng,  // Guardamos las coordenadas
-                        });
-
-                        // Añadir información al marcador (popup) con la clase de estado
-                        marcador.bindPopup(`
-                    <b>Tipo de Gas:</b> ${tipo_gas}<br>
-                    <b>Fecha:</b> ${fecha}<br>
-                    <b>Valor:</b> ${valor}<br>
-                    <b>Estado:</b> <span class="${estado}">${estado}</span>
-                `);
-
-                        // Añadir el marcador al array de marcadores
-                        markers.push(marcador);
-
-                        // Añadir la clase de estado al contenedor del popup al abrirlo
-                        marcador.on('popupopen', function (e) {
-                            const popupContentWrapper = e.popup._container.querySelector('.leaflet-popup-content-wrapper');
-                            if (popupContentWrapper) {
-                                popupContentWrapper.classList.add(estado);
-                            }
-                        });
-
-                        // Añadir el punto a la lista de waypoints (coordenadas para la ruta)
-                        waypoints.push(latLng);
-                    }
-                });
-
-                // Función para actualizar la visibilidad de los marcadores según el nivel de zoom
-                function actualizarMarcadores() {
-                    const zoom = map.getZoom();  // Obtener el zoom actual
-                    const center = map.getCenter();  // Obtener el centro del mapa
-                    const radio = 5000 / zoom;  // Radio de visibilidad (ajustar según necesidad)
-
-                    // Iterar sobre los marcadores y mostrar/ocultar según la distancia del centro
-                    markers.forEach(marcador => {
-                        const distance = center.distanceTo(marcador.getLatLng());  // Calcular la distancia desde el centro
-
-                        // Si la distancia es menor que el radio, mostramos el marcador, si no lo ocultamos
-                        if (distance < radio) {
-                            marcador.addTo(map);  // Mostrar marcador
-                        } else {
-                            map.removeLayer(marcador);  // Ocultar marcador
-                        }
-                    });
-                }
-
-                // Inicializar los marcadores en el mapa
-                markers.forEach(marcador => {
-                    marcador.addTo(map);
-                });
-
-                // Actualizar los marcadores cada vez que el zoom cambie
-                map.on('zoomend', actualizarMarcadores);
-
-                // Llamar a la función una vez al cargar para asegurar que el estado de los marcadores es correcto
-                actualizarMarcadores();
-            }
-        */
