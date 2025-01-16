@@ -33,6 +33,13 @@
 .Bienvenida .container #texto-bienvenida span{
     font-weight: bold;
 }
+
+.main-text .AireLimpio{
+    color:var(--v3-gris);
+    font-family: "Poppins-light";
+    font-weight: 400;
+    font-size: 16px;
+}
 #botones-bienvenida{
     display: flex;
     flex-direction: row;
@@ -91,7 +98,6 @@
     flex-direction: column;
     flex: 1.5;
     background-color: var(--v3-negro);
-    padding: 20px;
     border-radius: 48px;
     text-align: left;
     position: relative;
@@ -102,12 +108,18 @@
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
+    padding-top: 60px;
+    padding-left: 40px;
+    padding-right: 40px;
+    padding-bottom: 30px;
 }
 
 .main-text h1 {
-    font-size: 5vw;
+    font-size: 64px;
     margin: 0;
-    color: white;
+    color: var(--v3-blanco);
+    font-family: "Poppins-light";
+    font-weight: 300;
 }
 
 .main-text p {
@@ -144,7 +156,10 @@
 #comentarios {
     background-color: var(--v3-blanco);
     color: var(--v3-negro);
-    padding: 15px;
+    padding-top: 50px;
+    padding-left: 48px;
+    padding-right: 48px;
+    padding-bottom: 50px;
     border-radius: 48px;
     font-size: 14px;
     height: max-content;
@@ -186,13 +201,12 @@
 .servicio .container #comentarios .comentario {
     display: flex;
     flex-direction: row;
-    background: var(--v3-azul);
     border-radius: 48px;
-    padding: 25px;
     /*min-height: 100px; /* Asegura que cada comentario tenga una altura mínima */
     max-height: 100%;
     margin-bottom: 10px;
     margin-right: 10px;
+    height: auto;
 }
 
 .servicio .container #comentarios .comentario .imagen-comentario{
@@ -249,6 +263,7 @@
     background: var(--cuadratica);
     font-size: 2vw;
     color: white;
+    font-size: 24px;
 }
 #funcionalidades a:hover{
     background: white;
@@ -264,6 +279,7 @@
     background: var(--v3-verde);
     font-size: 2vw;
     color: white;
+    font-size: 24px;
 }
 #especificaciones a:hover {
     background: white;
@@ -339,7 +355,7 @@
 
 .empresa .container .aside .row1 #airflow #texto-airflow #botones-airflow{
     flex: 1;
-    height: fit-content;
+    height: 10px;
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -382,11 +398,11 @@
 }
 .empresa .container .aside .row div a{
     text-decoration: none;
-    font-size: 2.3vw;
+    font-size: 24px;
     color: var(--v3-gris-oscuro);
     position: absolute;
-    bottom: 0;
-    padding-bottom: 15px;
+    bottom: 10px;
+    left: 20px;
 }
 .empresa .container .aside .row div#objetivos p{
     margin: unset;
@@ -579,5 +595,104 @@ footer{
     margin: 20px auto;  /* Centra la animación */
     padding: 0%;
     margin: 0%;
-    margin-top: 10%;
+    
+}
+
+.empresa .container .aside .row div.bentoLanding {
+    padding-top: 24px;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-bottom: 30px;
+}
+
+.nombre{
+font-family: "Poppins";
+font-size: 12px;
+}
+
+.valoracion{
+font-family: "Poppins-light";
+font-size: 12px;
+}
+
+.imagen-avatar{
+    margin: 10px;
+}
+
+:root {
+  --v-3azul: #007bff; /* Azul base */
+  --v-3grisclaro: #b0b0b0; /* Gris claro */
+  --v-3blanco: #ffffff; /* Blanco */
+}
+/*Cta comprar*/
+.shop-button {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    transition: all 0.3s ease; /* Añadido para transición suave */
+  }
+  
+  .cta {
+    display: flex; 
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 0;
+    position: relative;
+    background-color: var(--v3-azul);
+    border-radius: 8px;
+    width: 278px;
+    transition: all 0.3s ease; /* Añadido para transición suave */
+  }
+  
+  .cta:hover {
+    background-color: var(--v3-negro); 
+  }
+  
+  .cta .frame {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 0 30px;
+    position: relative;
+  }
+  
+  .cta .text-wrapper {
+    position: relative;
+    align-self: flex-start;
+    margin: 0;
+    padding: 0;
+    font-family: "IBM Plex Mono-Regular", Helvetica, Arial, sans-serif;
+    font-weight: 400;
+    color: var(--gris-claro);
+    font-size: 11px;
+    letter-spacing: 0;
+    line-height: normal;
+    text-align: left;
+  }
+  
+  .cta .text-wrapper-2 {
+    position: relative;
+    align-self: center;
+    font-family: "IBM Plex Mono-Regular", Helvetica, Arial, sans-serif;
+    font-weight: 400;
+    color: var(--v-3blanco);
+    font-size: 32px;
+    letter-spacing: 0;
+    line-height: normal;
+    text-align: center;
+  }
+  
+  .cta .img {
+    position: relative;
+    width: 24.56px;
+    height: auto;
+    transform: translateY(7px);
+  }
+  
+.rutas{
+margin-left: 20px;    
+text-align: left;  /* Asegura que el texto esté alineado a la izquierda dentro del contenedor */
 }
