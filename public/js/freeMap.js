@@ -65,6 +65,17 @@ fetch('/mapa/mapa-config')
             no2LayerGroup : L.layerGroup(), // Capa para NO2
             o3LayerGroup : L.layerGroup(),  // Capa para O3
         }
+
+        // Crear el control de capas para añadir al mapa
+        const controlCapas = L.control.layers(
+            {
+                "Mapa de Calor (Todos los Gases)": capasGases.interpolatedLayerGroup,
+                "Mapa CO2": capasGases.co2LayerGroup,
+                "Mapa NO2": capasGases.no2LayerGroup,
+                "Mapa O3": capasGases.o3LayerGroup
+            }
+        ).addTo(map);
+
         // Añade las capas al control de capas
         /*var controlCapas = L.control.layers(null, {
             "Calidad del Aire": capas.calidadAire,
@@ -205,53 +216,30 @@ fetch('/mapa/mapa-config')
                 console.error("Error al obtener datos de calidad del aire:", error);
             }
         }
-        
-
+    
         // ---------------------------------------------------------
         // MAPA DE CALOR
         // ---------------------------------------------------------
-            /*
-                // Datos de ejemplo para el mapa de calor
-                function asignarEstado(media) {
-                    // Define los intervalos para los estados
-                    if (!media) return 'vacio';
-                    if (media <= 50) return 'excelente';
-                    if (media <= 100) return 'bueno';
-                    if (media <= 150) return 'moderado';
-                    if (media <= 200) return 'malo';
-                    return 'peligroso'; // Si es mayor a 100
-                }
-            */
         async function initMapa() {
             try {
                 const { mediciones, datosPorGas } = await obtenerMediciones(); // Espera a obtener las mediciones
 
-                // Crear los grupos de capas (copiado arriba del archivo)
-                /*let interpolatedLayerGroup = L.layerGroup();
-                let co2LayerGroup = L.layerGroup(); // Capa para CO2
-                let no2LayerGroup = L.layerGroup(); // Capa para NO2
-                let o3LayerGroup = L.layerGroup();  // Capa para O3*/
-
                 await initCapas();
                 if (datosPorGas.general.length > 0) {
+                    // Filtrar los datos para eliminar valores cercanos
+                    const datosFiltradosGeneral = filtrarDatosPorProximidad(datosPorGas.general, 1);
+                    const datosFiltradosCO2 = filtrarDatosPorProximidad(datosPorGas.CO2, 1);
+                    const datosFiltradosNO2 = filtrarDatosPorProximidad(datosPorGas.NO2, 1);
+                    const datosFiltradosO3 = filtrarDatosPorProximidad(datosPorGas.O3, 1);
+
                     // Agregar los datos al mapa de calor
-                    agregarMapaDeCalorPorValores(datosPorGas.general, capasGases.interpolatedLayerGroup);
-                    agregarMapaDeCalorPorValores(datosPorGas.CO2, capasGases.co2LayerGroup);
-                    agregarMapaDeCalorPorValores(datosPorGas.NO2, capasGases.no2LayerGroup);
-                    agregarMapaDeCalorPorValores(datosPorGas.O3, capasGases.o3LayerGroup);
+                    agregarMapaDeCalorPorValores(datosFiltradosGeneral, capasGases.interpolatedLayerGroup);
+                    agregarMapaDeCalorPorValores(datosFiltradosCO2, capasGases.co2LayerGroup);
+                    agregarMapaDeCalorPorValores(datosFiltradosNO2, capasGases.no2LayerGroup);
+                    agregarMapaDeCalorPorValores(datosFiltradosO3, capasGases.o3LayerGroup);
                 } else {
                     console.warn("No hay datos para mostrar en el mapa de calor.");
                 }
-
-                // Crear el control de capas para añadir al mapa
-                const controlCapas = L.control.layers(
-                    {
-                        "Mapa de Calor (Todos los Gases)": capasGases.interpolatedLayerGroup,
-                        "Mapa CO2": capasGases.co2LayerGroup,
-                        "Mapa NO2": capasGases.no2LayerGroup,
-                        "Mapa O3": capasGases.o3LayerGroup
-                    }
-                ).addTo(map);
 
                 // Capa visible por defecto
                 capasGases.interpolatedLayerGroup.addTo(map);
@@ -260,10 +248,95 @@ fetch('/mapa/mapa-config')
                 console.error("Error en initMapa:", error);
             }
         }
+
         // ---------------------------------------------------------
-        // MAPA DE CALOR POR VALORES
+        //  FILTRAR DATOS POR PROXIMIDAD
+        // ---------------------------------------------------------
+        function filtrarDatosPorProximidad(datos, distanciaMaximaKm) {
+            const filtrarPorDistancia = (lat1, lon1, lat2, lon2) => {
+                const R = 6371; // Radio de la Tierra en km
+                const dLat = ((lat2 - lat1) * Math.PI) / 180;
+                const dLon = ((lon2 - lon1) * Math.PI) / 180;
+                const a =
+                    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                    Math.cos((lat1 * Math.PI) / 180) * Math.cos((lat2 * Math.PI) / 180) *
+                    Math.sin(dLon / 2) * Math.sin(dLon / 2);
+                const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+                return R * c; // Distancia en km
+            };
+
+            const filtrados = [];
+
+            datos.forEach((punto) => {
+                const [lat, lon, valor] = punto;
+
+                // Verifica si el punto ya tiene vecinos cercanos en la lista filtrada
+                const cercano = filtrados.find(([fLat, fLon, fValor]) => {
+                    const distancia = filtrarPorDistancia(lat, lon, fLat, fLon);
+                    return distancia <= distanciaMaximaKm && fValor >= valor;
+                });
+
+                if (!cercano) {
+                    // Si no hay vecino cercano, añade este punto
+                    filtrados.push(punto);
+
+                    // Elimina puntos cercanos de menor valor en la lista filtrada
+                    for (let i = filtrados.length - 1; i >= 0; i--) {
+                        const [fLat, fLon, fValor] = filtrados[i];
+                        const distancia = filtrarPorDistancia(lat, lon, fLat, fLon);
+                        if (distancia <= distanciaMaximaKm && fValor < valor) {
+                            filtrados.splice(i, 1); // Elimina el punto de menor valor
+                        }
+                    }
+                }
+            });
+
+            return filtrados;
+        }
+
+        // ---------------------------------------------------------
+        // MAPA DE CALOR POR IDW
         // ---------------------------------------------------------
         function agregarMapaDeCalorPorValores(datos, layerGroup) {
+            if (!datos || datos.length === 0) {
+                console.warn("No hay datos para el mapa interpolado.");
+                return;
+            }
+
+            // Obtener los valores reales
+            const valores = datos.map((punto) => punto[2]);
+            const minValor = Math.min(...valores);
+            const maxValor = Math.max(...valores);
+
+            // Crear capa IDW
+            const idwLayer = L.idwLayer(
+                datos.map((punto) => [
+                    punto[0], // Latitud
+                    punto[1], // Longitud
+                    punto[2], // Valor real, sin normalización
+                ]),
+                {
+                    opacity: 0.5, // Hacer el mapa más visible
+                    cellSize: 7, // Resolución del mapa de calor
+                    exp: 2, // Controlar la dispersión del impacto de los datos
+                    min: minValor, // Valor mínimo de los datos
+                    max: maxValor, // Valor máximo de los datos
+
+                    // Función para asignar colores basados en valores reales
+                    color: (val) => {
+                        return getColor(val);
+                    },
+                }
+            );
+
+            // Añadir la capa IDW al grupo especificado
+            idwLayer.addTo(layerGroup);
+        }
+        // ---------------------------------------------------------
+        // MAPA DE CALOR POR CIRCULOS
+        // ---------------------------------------------------------
+        /*
+        function agregarMapaDeCalorPorCirculos(datos, layerGroup) {
             if (!datos || datos.length === 0) {
                 console.warn("No hay datos para el mapa interpolado.");
                 return;
@@ -321,7 +394,7 @@ fetch('/mapa/mapa-config')
             }
             return colorActual;
         }
-
+        */
         // ---------------------------------------------------------
         // DATOS AEMET
         // ---------------------------------------------------------
@@ -330,7 +403,7 @@ fetch('/mapa/mapa-config')
             //await obtenerCalidadAire(39.5, -1.0);
             await cargarDatosGVA();
             await cargarDatosAemet();
-            //agregarMapaDeCalorPorValores([[39.5, -1.0, 0.8], [39.6, -1.1, 0.6]]); // Ejemplo de datos
+            //agregarMapaDeCalorPorCirculos([[39.5, -1.0, 0.8], [39.6, -1.1, 0.6]]); // Ejemplo de datos
 
             // Agrega las capas al mapa (pueden estar activas por defecto o no)
             capas.estacionesAEMET.addTo(map);
