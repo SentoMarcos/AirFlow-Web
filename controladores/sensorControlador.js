@@ -4,6 +4,8 @@
 const Sensor = require("../modelos/sensor");
 const Medicion = require("../modelos/medicion");
 const sequelize = require("../config/database");
+const UsuarioSensor = require("../modelos/usuario-sensor"); // Ensure this path is correct
+
 exports.getAllSensores = async (req, res) => {
     try {
         const sensores = await Sensor.findAll({
@@ -35,15 +37,17 @@ exports.getAllSensores = async (req, res) => {
 exports.getAllSensoresOfUser = async (req, res) => {
     const { id } = req.params;
     try {
-        const sensores = await Sensor.findAll({
+        const usuarioSensores = await UsuarioSensor.findAll({
             where: {
-                usuarioId: id
-            }
+                id_usuario: id
+            },
+            include: [Sensor]
         });
+        const sensores = usuarioSensores.map(us => us.Sensor);
         res.status(200).json(sensores);
     } catch (error) {
-        console.error("Error al obtener los sensores:", error);
-        res.status(500).json({ error: 'Error al obtener los sensores.' });
+        console.error("Error al obtener los sensores:", error.message, error.stack);
+        res.status(500).json({ error: `Error al obtener los sensores: ${error.message}` });
     }
 }
 

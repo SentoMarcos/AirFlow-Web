@@ -13,6 +13,8 @@
 let map; // Variable global para el mapa
 let capas;
 let capasGases;
+import * as turf from 'https://cdn.skypack.dev/@turf/turf';
+console.log(turf);
 fetch('/mapa/mapa-config')
     .then(response => response.json())
     .then(config => {
@@ -178,20 +180,23 @@ fetch('/mapa/mapa-config')
             */
         async function initMapa() {
             try {
-                const { mediciones, datosPorGas } = await obtenerMediciones(); // Espera a obtener las mediciones
+                // Mostrar indicador de carga
+                mostrarCargando();
 
-                // Crear los grupos de capas
-                /*let interpolatedLayerGroup = L.layerGroup();
-                let co2LayerGroup = L.layerGroup(); // Capa para CO2
-                let no2LayerGroup = L.layerGroup(); // Capa para NO2
-                let o3LayerGroup = L.layerGroup();  // Capa para O3*/
+                // Espera a obtener los datos de las mediciones
+                const { mediciones, datosPorGas } = await obtenerMediciones();
+
+                // Llamada a la interpolación de datos de gases
+                interpolarDatos(datosPorGas.general, (fragmento) => {
+                    agregarMapaDeCalorConInterpolacion(fragmento);
+                });
+
+                // Agregar las otras capas
                 await initCapas();
+
+                // Comprobar si los datos de gases están disponibles para agregarlos al mapa
                 if (datosPorGas.general.length > 0) {
-                    // Agregar los datos al mapa de calor
                     agregarMapaDeCalorPorValores(datosPorGas.general, capasGases.interpolatedLayerGroup);
-                    agregarMapaDeCalorPorValores(datosPorGas.CO2, capasGases.co2LayerGroup);
-                    agregarMapaDeCalorPorValores(datosPorGas.NO2, capasGases.no2LayerGroup);
-                    agregarMapaDeCalorPorValores(datosPorGas.O3, capasGases.o3LayerGroup);
                 } else {
                     console.warn("No hay datos para mostrar en el mapa de calor.");
                 }
@@ -202,17 +207,90 @@ fetch('/mapa/mapa-config')
                         "Mapa de Calor (Todos los Gases)": capasGases.interpolatedLayerGroup,
                         "Mapa CO2": capasGases.co2LayerGroup,
                         "Mapa NO2": capasGases.no2LayerGroup,
-                        "Mapa O3": capasGases.o3LayerGroup
+                        "Mapa O3": capasGases.o3LayerGroup,
+                        "Mapa de Calor Interpolado": capasGases.interpolatedLayerGroup,
                     }
                 ).addTo(map);
 
                 // Capa visible por defecto
                 capasGases.interpolatedLayerGroup.addTo(map);
 
+                // Ocultar indicador de carga
+                ocultarCargando();
             } catch (error) {
                 console.error("Error en initMapa:", error);
+                ocultarCargando(); // Asegurar que el indicador desaparezca en caso de error
             }
         }
+
+
+        function interpolarDatos(datos, callback) {
+            mostrarCargando();
+
+            if (!datos || datos.length === 0) {
+                console.error("No hay datos para interpolar.");
+                ocultarCargando();
+                return;
+            }
+
+            const puntos = turf.featureCollection(
+                datos.map(([lat, lon, valor]) => turf.point([lon, lat], { value: valor }))
+            );
+
+            const bounds = turf.bbox(puntos);
+            const cellSize = 0.5; // Ajustar tamaño de celda para reducir carga
+            const grid = turf.pointGrid(bounds, cellSize);
+
+            const interpolated = turf.interpolate(puntos, cellSize, {
+                gridType: 'points',
+                property: 'value',
+                units: 'kilometers',
+                weight: 1
+            });
+
+            if (!interpolated || !interpolated.features || interpolated.features.length === 0) {
+                console.error("Interpolación fallida o sin resultados.");
+                ocultarCargando();
+                return;
+            }
+
+            procesarDatosEnFragmentos(interpolated.features, callback, 500);
+
+            ocultarCargando();
+        }
+        function agregarMapaDeCalorConInterpolacion(datosInterpolados) {
+            if (!datosInterpolados || !Array.isArray(datosInterpolados)) {
+                console.error("Datos interpolados inválidos o inexistentes.");
+                return;
+            }
+
+            datosInterpolados.forEach(feature => {
+                if (!feature.geometry || !feature.geometry.coordinates || !feature.properties) {
+                    console.warn("Feature inválido, se omite:", feature);
+                    return;
+                }
+
+                const lat = feature.geometry.coordinates[1];
+                const lon = feature.geometry.coordinates[0];
+                const valor = feature.properties.value;
+
+                // Normalización del valor (asegúrate de que minValor y maxValor estén definidos)
+                const intensidad = (valor - minValor) / (maxValor - minValor);
+
+                // Crear círculo de mapa de calor
+                const circle = L.circle([lat, lon], {
+                    radius: 100,
+                    color: obtenerColorPorIntensidad(intensidad),
+                    fillColor: obtenerColorPorIntensidad(intensidad),
+                    fillOpacity: 0.8,
+                    weight: 0
+                });
+
+                // Añadir el círculo al mapa
+                circle.addTo(capasGases.interpolatedLayerGroup);
+            });
+        }
+
         // ---------------------------------------------------------
         // MAPA DE CALOR POR VALORES
         // ---------------------------------------------------------
@@ -324,7 +402,7 @@ fetch('/mapa/mapa-config')
             }
         }
         // ---------------------------------------------------------
-                            popupAnchor: [0, -30], // Posición del popup respecto al ícono
+
         // DATOS AEMET
         // ---------------------------------------------------------
         async function initCapas() {
@@ -382,3 +460,41 @@ fetch('/mapa/mapa-config')
         initMapa().then(r => cargarDatosAemet().then(cargarDatosGVA()));
     })
     .catch(error => console.error("Error al cargar la configuración del mapa:", error));
+function procesarDatosEnFragmentos(datos, callback, fragmentSize = 100) {
+    let index = 0;
+
+    function procesarSiguienteFragmento() {
+        const fragment = datos.slice(index, index + fragmentSize);
+        callback(fragment);
+
+        index += fragmentSize;
+        if (index < datos.length) {
+            setTimeout(procesarSiguienteFragmento, 10); // Descanso entre fragmentos
+        } else {
+            console.log("Procesamiento completo.");
+        }
+    }
+
+    procesarSiguienteFragmento();
+}
+function mostrarCargando() {
+    const loader = document.createElement("div");
+    loader.id = "loader";
+    loader.innerText = "Cargando datos...";
+    loader.style.position = "absolute";
+    loader.style.top = "50%";
+    loader.style.left = "50%";
+    loader.style.transform = "translate(-50%, -50%)";
+    loader.style.background = "#fff";
+    loader.style.padding = "20px";
+    loader.style.borderRadius = "8px";
+    loader.style.boxShadow = "0 4px 8px rgba(0,0,0,0.2)";
+    document.body.appendChild(loader);
+}
+
+function ocultarCargando() {
+    const loader = document.getElementById("loader");
+    if (loader) {
+        loader.remove();
+    }
+}

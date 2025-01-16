@@ -1,0 +1,1 @@
+initMapa().then(r => cargarDatosAemet().then(cargarDatosGVA));
