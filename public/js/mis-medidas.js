@@ -21,19 +21,19 @@ function obtenerMisSensores() {
         })
         .then(sensores => {
             // Extraer solo los ids de los sensores
-            const idsSensores = sensores.map(sensor => sensor.id_sensor); // Asegúrate de usar 'id_sensor'
-            console.log("IDs de sensores:", idsSensores);
-            return idsSensores; // Devolver solo los IDs de los sensores
+            const idSensores = sensores.map(sensor => sensor.id_sensor); // Asegúrate de usar 'id_sensor'
+            return idSensores; // Devolver solo los IDs de los sensores
         })
         .catch(error => {
             console.error("Error al obtener los sensores:", error);
+            return []; // Devolver un array vacío en caso de error
         });
 }
 
-function obtenerMedicionesPorSensores(idsSensores) {
-    if (!Array.isArray(idsSensores) || idsSensores.length === 0) {
-        console.error("No hay sensores para obtener mediciones.");
-        return Promise.reject("No se proporcionaron sensores.");
+function obtenerMedicionesPorSensores(idSensores) {
+    if (!Array.isArray(idSensores) || idSensores.length === 0) {
+        console.log("No se han proporcionado sensores.");
+        return Promise.resolve([]); // Devolver una promesa resuelta con un array vacío
     }
 
     return fetch("http://localhost:3000/mediciones/mediciones-por-sensor", {
@@ -41,7 +41,7 @@ function obtenerMedicionesPorSensores(idsSensores) {
         headers: {
             "Content-Type": "application/json"
         },
-        body: JSON.stringify({ sensores: idsSensores }) // Pasar como un array de IDs
+        body: JSON.stringify({ sensores: idSensores }) // Pasar como un array de IDs
     })
         .then(response => {
             if (!response.ok) {
@@ -59,8 +59,8 @@ function obtenerMedicionesPorSensores(idsSensores) {
         });
 }
 
-function obtenerMedicionesPorFecha(idsSensores, fechaSeleccionada) {
-    if (!Array.isArray(idsSensores) || idsSensores.length === 0) {
+function obtenerMedicionesPorFecha(idSensores, fechaSeleccionada) {
+    if (!Array.isArray(idSensores) || idSensores.length === 0) {
         console.error("No hay sensores para obtener mediciones.");
         return Promise.reject("No se proporcionaron sensores.");
     }
@@ -76,7 +76,7 @@ function obtenerMedicionesPorFecha(idsSensores, fechaSeleccionada) {
             "Content-Type": "application/json"
         },
         body: JSON.stringify({
-            sensores: idsSensores,
+            sensores: idSensores,
             fechaInicio: fechaInicio,
             fechaFin: fechaFin
         }) // Pasar los IDs de los sensores y la fecha seleccionada
@@ -121,11 +121,19 @@ function obtenerMedicionesPorFecha(idsSensores, fechaSeleccionada) {
 
 
 obtenerMisSensores()
-    .then(idsSensores => {
-        return obtenerMedicionesPorSensores(idsSensores); // Pasar los IDs de sensores
+    .then(idSensores => {
+        if (idSensores.length === 0) {
+            console.log("No se detectaron sensores. Continuando con flujo vacío.");
+            return []; // Pasar un array vacío para no interrumpir el flujo
+        }
+        return obtenerMedicionesPorSensores(idSensores);
     })
     .then(mediciones => {
-        console.log("Todas las mediciones:", mediciones);
+        if (mediciones.length === 0) {
+            console.log("No se han encontraron mediciones.");
+        } else {
+            console.log("Todas las mediciones:", mediciones);
+        }
     })
     .catch(error => {
         console.error("Error en el flujo de sensores y mediciones:", error);

@@ -1,7 +1,7 @@
 exports.getMapaConfig = async (req, res) => {
     try {
         const mapaConfig = {
-            center: [51.505, -0.09], // Coordenadas iniciales
+            center: [39.4699, -0.3763], // Coordenadas iniciales
             zoom: 10,               // Nivel de zoom inicial
             maxZoom: 19,            // Nivel de zoom máximo
             tileLayer: {
@@ -22,7 +22,7 @@ exports.getMapaConfig = async (req, res) => {
 exports.getMapaHtml = async (req, res) => {
     try {
         const mapaConfig = {
-            center: [51.505, -0.09], // Coordenadas iniciales
+            center: [39.4699, -0.3763], // Coordenadas iniciales
             zoom: 13,               // Nivel de zoom inicial
             tileLayer: {
                 url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', // URL del mapa base

@@ -1,5 +1,5 @@
-// const apiKey = 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwYWJsb3JlYm9sbG8wMkBnbWFpbC5jb20iLCJqdGkiOiJhYzc1ODlkNC1iNWVkLTQ5M2YtYTQ4ZS1mOGMxZjJmYWVjYzYiLCJpc3MiOiJBRU1FVCIsImlhdCI6MTczNDA0NTI1NywidXNlcklkIjoiYWM3NTg5ZDQtYjVlZC00OTNmLWE0OGUtZjhjMWYyZmFlY2M2Iiwicm9sZSI6IiJ9.ftBm8v1OGZII0zK23XNTgdjUlNA1s8exVusZcG5dfaw'; // Reemplaza con tu clave de API de Aemet
-// const url = `https://opendata.aemet.es/opendata/api/red/especial/contaminacionfondo/estacion/12?api_key=${apiKey}`;
+    //const apiKey = 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwYWJsb3JlYm9sbG8wMkBnbWFpbC5jb20iLCJqdGkiOiJhMDNkNGY3MS1hMWI4LTQ4OWEtODM3YS1kNzFkMmNmMTU5OTIiLCJpc3MiOiJBRU1FVCIsImlhdCI6MTczNjI3NjU2OCwidXNlcklkIjoiYTAzZDRmNzEtYTFiOC00ODlhLTgzN2EtZDcxZDJjZjE1OTkyIiwicm9sZSI6IiJ9.CWvCCuTHlttrTzPeXflUIIr3QdaKhlBE6SC1C2nYwJA'; // Reemplaza con tu clave de API de Aemet
+    //const url = `https://opendata.aemet.es/opendata/api/red/especial/contaminacionfondo/estacion/12?api_key=${apiKey}`;
 
 async function fetchAemetData(url) {
     try {
