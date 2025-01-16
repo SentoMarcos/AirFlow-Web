@@ -10,7 +10,6 @@
 // ---------------------------------------------------------
 // INICIALIZACIÓN DEL MAPA
 // --------------------------------------------------------
-
 let map; // Variable global para el mapa
 let capas;
 let capasGases;
@@ -181,42 +180,6 @@ fetch('/mapa/mapa-config')
                 return null;
             }
         }
-
-        // ---------------------------------------------------------
-        // CALIDAD DE AIRE
-        // ---------------------------------------------------------
-        const apiKey = "bc28af6f5f9fbf476f6ee1d5836b002a";
-        const airPollutionEndpoint = "https://api.openweathermap.org/data/2.5/air_pollution";
-
-        
-        // Función para obtener datos de contaminación y añadirlos al mapa
-        async function getAirPollutionData(lat, lon) {
-            const url = `${airPollutionEndpoint}?lat=${lat}&lon=${lon}&appid=${apiKey}`;
-            try {
-                const response = await fetch(url);
-                if (!response.ok) throw new Error(`Error: ${response.statusText}`);
-                const data = await response.json();
-
-                // Extraer datos de calidad del aire
-                const { list } = data;
-                const { main, components } = list[0];
-
-                // Crear un popup con información
-                const popupContent = `
-                <b>Calidad del Aire</b><br>
-                AQI (Índice de Calidad del Aire): ${main.aqi}<br>
-                PM2.5: ${components.pm2_5} µg/m³<br>
-                PM10: ${components.pm10} µg/m³<br>
-                O3: ${components.o3} µg/m³<br>
-                NO2: ${components.no2} µg/m³<br>`;
-
-                // Añadir un marcador en el mapa
-                L.marker([lat, lon]).addTo(map).bindPopup(popupContent).openPopup();
-            } catch (error) {
-                console.error("Error al obtener datos de calidad del aire:", error);
-            }
-        }
-    
         // ---------------------------------------------------------
         // MAPA DE CALOR
         // ---------------------------------------------------------
@@ -501,37 +464,6 @@ fetch('/mapa/mapa-config')
             }
         }
         // ---------------------------------------------------------
-        // MARCADORES DE MEDICIONES
-        // ---------------------------------------------------------
-        /*
-        let currentZoom = map.getZoom();  // Guardar el zoom inicial
-        let markers = [];  // Array para almacenar los marcadores
-        
-            function mostrarMarcadores(mediciones) {
-                // Limpiar todos los marcadores anteriores del mapa
-                map.eachLayer(function (layer) {
-                    if (layer instanceof L.Marker) {
-                        map.removeLayer(layer); // Eliminar todos los marcadores
-                    }
-                });
-
-                // Crear un array para almacenar las coordenadas de las mediciones
-                const waypoints = [];
-
-                // Añadir los marcadores para las mediciones
-                mediciones.forEach(function (medicion) {
-                    const { latitud, longitud, tipo_gas, fecha, valor } = medicion;
-
-                    // Asegúrate de que las coordenadas son válidas
-                    if (latitud && longitud) {
-                        const latLng = [latitud, longitud];
-                        const estado = asignarEstado(valor);
-
-                        // Crear un ícono personalizado con clase basada en el estado
-                        const customIcon = L.divIcon({
-                            className: `custom-marker ${estado}`, // Clases personalizadas
-                            iconSize: [30, 30], // Tamaño del ícono
-                            iconAnchor: [15, 30], // Punto de anclaje del ícono
                             popupAnchor: [0, -30], // Posición del popup respecto al ícono
                         });
 

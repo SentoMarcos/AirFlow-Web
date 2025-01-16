@@ -16,14 +16,23 @@
 <body>
 <div id="header-container"></div>
 <section class="Bienvenida">
+    <video autoplay loop muted playsinline class="background-video">
+        <source src="img/video/VideoLanding.mp4">
+    </video>
     <div class="container">
         <div id="texto-bienvenida">
             <p>Mejora tu aire,
                 <span>mejora tu vida</span></p>
             <div id="botones-bienvenida">
             <a href="#servicio" class="button-primary">Saber Más</a>
-            <a href="airflowFree-index.html" class="button-secondary mapa"><i class="bi bi-geo-alt-fill"></i></a>
-            <a href="info-adicional.html" id="info-adicional">Información Adicional</a>
+            <a href="airflowFree-index.html" class="button-secondary mapa">
+                <img src="img/ubicacion01.svg" alt="Ubicación inicial" class="img-default">
+                <img src="img/ubicacion02.svg" alt="Ubicación hover" class="img-hover">
+            </a>            
+            <a href="info-adicional.html" class="button-terciario">
+                <img src="img/informacionLetra-1.svg" alt="Info adicional" class="img-default">
+                <img src="img/informacionLetra.svg" alt="Info hover" class="img-hover">
+            </a>
             </div>
         </div>
     </div>
@@ -121,13 +130,9 @@
                 <div id="airflow">
                     <div id="texto-airflow">
                         <h3>Controla el aire desde tu móvil.</h3>
-                        <p>Monitorea la calidad del aire en tiempo real y recibe alertas basadas en los estándares de exposición saludable recomendados por la OMS.</p>
+                        <p class="monitorea">Monitorea la calidad del aire en tiempo real y recibe alertas basadas en los estándares de exposición saludable recomendados por la OMS.</p>
                         <div id="botones-airflow">
-                            <a href="#"><i class="bi bi-person"></i></a>
-                            <a href="#"><i class="bi bi-person"></i></a>
-                            <a href="#"><i class="bi bi-heart-pulse"></i></a>
-                            <a href="#"><i class="bi bi-calendar"></i></a>
-                            <a href="#"><i class="bi bi-person"></i></a>
+                            <img src="img/campos.gif" alt="Funcionalidades de la web" class="mi-animacion">
                         </div>
                     </div>
                     <div id="telefono-airflow">
@@ -137,37 +142,36 @@
             </div>
             <div class="row">
                 <div id="mision">
-                    <p>Tecnología avanzada para ayudarte a respirar mejor y vivir en un entorno más saludable.</p>
+                    <p class="texto-bento">Tecnología avanzada para ayudarte a respirar mejor y vivir en un entorno más saludable.</p>
                     <a href="#">Misión</a>
                 </div>
                 <div id="vision">
-                    <p>Liderar las soluciones de calidad del aire en todo el mundo.</p>
+                    <p class="texto-bento">Liderar las soluciones de calidad del aire en todo el mundo.</p>
                     <a href="#">Visión</a>
                 </div>
             </div>
             <div class="row">
                 <div id="objetivos">
-                    <p> Innovación ágil</p>
-                    <p> Acceso universal</p>
-                    <p> Conciencia y educación</p>
-                    <p> Crecimiento sostenible</p>
-                    <p> Colaboración global</p>
+                    <ul>
+                    <li class="texto-bento"> Innovación ágil</li>
+                    <li class="texto-bento"> Acceso universal</li>
+                    <li class="texto-bento"> Conciencia y educación</li>
+                    <li class="texto-bento"> Crecimiento sostenible</li>
+                    <li class="texto-bento"> Colaboración global</li>
                     <a href="#">Objetivos</a>
+                </ul>
                 </div>
                 <div id="contactanos">
-                    <p><i class="bi bi-envelope"></i>retrofit@gmail.com</p>
-                    <p><i class="bi bi-phone"></i>+34 611 23 70 84</p>
-                    <p><i class="bi bi-instagram"></i>RetrofitAirflow</p>
-                    <p><i class="bi bi-twitter-x"></i>RetrofitAirflow</p>
+                    <p class="texto-bento"><i class="bi bi-envelope"></i>retrofit@gmail.com</p>
+                    <p class="texto-bento"><i class="bi bi-phone"></i>+34 611 23 70 84</p>
+                    <p class="texto-bento"><i class="bi bi-instagram"></i>RetrofitAirflow</p>
+                    <p class="texto-bento"><i class="bi bi-twitter-x"></i>RetrofitAirflow</p>
                     <a href="#">Contáctanos</a>
                 </div>
             </div>
         </div>
     </div>
 </section>
-<footer>
-    <a href="info-adicional.html">Información Adicional</a>
-</footer>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 <script src="js/header.js"></script>
 <script>

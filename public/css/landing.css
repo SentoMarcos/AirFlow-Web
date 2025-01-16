@@ -1,13 +1,23 @@
-.Bienvenida{
-    height: 100vh;
-    background: rgba(0,0,0,0.5);
-}
-.Bienvenida .container{
+/* Estilo para el video */
+.background-video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
     height: 100%;
+    object-fit: cover; /* Esto asegura que el video cubra toda el área */
+    z-index: -1; /* Esto coloca el video en el fondo, detrás del contenido */
+}
+
+/* Asegurándote de que la sección 'Bienvenida' tenga suficiente altura para ver el video */
+.Bienvenida {
+    position: relative;
+    width: 100%;
+    height: 100vh; /* Esto asegura que la sección tenga el 100% de la altura de la ventana */
     display: flex;
-    flex-direction: column;
-    justify-content: end;
-    padding-bottom: 22vh;
+    justify-content: center;
+    align-items: center;
+    background: rgba(0,0,0,0);
 }
 .Bienvenida .container #texto-bienvenida{
     width: fit-content;
@@ -29,12 +39,19 @@
     align-items: center;
 }
 #botones-bienvenida a{
-    margin-right: 2vw;
+    height: 52px;
+    margin-right: 10px;
     font-family: "IBM Plex Mono", sans-serif;
+
 }
 #botones-bienvenida .mapa{
-    width: fit-content;
-    height: 100%;
+    width: 52px;
+    height: 52px;
+    /*font-size: 1.2vw;*/
+}
+#botones-bienvenida .info{
+    width: 52px;
+    height: 52px;
     /*font-size: 1.2vw;*/
 }
 #botones-bienvenida .mapa i{
@@ -185,10 +202,9 @@
 .row {
     display: flex;
     flex-direction: row;
-    gap: 10px;
+    gap: 8px;
     padding: 0 12px;
 }
-
 #funcionalidades, #especificaciones {
     flex: 1;
     background-color: var(--v3-blanco);
@@ -304,8 +320,23 @@
     justify-content: start;
 }
 .empresa .container .aside .row1 #airflow #texto-airflow h3{
+    color: var(--gris-claro);
     font-size: 1.5vw;
 }
+.monitorea{
+    color: var(--gris-claro);
+}
+.texto-bento{
+    top: 0;
+    left: 0;
+    font-family: "Poppins" ;
+    line-height: 1.2;
+    font-weight: 400;
+    color: var(--v-3grisoscuro);
+    font-size: 15px;
+    letter-spacing: 0;
+}
+
 .empresa .container .aside .row1 #airflow #texto-airflow #botones-airflow{
     flex: 1;
     height: fit-content;
@@ -339,7 +370,10 @@
     flex: 1;
     background-color: var(--v3-blanco);
     color: #333;
-    padding: 25px;
+    padding-top: 24px;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-bottom: 30px;
     border-radius: 48px;
     text-align: left;
     font-size: 14px;
@@ -349,7 +383,7 @@
 .empresa .container .aside .row div a{
     text-decoration: none;
     font-size: 2.3vw;
-    color: var(--v3-negro);
+    color: var(--v3-gris-oscuro);
     position: absolute;
     bottom: 0;
     padding-bottom: 15px;
@@ -536,4 +570,14 @@ footer{
     font-family: 'Poppins-light';
     font-weight: 300;
     font-size: 36px;
+}
+
+.mi-animacion {
+    width: 200px;  /* Ajusta el tamaño */
+    height: auto;  /* Mantén la relación de aspecto */
+    display: block; /* Evita el espacio debajo de la imagen */
+    margin: 20px auto;  /* Centra la animación */
+    padding: 0%;
+    margin: 0%;
+    margin-top: 10%;
 }

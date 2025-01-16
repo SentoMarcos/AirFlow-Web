@@ -444,3 +444,14 @@ h3 {
     background-image: url("../img/ajuntament.png");
     background-position: center center;
 }
+
+.loading{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Ajusta el video para cubrir todo el área sin deformarse */
+    z-index: -1; /* Envía el video al fondo */
+    pointer-events: none; /* Evita que el video interfiera con clics en el contenido */
+}
