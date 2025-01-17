@@ -188,9 +188,14 @@ fetch('/mapa/mapa-config')
         // ---------------------------------------------------------
         async function initMapa() {
             try {
+                // Mostrar indicador de carga
+                //mostrarCargando();
                 const { mediciones, datosPorGas } = await obtenerMediciones(); // Espera a obtener las mediciones
 
+
                 await initCapas();
+
+                // Comprobar si los datos de gases están disponibles para agregarlos al mapa
                 if (datosPorGas.general.length > 0) {
                     // Agregar los datos al mapa de calor
                     agregarMapaDeCalorPorValores(datosPorGas.general, capasGases.interpolatedLayerGroup);
@@ -214,8 +219,11 @@ fetch('/mapa/mapa-config')
                 // Capa visible por defecto
                 capasGases.interpolatedLayerGroup.addTo(map);
 
+                // Ocultar indicador de carga
+                //ocultarCargando();
             } catch (error) {
                 console.error("Error en initMapa:", error);
+                //ocultarCargando(); // Asegurar que el indicador desaparezca en caso de error
             }
         }
 
@@ -271,7 +279,14 @@ fetch('/mapa/mapa-config')
                 console.warn("No hay datos para el mapa interpolado.");
                 return;
             }
+            // Limpia la capa existente antes de añadir nuevos datos
+            // Verifica si ya existe una capa IDW dentro del grupo
+            const existingIDWLayer = Array.from(layerGroup.getLayers()).find(layer => layer instanceof L.IdwLayer);
 
+            // Si existe, elimínalo del grupo
+            if (existingIDWLayer) {
+                layerGroup.removeLayer(existingIDWLayer);
+            }
             // Obtener los valores reales
             const valores = datos.map((punto) => punto[2]);
             const minValor = Math.min(...valores);

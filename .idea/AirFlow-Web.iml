@@ -16,5 +16,12 @@
     <orderEntry type="library" name="jspdf" level="application" />
     <orderEntry type="library" name="pdf-lib" level="application" />
     <orderEntry type="library" name="leaflet-image" level="application" />
+    <orderEntry type="library" name="pdf-lib" level="application" />
+    <orderEntry type="library" name="leaflet-image" level="application" />
+    <orderEntry type="library" name="leaflet-routing-machine" level="application" />
+    <orderEntry type="library" name="leaflet-control-geocoder" level="application" />
+    <orderEntry type="library" name="leaflet.heat" level="application" />
+    <orderEntry type="library" name="leaflet" level="application" />
+    <orderEntry type="library" name="bootstrap" level="application" />
   </component>
 </module>
