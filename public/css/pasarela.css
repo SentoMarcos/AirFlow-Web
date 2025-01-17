@@ -7,9 +7,12 @@
     justify-content: center;
     padding-top: 15vh;
 }
+.pasarela-container{
+    background-color: '#F7F7F5';
+}
 #pasarela-form-container{
-    width: 66vw;
-    /*height: 64.6vh;*/
+    width: 763px;
+    height: 763px;
     background: var(--v3-blanco); /* Color de fondo blanco */
     border-radius: 48px; /* Bordes redondeados */
     padding: 25px;
@@ -42,6 +45,33 @@
     border: 1px solid var(--v3-negro);
     border-radius: 4px;
     padding-inline: 10px;
+}
+.nombre{
+    grid-column: span 2;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+}
+.aytoVlc {
+    height: 36px;
+    width: 36px;
+    margin-right: 10px;
+}
+
+.tachado {
+    text-decoration: line-through;
+    font-size: 20px;
+    margin-right: 10px;
+}
+.precio {
+    align-items: center;
+}
+#errorText {
+    color: red;
+    font-size: 14px;
+    margin-top: 10px;
+    display: none;
+    /* Oculto por defecto */
 }
 button {
     border-radius: 10px;
