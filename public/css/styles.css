@@ -96,9 +96,10 @@ header .navbar-brand{
 }
 header .botones-header {
     display: flex;
-    flex-direction: row;
-    align-items: end;
-    justify-content: end;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: flex-end;
+    position: relative;
 }
 
 header .show .botones-header,

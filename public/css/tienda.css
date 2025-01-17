@@ -1,5 +1,6 @@
 h3{
-    font-size: 40px;
+    font-size: 48px;
+    font-family: Poppins-light;
 }
 button{
     height: 45px;
@@ -15,7 +16,7 @@ button{
     flex-direction: row;
     height: 100vh;
     gap: 10px;
-    font-family: Poppins, sans-serif;
+    font-family: Poppins-light, sans-serif;
 }
 #tienda-container #tienda-producto{
     height: 100%;
@@ -46,6 +47,7 @@ button{
 }
 
 #tienda-container #tienda-producto #producto-bottom #precio-producto{
+    position: relative; /* Define el contenedor como referencia */
     text-align: right;
 }
 #tienda-container #tienda-producto #producto-bottom #producto-botones div{
@@ -93,6 +95,18 @@ button{
 }
 #tienda-container #membresías>div:nth-child(2) span{
     color: var(--v3-blanco);
+}
+.aytoVlc{
+    height: 36px;
+    width: 36px;
+    margin-right: 20px;
+}
+.tachado{
+    text-decoration: line-through;
+    font-size: 20px;
+}
+.separacion{
+    margin-top: 60px;
 }
 button{
     font-family: "IBM Plex Mono", sans-serif;

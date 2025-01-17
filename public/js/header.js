@@ -1,7 +1,7 @@
 // Cargar el header externo
 // -----------------------------------------
 //archivo:texto,elemento:texto----->cargarHeader()
-function cargarHeader(string,elemento) {
+function cargarHeader(string, elemento) {
     fetch(string)
         .then(response => response.text())
         .then(data => {
@@ -10,7 +10,9 @@ function cargarHeader(string,elemento) {
             // Selecciona el header
             const header = document.querySelector('.container-fluid');
             const anterior = document.getElementsByClassName('active');
-            for (let i = 0; i < anterior.length; i++) { anterior[i].classList.remove('active'); }
+            for (let i = 0; i < anterior.length; i++) {
+                anterior[i].classList.remove('active');
+            }
             document.getElementById(elemento).classList.add('active');
             // Agrega un evento para detectar el scroll
             window.addEventListener('scroll', () => {

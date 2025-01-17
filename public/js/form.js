@@ -24,6 +24,7 @@
 /*
     Function: generarContrasena() => string
 */
+
 function generarContrasenya() {
     const longitudMinima = 7;
     const longitudMaxima = 15;
@@ -49,36 +50,61 @@ function generarContrasenya() {
     return contrasenaMezclada;
 }
 
-/**
- * @function registroForm
- * @description Función para registrar un usuario.
- * @param {Event} event
- * @returns {Promise<void>}
- * @var {string} nombre
- * @var {string} apellidos
- * @var {string} email
- * @var {string} telefono
- * @var {Object} registroData
- * @async
- */
+function formatearTarjeta(input) {
+    // Elimina cualquier carácter no numérico
+    let valor = input.value.replace(/\D/g, "");
 
-/* 
-    Event:event => registroForm() => Promise<void>
-*/
+    // Divide el valor en grupos de 4 dígitos y une con guiones
+    valor = valor.match(/.{1,4}/g)?.join("-") || "";
 
-document.getElementById("registroForm").addEventListener("submit", async function (event) {
+    // Actualiza el valor del campo
+    input.value = valor;
+}
+
+window.addEventListener("DOMContentLoaded", () => {
+    const producto = localStorage.getItem("productoNombre") || "Producto A Comprar";
+    const rebaja = localStorage.getItem("productoRebaja") || "00.00€";
+    const precio = localStorage.getItem("productoPrecio") || "0.00€";
+
+    document.getElementById("productoTitulo").textContent = producto;
+    document.getElementById("productoRebaja").textContent = rebaja;
+    document.getElementById("productoPrecio").textContent = precio;
+});
+
+
+document.getElementById("pasarelaForm").addEventListener("submit", async function (event) {
     event.preventDefault();
+
+    // Limpiar el mensaje de error
+    const errorText = document.getElementById("errorText");
+    errorText.textContent = "";
+
+    const exito = document.getElementById("exito");
+    exito.textContent = "";
 
     const nombre = document.getElementById("nombre").value;
     const apellidos = document.getElementById("apellidos").value;
     const email = document.getElementById("email").value;
     const telefono = document.getElementById("telefono").value;
+    const direccion = document.getElementById("direccion").value.trim();
+    const postal = document.getElementById("postal").value;
+    const tarjeta = document.getElementById("tarjeta").value;
+    const fechaCaducidad = document.getElementById("fecha-caducidad").value.trim();
+    const CVV = document.getElementById("CVV").value;
     const contrasenya = generarContrasenya();
-    const errorText = document.getElementById("errorForm");
+
+    const checkboxPersonales = document.getElementById("datos-personales");
+    const checkboxPago = document.getElementById("datos-pago");
+    const checkboxEnvio = document.getElementById("datos-envio");
 
     console.log(contrasenya); // Muestra la contraseña generada aleatoriamente (para pruebas).
 
-    errorText.textContent = '';
+    // Validar campos obligatorios
+    if (!nombre || !apellidos || !email || !telefono || !direccion || !postal || !tarjeta || !fechaCaducidad || !CVV) {
+        errorText.textContent = "Por favor, completa todos los campos obligatorios.";
+        return; // Detener la ejecución si falta algún campo
+    }
+
     // Validar campos correctos
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
         errorText.textContent = "El email no es válido.";
@@ -87,6 +113,56 @@ document.getElementById("registroForm").addEventListener("submit", async functio
     if (!/^\d{9}$/.test(telefono)) {
         errorText.textContent = "El teléfono debe tener 9 dígitos.";
         return;
+    }
+    if (!/^\d{5}$/.test(postal)) {
+        errorText.textContent = "El código postal debe tener 5 dígitos.";
+        return;
+    }
+    if (!/^\d{4}-\d{4}-\d{4}-\d{4}$/.test(tarjeta)) {
+        errorText.textContent = "El número de tarjeta debe tener el formato 1234-1234-1234-1234.";
+        return;
+    }
+    if (!/^\d{3}$/.test(CVV)) {
+        errorText.textContent = "El CVV debe tener 3 dígitos.";
+        return;
+    }
+
+    // Simular envío del formulario
+    console.log("Formulario enviado con éxito:");
+    console.log({ nombre, apellidos, email, telefono, direccion, postal, tarjeta, fechaCaducidad, CVV });
+
+    const datos = {};
+
+    // Guardamos los datos solo si el checkbox está seleccionado
+    if (checkboxPersonales.checked) {
+        datos.personales = {
+            nombre: document.getElementById("nombre").value,
+            apellidos: document.getElementById("apellidos").value,
+            email: document.getElementById("email").value,
+            telefono: document.getElementById("telefono").value
+        };
+    }
+
+    if (checkboxEnvio.checked) {
+        datos.envio = {
+            direccion: document.getElementById("direccion").value,
+            postal: document.getElementById("postal").value,
+            notas: document.getElementById("notas-entrega").value
+        };
+    }
+
+    if (checkboxPago.checked) {
+        datos.pago = {
+            tarjeta: document.getElementById("tarjeta").value,
+            caducidad: document.getElementById("fecha-caducidad").value,
+            CVV: document.getElementById("CVV").value
+        };
+    }
+
+    // Si hay datos para guardar, lo hacemos
+    if (Object.keys(datos).length > 0) {
+        localStorage.setItem("formularioDatos", JSON.stringify(datos));
+        console.log("Datos guardados correctamente.");
     }
 
     const registroData = {
@@ -124,12 +200,14 @@ document.getElementById("registroForm").addEventListener("submit", async functio
                 }),
             });
 
+            exito.textContent = "El usuario se ha registrado con éxito";
+
             if (correoResponse.ok) {
                 alert("Correo enviado correctamente");
-            } else {
+            } /*else {
                 const correoResult = await correoResponse.json();
                 errorText.textContent = correoResult.error || "Error enviando el correo.";
-            }
+            }*/
         } else {
             errorText.textContent = registroResult.error || "Error en el registro del usuario.";
         }

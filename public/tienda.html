@@ -15,6 +15,15 @@
 <body>
 <div id="header-container"></div>
 
+<script>  
+  function seleccionarProducto(nombre, rebaja, precio) {
+      localStorage.setItem('productoNombre', nombre);
+      localStorage.setItem('productoRebaja', rebaja);
+      localStorage.setItem('productoPrecio', precio);
+      window.location.href = 'pasarela.html';
+    }
+</script>
+
 <div id="tienda-container">
   <div id="tienda-producto">
     <div>
@@ -24,14 +33,18 @@
     </div>
     <div id="producto-bottom">
       <div id="producto-botones">
-        <p>+Membresía de por vida</p>
+        <p class="separacion">+Membresía de por vida</p>
         <div>
-            <button>Detalles</button>
-            <button onclick="window.location.href='pasarela.html'">Comprar<i class="bi bi-cart"></i></button>
+          <button onclick="seleccionarProducto('Sensor AF1 + Membresía de por vida', '29.99€', '9.99€')">Comprar<i class="bi bi-cart"></i></button>
+          <button>Detalles</button>
         </div>
       </div>
       <div id="precio-producto">
         <p>Patroc. Ayto. Valencia</p>
+        <div class="precio-original">
+          <img src="/img/aytoVlc.png" alt="Logo Ayuntamiento Valencia" class="aytoVlc">
+          <span class="tachado">29.99€</span>
+        </div>
         <h3>9.99€</h3>
       </div>
     </div>
@@ -40,19 +53,27 @@
     <div id="membresía-mensual">
         <h2>Membresía 1 mes</h2>
         <p>Acceso a las funciones premium por <span>1 mes</span></p>
+                <div class="precio-original">
+                  <img src="/img/aytoVlc.png" alt="Logo Ayuntamiento Valencia" class="aytoVlc">
+                  <span class="tachado">5.99€</span>
+                </div>
         <h3>2.99€</h3>
         <div>
-            <button>Detalles</button>
-            <button onclick="window.location.href='pasarela.html'">Comprar<i class="bi bi-cart"></i></button>
+          <button onclick="seleccionarProducto('Membresía 1 mes', '5.99€', '2.99€')">Comprar<i class="bi bi-cart"></i></button>
+          <button>Detalles</button>
         </div>
     </div>
     <div id="membresía-anual">
         <h2>Membresía 1 año</h2>
         <p>Acceso a las funciones premium por <span>1 año</span></p>
+                <div class="precio-original">
+                  <img src="/img/aytoVlc.png" alt="Logo Ayuntamiento Valencia" class="aytoVlc">
+                  <span class="tachado">19.99€</span>
+                </div>
         <h3>7.99€</h3>
         <div>
-            <button>Detalles</button>
-            <button onclick="window.location.href='pasarela.html'">Comprar<i class="bi bi-cart"></i></button>
+          <button onclick="seleccionarProducto('Membresía 1 año', '19.99€', '7.99€')">Comprar <i class="bi bi-cart"></i></button>
+          <button>Detalles</button>
         </div>
     </div>
   </div>

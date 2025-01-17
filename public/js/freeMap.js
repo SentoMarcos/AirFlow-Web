@@ -188,30 +188,42 @@ fetch('/mapa/mapa-config')
         // ---------------------------------------------------------
         async function initMapa() {
             try {
+                // Mostrar indicador de carga
+                //mostrarCargando();
                 const { mediciones, datosPorGas } = await obtenerMediciones(); // Espera a obtener las mediciones
 
-                await initCapas();
-                if (datosPorGas.general.length > 0) {
-                    // Filtrar los datos para eliminar valores cercanos
-                    const datosFiltradosGeneral = filtrarDatosPorProximidad(datosPorGas.general, 1);
-                    const datosFiltradosCO2 = filtrarDatosPorProximidad(datosPorGas.CO2, 1);
-                    const datosFiltradosNO2 = filtrarDatosPorProximidad(datosPorGas.NO2, 1);
-                    const datosFiltradosO3 = filtrarDatosPorProximidad(datosPorGas.O3, 1);
 
+                await initCapas();
+
+                // Comprobar si los datos de gases están disponibles para agregarlos al mapa
+                if (datosPorGas.general.length > 0) {
                     // Agregar los datos al mapa de calor
-                    agregarMapaDeCalorPorValores(datosFiltradosGeneral, capasGases.interpolatedLayerGroup);
-                    agregarMapaDeCalorPorValores(datosFiltradosCO2, capasGases.co2LayerGroup);
-                    agregarMapaDeCalorPorValores(datosFiltradosNO2, capasGases.no2LayerGroup);
-                    agregarMapaDeCalorPorValores(datosFiltradosO3, capasGases.o3LayerGroup);
+                    agregarMapaDeCalorPorValores(datosPorGas.general, capasGases.interpolatedLayerGroup);
+                    agregarMapaDeCalorPorValores(datosPorGas.CO2, capasGases.co2LayerGroup);
+                    agregarMapaDeCalorPorValores(datosPorGas.NO2, capasGases.no2LayerGroup);
+                    agregarMapaDeCalorPorValores(datosPorGas.O3, capasGases.o3LayerGroup);
                 } else {
                     console.warn("No hay datos para mostrar en el mapa de calor.");
                 }
 
+                // Crear el control de capas para añadir al mapa
+                const controlCapas = L.control.layers(
+                    {
+                        "Mapa de Calor (Todos los Gases)": capasGases.interpolatedLayerGroup,
+                        "Mapa CO2": capasGases.co2LayerGroup,
+                        "Mapa NO2": capasGases.no2LayerGroup,
+                        "Mapa O3": capasGases.o3LayerGroup
+                    }
+                ).addTo(map);
+
                 // Capa visible por defecto
                 capasGases.interpolatedLayerGroup.addTo(map);
 
+                // Ocultar indicador de carga
+                //ocultarCargando();
             } catch (error) {
                 console.error("Error en initMapa:", error);
+                //ocultarCargando(); // Asegurar que el indicador desaparezca en caso de error
             }
         }
 
@@ -267,7 +279,14 @@ fetch('/mapa/mapa-config')
                 console.warn("No hay datos para el mapa interpolado.");
                 return;
             }
+            // Limpia la capa existente antes de añadir nuevos datos
+            // Verifica si ya existe una capa IDW dentro del grupo
+            const existingIDWLayer = Array.from(layerGroup.getLayers()).find(layer => layer instanceof L.IdwLayer);
 
+            // Si existe, elimínalo del grupo
+            if (existingIDWLayer) {
+                layerGroup.removeLayer(existingIDWLayer);
+            }
             // Obtener los valores reales
             const valores = datos.map((punto) => punto[2]);
             const minValor = Math.min(...valores);
