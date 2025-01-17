@@ -222,53 +222,49 @@ function actualizarMapaConMediciones(mediciones) {
     });
 
     // Llamar a la función para agregar el mapa de calor con los datos de mediciones
-    agregarValoresMapaCalor(datosHeatmap);
+    agregarMapaDeCalor(datosHeatmap, capasGases.interpolatedLayerGroup);
 }
-function agregarValoresMapaCalor(datosHeatmap) {
-    if (!datosHeatmap || datosHeatmap.length === 0) {
+function agregarMapaDeCalor(datos, layerGroup) {
+    if (!datos || datos.length === 0) {
         console.warn("No hay datos para el mapa interpolado.");
         return;
     }
-    // Asegurarse de que capas.mapaCalor esté inicializado
-    if (capasGases.interpolatedLayerGroup) {
-        capasGases.interpolatedLayerGroup.clearLayers(); // Limpia los datos previos
+    // Limpia la capa existente antes de añadir nuevos datos
+    // Verifica si ya existe una capa IDW dentro del grupo
+    const existingIDWLayer = Array.from(layerGroup.getLayers()).find(layer => layer instanceof L.IdwLayer);
+
+    // Si existe, elimínalo del grupo
+    if (existingIDWLayer) {
+        layerGroup.removeLayer(existingIDWLayer);
     }
-    // Determinar los valores mínimos y máximos de "valor" para normalizar
-    const valores = datosHeatmap.map((punto) => punto[2]); // Tercer valor del array es "valor"
+    // Obtener los valores reales
+    const valores = datos.map((punto) => punto[2]);
     const minValor = Math.min(...valores);
     const maxValor = Math.max(...valores);
 
-    // Normalizar un valor en el rango [minValor, maxValor] a [0, 1]
-    const normalizarValor = (valor) => (valor - minValor) / (maxValor - minValor);
+    // Crear capa IDW
+    const idwLayer = L.idwLayer(
+        datos.map((punto) => [
+            punto[0], // Latitud
+            punto[1], // Longitud
+            punto[2], // Valor real, sin normalización
+        ]),
+        {
+            opacity: 0.5, // Hacer el mapa más visible
+            cellSize: 7, // Resolución del mapa de calor
+            exp: 2, // Controlar la dispersión del impacto de los datos
+            min: minValor, // Valor mínimo de los datos
+            max: maxValor, // Valor máximo de los datos
 
-    // Crear un grupo de capas para los puntos interpolados
-    const interpolatedLayer = L.layerGroup();
-
-    datosHeatmap.forEach(([latitud, longitud, valor]) => {
-        const intensidad = normalizarValor(valor); // Normalizar el campo "valor"
-
-        // Crear varios círculos con radios crecientes y opacidades decrecientes
-        const steps = 5; // Número de pasos en la interpolación
-        for (let i = 0; i < steps; i++) {
-            const radius = 100 + i * 100; // Incremento en el radio
-            const opacity = 0.8 - i * 0.15; // Decrece la opacidad
-            const color = obtenerColorPorIntensidad(intensidad);
-
-            const circle = L.circle([latitud, longitud], {
-                radius: radius,
-                color: color,
-                fillColor: color,
-                fillOpacity: opacity,
-                weight: 0,
-            });
-
-            // Añadir cada círculo al grupo de capas
-            circle.addTo(interpolatedLayer);
+            // Función para asignar colores basados en valores reales
+            color: (val) => {
+                return getColor(val);
+            },
         }
-    });
+    );
 
-    // Agregar el grupo de capas interpoladas al mapa
-    capasGases.interpolatedLayerGroup.addLayer(interpolatedLayer);
+    // Añadir la capa IDW al grupo especificado
+    idwLayer.addTo(layerGroup);
 }
 
 

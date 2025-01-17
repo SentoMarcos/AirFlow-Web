@@ -94,12 +94,45 @@ header .navbar-brand{
 .navbar-nav .nav-link.active, .navbar-nav .nav-link.show{
     color: var(--v3-azul);
 }
-header .botones-header{
+header .botones-header {
     display: flex;
-    flex-direction: row;
-    align-items: end;
-    justify-content: end;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: flex-end;
+    position: relative;
 }
+
+.menu-container {
+    display: none; /* Oculto por defecto */
+    flex-direction: column;
+    background-color: white;
+    padding: 10px;
+    position: absolute;
+    top: 100%; /* Aparece justo debajo del botón */
+    right: 0;
+    z-index: 10; /* Asegura que esté por encima de otros elementos */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    transition: all 0.3s ease; /* Animación suave */
+}
+
+.menu-container.show {
+    display: flex; /* Muestra el menú cuando se añade la clase `show` */
+}
+
+.menu-container a {
+    padding: 5px 10px;
+    text-decoration: none;
+    color: #000; /* Color del texto */
+    transition: background-color 0.3s ease;
+}
+
+.menu-container a:hover {
+    background-color: #f0f0f0; /* Efecto hover en los enlaces */
+    border-radius: 3px;
+}
+
+
 header .show .botones-header,
 header .collapsing .botones-header{
     align-items: start;

@@ -279,7 +279,14 @@ fetch('/mapa/mapa-config')
                 console.warn("No hay datos para el mapa interpolado.");
                 return;
             }
+            // Limpia la capa existente antes de añadir nuevos datos
+            // Verifica si ya existe una capa IDW dentro del grupo
+            const existingIDWLayer = Array.from(layerGroup.getLayers()).find(layer => layer instanceof L.IdwLayer);
 
+            // Si existe, elimínalo del grupo
+            if (existingIDWLayer) {
+                layerGroup.removeLayer(existingIDWLayer);
+            }
             // Obtener los valores reales
             const valores = datos.map((punto) => punto[2]);
             const minValor = Math.min(...valores);
