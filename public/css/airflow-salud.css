@@ -286,6 +286,7 @@ h3 {
 }
 #mapa.active{
     display: block;
+    width: 1000px;
 }
 .leaflet-top{
     display: none;
