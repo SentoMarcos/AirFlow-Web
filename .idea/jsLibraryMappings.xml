@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="JavaScriptLibraryMappings">
-    <file url="PROJECT" libraries="{heatmap.js, html2canvas, jspdf, leaflet, leaflet-control-geocoder, leaflet-heatmap, leaflet-image, leaflet-routing-machine, leaflet.gridlayer.googlemutant, leaflet.heat, mapbox-gl, pdf-lib}" />
     <includedPredefinedLibrary name="Node.js Core" />
   </component>
 </project>

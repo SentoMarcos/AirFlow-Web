@@ -13,8 +13,6 @@
 let map; // Variable global para el mapa
 let capas;
 let capasGases;
-import * as turf from 'https://cdn.skypack.dev/@turf/turf';
-console.log(turf);
 fetch('/mapa/mapa-config')
     .then(response => response.json())
     .then(config => {
@@ -191,7 +189,9 @@ fetch('/mapa/mapa-config')
         async function initMapa() {
             try {
                 // Mostrar indicador de carga
-                mostrarCargando();
+                //mostrarCargando();
+                const { mediciones, datosPorGas } = await obtenerMediciones(); // Espera a obtener las mediciones
+
 
                 await initCapas();
 
@@ -220,10 +220,10 @@ fetch('/mapa/mapa-config')
                 capasGases.interpolatedLayerGroup.addTo(map);
 
                 // Ocultar indicador de carga
-                ocultarCargando();
+                //ocultarCargando();
             } catch (error) {
                 console.error("Error en initMapa:", error);
-                ocultarCargando(); // Asegurar que el indicador desaparezca en caso de error
+                //ocultarCargando(); // Asegurar que el indicador desaparezca en caso de error
             }
         }
 
