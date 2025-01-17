@@ -5,7 +5,7 @@ exports.getMapaConfig = async (req, res) => {
             zoom: 10,               // Nivel de zoom inicial
             maxZoom: 19,            // Nivel de zoom máximo
             tileLayer: {
-                url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', // URL del mapa base
+                url: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', // URL del mapa base
                 attribution: '© OpenStreetMap contributors'              // Atribución del mapa base
             },
             zoomControl: false      // Control de zoom deshabilitado
