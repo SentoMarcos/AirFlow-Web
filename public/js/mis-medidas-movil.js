@@ -141,7 +141,7 @@ obtenerMisSensores()
 
 async function obtenerMediciones() {
     try {
-        const response = await fetch('http://localhost:3000/mediciones/mediciones-all');
+        const response = await fetch('http://192.168.1.42:3000/mediciones/mediciones-all');
 
         if (!response.ok) {
             throw new Error(`Error en la solicitud: ${response.status}`);

@@ -64,6 +64,27 @@ fetch('/mapa/mapa-config')
             no2LayerGroup : L.layerGroup(), // Capa para NO2
             o3LayerGroup : L.layerGroup(),  // Capa para O3
         }
+
+        // Crear el control de capas para añadir al mapa
+        const controlCapas = L.control.layers(
+            {
+                "Mapa de Calor (Todos los Gases)": capasGases.interpolatedLayerGroup,
+                "Mapa CO2": capasGases.co2LayerGroup,
+                "Mapa NO2": capasGases.no2LayerGroup,
+                "Mapa O3": capasGases.o3LayerGroup
+            },
+            null, 
+            { position: 'bottomleft' }
+        ).addTo(map);
+
+        // Añade las capas al control de capas
+        /*var controlCapas = L.control.layers(null, {
+            "Calidad del Aire": capas.calidadAire,
+            "Estaciones GVA": capas.estacionesGVA,
+            "Estaciones AEMET": capas.estacionesAEMET,
+            "Mapa de Calor": capas.mapaCalor,
+        }).addTo(map);*/
+
         // ---------------------------------------------------------
         // BOTONES DE ZOOM
         // ---------------------------------------------------------
@@ -161,31 +182,20 @@ fetch('/mapa/mapa-config')
                 return null;
             }
         }
+
         // ---------------------------------------------------------
         // MAPA DE CALOR
         // ---------------------------------------------------------
-            /*
-                // Datos de ejemplo para el mapa de calor
-                function asignarEstado(media) {
-                    // Define los intervalos para los estados
-                    if (!media) return 'vacio';
-                    if (media <= 50) return 'excelente';
-                    if (media <= 100) return 'bueno';
-                    if (media <= 150) return 'moderado';
-                    if (media <= 200) return 'malo';
-                    return 'peligroso'; // Si es mayor a 100
-                }
-            */
         async function initMapa() {
             try {
+                // Mostrar indicador de carga
+                //mostrarCargando();
                 const { mediciones, datosPorGas } = await obtenerMediciones(); // Espera a obtener las mediciones
 
-                // Crear los grupos de capas
-                /*let interpolatedLayerGroup = L.layerGroup();
-                let co2LayerGroup = L.layerGroup(); // Capa para CO2
-                let no2LayerGroup = L.layerGroup(); // Capa para NO2
-                let o3LayerGroup = L.layerGroup();  // Capa para O3*/
+
                 await initCapas();
+
+                // Comprobar si los datos de gases están disponibles para agregarlos al mapa
                 if (datosPorGas.general.length > 0) {
                     // Agregar los datos al mapa de calor
                     agregarMapaDeCalorPorValores(datosPorGas.general, capasGases.interpolatedLayerGroup);
@@ -209,76 +219,165 @@ fetch('/mapa/mapa-config')
                 // Capa visible por defecto
                 capasGases.interpolatedLayerGroup.addTo(map);
 
+                // Ocultar indicador de carga
+                //ocultarCargando();
             } catch (error) {
                 console.error("Error en initMapa:", error);
+                //ocultarCargando(); // Asegurar que el indicador desaparezca en caso de error
             }
         }
+
         // ---------------------------------------------------------
-        // MAPA DE CALOR POR VALORES
+        //  FILTRAR DATOS POR PROXIMIDAD
+        // ---------------------------------------------------------
+        function filtrarDatosPorProximidad(datos, distanciaMaximaKm) {
+            const filtrarPorDistancia = (lat1, lon1, lat2, lon2) => {
+                const R = 6371; // Radio de la Tierra en km
+                const dLat = ((lat2 - lat1) * Math.PI) / 180;
+                const dLon = ((lon2 - lon1) * Math.PI) / 180;
+                const a =
+                    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                    Math.cos((lat1 * Math.PI) / 180) * Math.cos((lat2 * Math.PI) / 180) *
+                    Math.sin(dLon / 2) * Math.sin(dLon / 2);
+                const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+                return R * c; // Distancia en km
+            };
+
+            const filtrados = [];
+
+            datos.forEach((punto) => {
+                const [lat, lon, valor] = punto;
+
+                // Verifica si el punto ya tiene vecinos cercanos en la lista filtrada
+                const cercano = filtrados.find(([fLat, fLon, fValor]) => {
+                    const distancia = filtrarPorDistancia(lat, lon, fLat, fLon);
+                    return distancia <= distanciaMaximaKm && fValor >= valor;
+                });
+
+                if (!cercano) {
+                    // Si no hay vecino cercano, añade este punto
+                    filtrados.push(punto);
+
+                    // Elimina puntos cercanos de menor valor en la lista filtrada
+                    for (let i = filtrados.length - 1; i >= 0; i--) {
+                        const [fLat, fLon, fValor] = filtrados[i];
+                        const distancia = filtrarPorDistancia(lat, lon, fLat, fLon);
+                        if (distancia <= distanciaMaximaKm && fValor < valor) {
+                            filtrados.splice(i, 1); // Elimina el punto de menor valor
+                        }
+                    }
+                }
+            });
+            return filtrados;
+        }
+
+        // ---------------------------------------------------------
+        // MAPA DE CALOR POR IDW
         // ---------------------------------------------------------
         function agregarMapaDeCalorPorValores(datos, layerGroup) {
             if (!datos || datos.length === 0) {
                 console.warn("No hay datos para el mapa interpolado.");
                 return;
             }
+            // Limpia la capa existente antes de añadir nuevos datos
+            // Verifica si ya existe una capa IDW dentro del grupo
+            const existingIDWLayer = Array.from(layerGroup.getLayers()).find(layer => layer instanceof L.IdwLayer);
 
-            console.log("Datos para mapa interpolado:", datos); // Asegúrate de que los datos sean correctos
-
-            // Determinar los valores mínimos y máximos de "valor" para normalizar
-            const valores = datos.map((punto) => punto[2]); // Tercer valor del array es "valor"
+            // Si existe, elimínalo del grupo
+            if (existingIDWLayer) {
+                layerGroup.removeLayer(existingIDWLayer);
+            }
+            // Obtener los valores reales
+            const valores = datos.map((punto) => punto[2]);
             const minValor = Math.min(...valores);
             const maxValor = Math.max(...valores);
 
-            // Normalizar un valor en el rango [minValor, maxValor] a [0, 1]
-            const normalizarValor = (valor) => (valor - minValor) / (maxValor - minValor);
-            
-            datos.forEach(([latitud, longitud, valor]) => {
-                const intensidad = normalizarValor(valor); // Normalizar el campo "valor"
+            // Crear capa IDW
+            const idwLayer = L.idwLayer(
+                datos.map((punto) => [
+                    punto[0], // Latitud
+                    punto[1], // Longitud
+                    punto[2], // Valor real, sin normalización
+                ]),
+                {
+                    opacity: 0.5, // Hacer el mapa más visible
+                    cellSize: 7, // Resolución del mapa de calor
+                    exp: 2, // Controlar la dispersión del impacto de los datos
+                    min: minValor, // Valor mínimo de los datos
+                    max: maxValor, // Valor máximo de los datos
 
-                // Crear varios círculos con radios crecientes y opacidades decrecientes
-                const steps = 5; // Número de pasos en la interpolación
-                for (let i = 0; i < steps; i++) {
-                    const radius = 100 + i * 100; // Incremento en el radio
-                    const opacity = 0.8 - i * 0.15; // Decrece la opacidad
-                    const color = obtenerColorPorIntensidad(intensidad);
-
-                    const circle = L.circle([latitud, longitud], {
-                        radius: radius,
-                        color: color,
-                        fillColor: color,
-                        fillOpacity: opacity,
-                        weight: 0,
-                    });
-
-                    // Añadir cada círculo al grupo de capas
-                    circle.addTo(layerGroup);
+                    // Función para asignar colores basados en valores reales
+                    color: (val) => {
+                        return getColor(val);
+                    },
                 }
-            });
-        }
+            );
 
-        // Función para obtener el color basado en la intensidad
-        function obtenerColorPorIntensidad(intensidad) {
-            // Define el gradiente de colores
-            const colores = {
-                0: '#63B8D9',  // Azul pastel
-                0.2: '#8FE1B0',  // Verde pastel
-                0.4: '#F0F67B',  // Amarillo pastel
-                0.6: '#F69C4E',  // Naranja pastel
-                0.8: '#F78A7D',  // Rojo pastel
-            };
-
-            // Encuentra el color más cercano a la intensidad
-            let colorActual = 'blue';
-            for (const key in colores) {
-                if (intensidad >= parseFloat(key)) {
-                    colorActual = colores[key];
-                }
-            }
-            return colorActual;
+            // Añadir la capa IDW al grupo especificado
+            idwLayer.addTo(layerGroup);
         }
 
         // ---------------------------------------------------------
-        //
+        // DATOS AEMET
+        // ---------------------------------------------------------
+        async function initCapas() {
+            // Carga y asigna datos a las capas
+            //await obtenerCalidadAire(39.5, -1.0);
+            await cargarDatosGVA();
+            await cargarDatosAemet();
+            //agregarMapaDeCalorPorCirculos([[39.5, -1.0, 0.8], [39.6, -1.1, 0.6]]); // Ejemplo de datos
+
+            // Agrega las capas al mapa (pueden estar activas por defecto o no)
+            capas.estacionesAEMET.addTo(map);
+            capas.estacionesGVA.addTo(map);
+            capas.mapaCalor.addTo(map);
+        }
+        async function cargarDatosAemet() {
+            const AemetKey = 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwYWJsb3JlYm9sbG8wMkBnbWFpbC5jb20iLCJqdGkiOiJhMDNkNGY3MS1hMWI4LTQ4OWEtODM3YS1kNzFkMmNmMTU5OTIiLCJpc3MiOiJBRU1FVCIsImlhdCI6MTczNjI3NjU2OCwidXNlcklkIjoiYTAzZDRmNzEtYTFiOC00ODlhLTgzN2EtZDcxZDJjZjE1OTkyIiwicm9sZSI6IiJ9.CWvCCuTHlttrTzPeXflUIIr3QdaKhlBE6SC1C2nYwJA'; // Reemplaza con tu clave de API de Aemet
+            const url = `https://opendata.aemet.es/opendata/api/red/especial/contaminacionfondo/estacion/12?api_key=${AemetKey}`;
+            const lat = 39.083910491542845;
+            const lon = -1.1011464074163988;
+
+            try {
+                const response = await fetch(url);
+                if (!response.ok) {
+                    throw new Error(`Error al obtener datos de AEMET: ${response.status}`);
+                }
+                const data = await response.json();
+                console.log("Datos de AEMET:", data);
+
+                // Asegúrate de que el mapa esté inicializado antes de agregar el marcador
+                if (typeof map !== 'undefined' && map) {
+                    const marker = L.marker([lat, lon], {
+                        id: 'aemet-station',       // Añade un ID personalizado al marcador
+                        icon: L.divIcon({          // Utiliza un icono personalizado con clase
+                            className: 'aemet', // Añade tu clase personalizada
+                            iconSize: [30, 30], // Tamaño del ícono
+                            iconAnchor: [15, 30], // Punto de anclaje del ícono
+                            popupAnchor: [0, -30], // Posición del popup respecto al ícono
+                            html: '<div class="custom-marker-icon"></div>', // Personaliza el contenido del marcador
+                        })
+                    })
+                        .bindPopup('Ubicación de la estación AEMET')
+                    capas.estacionesAEMET.addLayer(marker); // Añade el marcador a la capa
+                    //.openPopup(); // Muestra el popup cuando se crea el marcador
+
+                    console.log("Marcador añadido con clase 'custom-marker'");
+                } else {
+                    console.error("El mapa no está inicializado.");
+                }
+            } catch (error) {
+                console.error("Error al cargar datos de AEMET:", error);
+            }
+        }
+        // Llamada a las funciones de inicialización
+        //cargarDatosAemet();
+        initMapa().then(r => cargarDatosAemet().then(cargarDatosGVA()));
+    })
+    .catch(error => console.error("Error al cargar la configuración del mapa:", error));
+
+        // ---------------------------------------------------------
+        // DATOS GVA
         // ---------------------------------------------------------
         async function cargarDatosGVA() {
             const url = 'https://valencia.opendatasoft.com/api/records/1.0/search/?dataset=estacions-contaminacio-atmosferiques-estaciones-contaminacion-atmosfericas&rows=20';
@@ -323,62 +422,3 @@ fetch('/mapa/mapa-config')
                 console.error("Error al cargar datos de GVA:", error);
             }
         }
-        // ---------------------------------------------------------
-                            popupAnchor: [0, -30], // Posición del popup respecto al ícono
-        // DATOS AEMET
-        // ---------------------------------------------------------
-        async function initCapas() {
-            // Carga y asigna datos a las capas
-            //await obtenerCalidadAire(39.5, -1.0);
-            await cargarDatosGVA();
-            await cargarDatosAemet();
-            //agregarMapaDeCalorPorValores([[39.5, -1.0, 0.8], [39.6, -1.1, 0.6]]); // Ejemplo de datos
-
-            // Agrega las capas al mapa (pueden estar activas por defecto o no)
-            capas.estacionesAEMET.addTo(map);
-            capas.estacionesGVA.addTo(map);
-            capas.mapaCalor.addTo(map);
-        }
-        async function cargarDatosAemet() {
-            const AemetKey = 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwYWJsb3JlYm9sbG8wMkBnbWFpbC5jb20iLCJqdGkiOiJhYzc1ODlkNC1iNWVkLTQ5M2YtYTQ4ZS1mOGMxZjJmYWVjYzYiLCJpc3MiOiJBRU1FVCIsImlhdCI6MTczNDA0NTI1NywidXNlcklkIjoiYWM3NTg5ZDQtYjVlZC00OTNmLWE0OGUtZjhjMWYyZmFlY2M2Iiwicm9sZSI6IiJ9.ftBm8v1OGZII0zK23XNTgdjUlNA1s8exVusZcG5dfaw'; // Reemplaza con tu clave de API de Aemet
-            const url = `https://opendata.aemet.es/opendata/api/red/especial/contaminacionfondo/estacion/12?api_key=${AemetKey}`;
-            const lat = 39.083910491542845;
-            const lon = -1.1011464074163988;
-
-            try {
-                const response = await fetch(url);
-                if (!response.ok) {
-                    throw new Error(`Error al obtener datos de AEMET: ${response.status}`);
-                }
-                const data = await response.json();
-                console.log("Datos de AEMET:", data);
-
-                // Asegúrate de que el mapa esté inicializado antes de agregar el marcador
-                if (typeof map !== 'undefined' && map) {
-                    const marker = L.marker([lat, lon], {
-                        id: 'aemet-station',       // Añade un ID personalizado al marcador
-                        icon: L.divIcon({          // Utiliza un icono personalizado con clase
-                            className: 'aemet', // Añade tu clase personalizada
-                            iconSize: [30, 30], // Tamaño del ícono
-                            iconAnchor: [15, 30], // Punto de anclaje del ícono
-                            popupAnchor: [0, -30], // Posición del popup respecto al ícono
-                            html: '<div class="custom-marker-icon"></div>', // Personaliza el contenido del marcador
-                        })
-                    })
-                        .bindPopup('Ubicación de la estación AEMET')
-                        capas.estacionesAEMET.addLayer(marker); // Añade el marcador a la capa
-                     //.openPopup(); // Muestra el popup cuando se crea el marcador
-
-                    console.log("Marcador añadido con clase 'custom-marker'");
-                } else {
-                    console.error("El mapa no está inicializado.");
-                }
-            } catch (error) {
-                console.error("Error al cargar datos de AEMET:", error);
-            }
-        }
-        // Llamada a las funciones de inicialización
-        //cargarDatosAemet();
-        initMapa().then(r => cargarDatosAemet().then(cargarDatosGVA()));
-    })
-    .catch(error => console.error("Error al cargar la configuración del mapa:", error));

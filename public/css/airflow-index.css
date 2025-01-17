@@ -1,8 +1,3 @@
-header {
-    display: none;
-    /* Esto oculta el header completamente */
-}
-
 /* Cambiar el tamaño de los radio buttons */
 .leaflet-control-layers-selector {
     width: 16px !important;
@@ -95,7 +90,7 @@ h3 {
     padding: 15px;      /* Espaciado interno para mejor apariencia */
     border-radius: 48px; /* Esquinas redondeadas */
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2); /* Sombra para resaltar */
-    margin-top: 12vh;
+    margin-top: 100px;
     width: 30%;
 }
 
@@ -121,6 +116,7 @@ h3 {
     align-items: center; /* Alineación de elementos centrada verticalmente */
     position: relative; /* Posición relativa para elementos internos */
     gap: 20px; /* Espacio entre elementos flexibles */
+    margin: 12px;
 }
 
 /* Posiciona el icono dentro del input de búsqueda */
@@ -455,3 +451,20 @@ h3 {
     z-index: -1; /* Envía el video al fondo */
     pointer-events: none; /* Evita que el video interfiera con clics en el contenido */
 }
+
+/* Contenedor de la imagen flotante */
+.floating-image-container {
+    position: absolute;  /* Fija la imagen en la pantalla */
+    top: 50%;             /* Coloca la imagen en el centro vertical */
+    left: 1240px !important;           /* Mueve la imagen hacia la derecha desde el borde izquierdo */
+    z-index: 999;         /* Asegura que la imagen esté por encima de otros elementos */
+}
+
+/* Estilo de la imagen flotante */
+.floating-image {
+    width: 150px;   /* Ajusta el tamaño de la imagen */
+    height: auto;   /* Mantiene la proporción de la imagen */
+}
+
+
+

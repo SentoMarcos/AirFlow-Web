@@ -96,9 +96,10 @@ header .navbar-brand{
 }
 header .botones-header {
     display: flex;
-    flex-direction: row;
-    align-items: end;
-    justify-content: end;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: flex-end;
+    position: relative;
 }
 
 header .show .botones-header,
@@ -165,28 +166,48 @@ header .botones-header #mas-button {
     align-content: center;
 }
 
-    /* Mostrar la imagen normal por defecto */
-    #menu-icon {
-        display: block; /* Imagen normal visible */
-        width: 38px;
-        height: 38px;
-    }
+/* Contenedor general */
+.menu-container {
+    position: relative;
+    width: 38px;
+    height: 38px;
+    cursor: pointer;
+}
 
-    /* Ocultar la imagen de hover por defecto */
-    #menu-icon-hover {
-        display: none; /* Imagen de hover oculta inicialmente */
-        width: 38px;
-        height: 38px;
-    }
+/* Estilos generales para las imágenes del menú */
+.menu-icon {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    transition: opacity 0.3s ease;
+    opacity: 0; /* Ocultar todas las imágenes inicialmente */
+    pointer-events: none;
+}
 
-    /* Cuando se hace hover sobre el icono de menú, esconder la imagen normal y mostrar la de hover */
-    #menu-icon:hover {
-        display: none; /* Esconder la imagen normal cuando se hace hover sobre el icono */
-    }
+/* Imagen por defecto visible */
+.menu-icon.default {
+    opacity: 1;
+    pointer-events: auto;
+}
 
-    #menu-icon:hover + #menu-icon-hover {
-        display: block; /* Mostrar la imagen de hover cuando se hace hover sobre el icono */
-    }
+/* Hover */
+.menu-container:hover .menu-icon.default {
+    opacity: 0;  /* Ocultar el ícono default */
+}
+
+.menu-container:hover .menu-icon.hover {
+    opacity: 1;  /* Mostrar el ícono hover */
+}
+
+/* Click: este ícono se maneja con JavaScript */
+.menu-icon.click {
+    pointer-events: auto;
+}
+
+
+
 
 
 

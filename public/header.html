@@ -7,28 +7,68 @@
       </button>
       <div class="collapse navbar-collapse hide" id="navbarNavAltMarkup">
         <div class="navbar-nav">
-          <a class="nav-link active" id="header1" aria-current="page" href="#">RetroFit</a>
+          <a class="nav-link active" id="header1" aria-current="page" href="index.html">RetroFit</a>
           <a class="nav-link" id="header2" href="airflowFree-index.html">AirFlow</a>
           <a class="nav-link" id="header3" href="tienda.html">Tienda</a>
         </div>
         <div class="botones-header">
           <a href="login.html" id="login-button" >Login</a>
-          <div class="menu-container">
-            <img src="/img/menu.svg" alt="Menú" id="menu-icon" class="menu-icon default" />
-            <img src="/img/menuHover.svg" alt="Menú Hover" id="menu-icon-hover" class="menu-icon hover" />
-            <img src="/img/menuClick.svg" alt="Menú Click" id="menu-icon-click" class="menu-icon click" />
-        </div>
-        
           
-          <!-- Menú Imágenes ocultas inicialmente -->
-          <div id="imagenes" style="display: none;">
-              <button class="image-button"><img src="imagen1.jpg" alt="Imagen 1" /></button>
-              <button class="image-button"><img src="imagen2.jpg" alt="Imagen 2" /></button>
-              <button class="image-button"><img src="imagen3.jpg" alt="Imagen 3" /></button>
+         <!--<div class="menu-container">
+            <div class="menu-container">
+              <!-- 
+              <img src="/img/menu.svg" alt="Menú" id="menu-icon" class="menu-icon default" />
+              <img src="/img/menuHover.svg" alt="Menú Hover" id="menu-icon-hover" class="menu-icon hover" />
+              <img src="/img/menuClick.svg" alt="Menú Click" id="menu-icon-click" class="menu-icon click" />
           </div>
+          
+          <!-- Submenú con 3 imágenes 
+          <div id="submenu" class="submenu">
+            <img src="img/home.svg" alt="Home" class="submenu-icon" />
+            <img src="img/info.svg" alt="Info" class="submenu-icon" />
+            <img src="img/sobre-nosotros.svg" alt="Sobre Nosotros" class="submenu-icon" />
+            
+          </div>--> 
+          
+          
+          
+        
+
+
+           
       </div>
       
       </div>
     </div>
   </nav>
 </header>
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+  const menuIcon = document.getElementById("menu-icon");
+  const submenu = document.getElementById("submenu");
+
+  if (menuIcon && submenu) {
+    // Función para mostrar/ocultar el submenú
+    menuIcon.addEventListener("click", function() {
+      submenu.classList.toggle("active"); // Alterna la clase 'active'
+      menuIcon.classList.toggle("default"); // Alterna icono normal
+      menuIcon.classList.toggle("click"); // Alterna icono de click
+    });
+
+    // Cambiar al ícono hover cuando el mouse pase sobre el ícono del menú
+    menuIcon.addEventListener("mouseover", function() {
+      menuIcon.classList.add("hover");
+    });
+
+    // Cambiar al ícono por defecto cuando el mouse salga del ícono del menú
+    menuIcon.addEventListener("mouseout", function() {
+      menuIcon.classList.remove("hover");
+    });
+  } else {
+    console.error("No se encontraron los elementos del menú.");
+  }
+});
+
+</script>
