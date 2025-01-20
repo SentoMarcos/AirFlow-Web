@@ -1,0 +1,358 @@
+:root{
+    --v3-negro: #191718;
+    --v3-azul: #52CCD7;
+    --v3-blanco: #FFF;
+    --cuadratica: #9F52D7;
+    --cuadraticaRojo: #D75D52;
+    --v3-verde: #8AD752;
+    --v3-gris: #E7E7E7;
+    --v3-rosa-excelente: #FF84E0;
+    --v3-verde-bueno: #52D783;
+    --v3-amarillo-media: #FFFD84;
+    --v3-naranja-mala: #FF9284;
+    --gris-texto:#A0A0A0;
+    --v3-gris-oscuro:#444444;
+    --gris-claro:#F7F7F5;
+}
+@font-face {
+    font-family: 'Poppins';
+    src: url('font/poppins.woff2') format('woff2');
+}
+@font-face {
+    font-family: 'IBM Plex Mono';
+    src: url('font/IBMPlexMono-Regular.woff') format('woff');
+}
+@font-face {
+    font-family: 'Poppins-light';
+    src: url('font/poppins-light-webfont.woff') format('woff');
+}
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    background-color: #f4f4f4;
+}
+body.loading{
+    display: none;
+}
+/* Estilos de la barra de scroll */
+/* Estilo general para la scrollbar */
+html::-webkit-scrollbar {
+    width: 10px; /* Ancho de la scrollbar */
+}
+
+/* Estilo del fondo de la scrollbar */
+html::-webkit-scrollbar-track {
+    background: #f1f1f1; /* Color del fondo */
+    border-radius: 10px; /* Bordes redondeados */
+}
+/* Estilo de la barra */
+html::-webkit-scrollbar-thumb {
+    background: var(--v3-azul); /* Color de la barra */
+    border-radius: 10px; /* Bordes redondeados */
+}
+
+h1 {
+    color: #333;
+    font-family: "Poppins", serif;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+th, td {
+    padding: 10px;
+    border: 1px solid #ccc;
+    text-align: left;
+}
+
+th {
+    background-color: #f2f2f2;
+}
+
+tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+.header .container-fluid{
+    background-color: transparent;
+    transition: background-color 0.3s ease, padding 0.3s ease;
+}
+/* Estilo al hacer scroll */
+.header .container-fluid.scrolled {
+    background-color: #F1F3F5;
+    /*padding: 10px;  /* Reduce el padding al hacer scroll */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3); /* Añade una sombra */
+}
+header .navbar{
+    padding-top: 0;
+    font-family: "IBM Plex Mono", sans-serif;
+}
+header .navbar-brand{
+    padding: 0;
+}
+.navbar-nav .nav-link.active, .navbar-nav .nav-link.show{
+    color: var(--v3-azul);
+}
+header .botones-header {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: flex-end;
+    position: relative;
+}
+
+header .show .botones-header,
+header .collapsing .botones-header {
+    align-items: start;
+    justify-content: start;
+}
+
+header .navbar-collapse {
+    justify-content: space-between;
+}
+
+header .botones-header #login-button {
+    background: var(--v3-blanco);
+    padding: 10px 24px;
+    border-radius: 100px;
+    color: #444444;
+    font-family: "IBM Plex Mono";
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 0.3s ease, color 0.3s ease;
+}
+
+/* Hover solo para el login */
+header .botones-header #login-button:hover {
+    border-radius: 100px;
+    background: var(--V3_Azul, #52CCD7);
+    color: white;
+    border: 4px var(--v3-azul);
+}
+
+/* Hover para el contenedor .botones-header, solo cambia el color */
+header .botones-header:hover {
+    color: var(--v3-azul);
+}
+
+header #logout-button {
+    background: #ff4b4b;
+    padding: 10px 24px;
+    border-radius: 100px;
+    color: var(--v3-negro);
+    font-family: "IBM Plex Mono";
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+header .botones-header #mas-button {
+    background: black;
+    width: 38px;
+    height: 38px;
+    text-align: center;
+    border-radius: 100px;
+    border: 4px white solid;
+    color: white;
+    text-decoration: none;
+    align-content: center;
+}
+
+/* Contenedor general */
+.menu-container {
+    position: relative;
+    width: 38px;
+    height: 38px;
+    cursor: pointer;
+}
+
+/* Estilos generales para las imágenes del menú */
+.menu-icon {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    transition: opacity 0.3s ease;
+    opacity: 0; /* Ocultar todas las imágenes inicialmente */
+    pointer-events: none;
+}
+
+/* Imagen por defecto visible */
+.menu-icon.default {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* Hover */
+.menu-container:hover .menu-icon.default {
+    opacity: 0;  /* Ocultar el ícono default */
+}
+
+.menu-container:hover .menu-icon.hover {
+    opacity: 1;  /* Mostrar el ícono hover */
+}
+
+/* Click: este ícono se maneja con JavaScript */
+.menu-icon.click {
+    pointer-events: auto;
+}
+
+
+
+
+
+
+
+
+
+
+.button-primary{
+    background: var(--v3-negro);
+    border-radius: 48px;
+    display: flex;
+    width: 207px;
+    padding: 10px 20px;
+    justify-content: center;
+    align-items: center;
+    gap: 22px;
+    box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
+    text-decoration: none;
+    color: white;
+}
+.button-primary:hover {
+    background: var(--V3_Blanco, #FFF);
+    border: 3px solid var(--v3-azul);
+    border-radius: 48px;
+    transition: ease-in;
+    color: var(--v3-negro)
+}
+.button-secondary.mapa {
+    background: var(--v3-azul);
+    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+    border-radius: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 52px;
+    height: 52px; /* Ajusta según el diseño deseado */
+    text-decoration: none;
+    color: black;
+    border: none;
+    padding: 10px 20px;
+    position: relative;
+    gap: 10px;
+    transition: ease-in;
+    background-image: url('img/ubicacion01.svg'); /* Ruta a la imagen inicial */
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+}
+
+.img-hover {
+    display: none; /* Oculta la imagen de hover por defecto */
+}
+
+.button-secondary.mapa:hover {
+    background: var(--V3_Blanco, #FFF);
+    border: 3px solid var(--v3-azul);
+    background-image: url('img/ubicacion02.svg'); /* Ruta a la imagen de hover */
+    border-radius: 100px;
+    transition: ease-in;
+}
+
+.button-secondary.mapa:hover .img-default {
+    display: none; /* Oculta la imagen inicial al hacer hover */
+}
+
+.button-secondary.mapa:hover .img-hover {
+    display: block; /* Muestra la imagen de hover */
+}
+
+
+.button-terciario {
+    background: var(--V3_Morado, #BE84FF);
+    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+    border-radius: 100px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 52px;
+    height: 52px; /* Ajusta según el diseño deseado */
+    text-decoration: none;
+    color: black;
+    border: none;
+    padding: 10px 20px;
+    position: relative;
+    gap: 10px;
+    transition: ease-in;
+    background-image: url('img/informacionLetra-1.svg'); /* Ruta a la imagen inicial */
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+}
+
+.img-hover {
+    display: none; /* Oculta la imagen de hover por defecto */
+}
+
+.button-terciario:hover {
+    background: var(--V3_Blanco, #FFF);
+    border: 3px solid var(--V3_Morado, #BE84FF);
+    background-image: url('img/informacionLetra.svg'); /* Ruta a la imagen al hacer hover */
+    border-radius: 100px;
+    transition: ease-in;
+ }
+
+.button-terciario:hover .img-default {
+    display: none; /* Oculta la imagen inicial al hacer hover */
+}
+
+.button-terciario:hover .img-hover {
+    display: block; /* Muestra la imagen de hover */
+}
+
+
+
+input:not([type="checkbox"]) { border: none; background: var(--v3-gris); height: 50px; width: 100%; }
+label{
+    width: 100%;
+}
+@media (max-width: 991px) {
+    .navbar-collapse {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .navbar-nav {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .navbar-nav .nav-link {
+        text-align: center;
+        padding: 10px;
+    }
+
+    .botones-header {
+        display: flex;
+        justify-content: space-around;
+        width: max-content;
+        margin-top: 10px;
+    }
+    .header .container-fluid{
+        padding-left: unset;
+    }
+}
+
+

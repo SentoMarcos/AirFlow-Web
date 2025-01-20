@@ -1,0 +1,180 @@
+    <!doctype html>
+    <html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport"
+            content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>AirFlow | Principal</title>
+        <!-- Favicon para navegadores -->
+<link rel="icon" href="img/favicon.png" type="image/png" sizes="16x16">
+<link rel="icon" href="img/favicon.png" type="image/png" sizes="32x32">
+<!-- Favicon para iOS -->
+<link rel="apple-touch-icon" href="img/favicon.png">   
+
+        <!-- Bootstrap y estilos personalizados -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+        <link rel="stylesheet" href="/css/styles.css">
+        <link rel="stylesheet" href="/css/airflow-index.css">
+
+        <!-- Leaflet básico -->
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+        <!-- Complementos Leaflet -->
+        <script
+            src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-routing-machine/3.2.12/leaflet-routing-machine.min.js"></script>
+        <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+        <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+        <script src="https://unpkg.com/leaflet.heat/dist/leaflet-heat.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.heat/0.2.0/leaflet-heat.js"></script>
+        <script src="/js/leaflet-idw.js"></script>
+
+        <style>
+            /* Contenedor desplegable en la parte inferior */
+            .leaflet-bottom.leaflet-routing-container {
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                width: 100%;
+                transition: transform 0.3s ease; /* Animación al desplegar/ocultar */
+                transform: translateY(100%); /* Ocultar inicialmente */
+                background-color: rgba(255, 255, 255, 0.9); /* Fondo semitransparente */
+                box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.2);
+                z-index: 1000;
+            }
+
+            /* Mostrar el contenedor cuando esté desplegado */
+            .leaflet-bottom.leaflet-routing-container.open {
+                transform: translateY(0); /* Mostrar */
+            }
+
+            /* Botón para desplegar */
+            .toggle-routing {
+                position: absolute;
+                bottom: 0;
+                left: 50%;
+                transform: translateX(-50%);
+                background-color: #333;
+                color: white;
+                border: none;
+                border-radius: 5px 5px 0 0;
+                padding: 10px 20px;
+                cursor: pointer;
+                z-index: 1001;
+            }
+            #mapa{
+                width: 100vw;
+                height: 100vh;
+            }
+            #caracterísicas{
+                display: none;
+            }
+        </style>
+    </head>
+    <body>
+    <div id="header-container"></div>
+    <div id="container-airflow">
+        <div id="características">
+                <div id="buscador-container">
+                    <img src="img/a-airflow.png" alt="a-airflow">
+                    <label for="buscador-airflow"><input type="search" id="buscador-airflow" placeholder="Buscar en Airflow"></label>
+                    <i class="bi bi-search"></i>
+                </div>
+                <div id="container-rutas">
+                    <div id="iconos-transporte">
+                        <i class="bi bi-car-front-fill"></i>
+                        <i class="bi bi-train-front-fill"></i>
+                        <i class="bi bi-person-walking"></i>
+                        <i class="bi bi-bicycle"></i>
+                    </div>
+                    <div id="puntos-ruta">
+                        <div>
+                        <label for="punto-inicial"><input type="search" id="punto-inicial" placeholder="Elige un punto de partida"></label>
+                        <i class="bi bi-search"></i>
+                        <ul id="sugerencias-inicial" class="sugerencias"></ul>
+                        </div>
+                        <div>
+                        <label for="punto-final"><input type="search" id="punto-final" placeholder="Elige un destino o haz click en el mapa"></label>
+                        <i class="bi bi-search"></i>
+                        <ul id="sugerencias-final" class="sugerencias"></ul>
+                        </div>
+                    </div>
+                </div>
+        </div>
+        <!--<div id="gráfica">
+            <h3>Gases</h3>
+            <div id="indicador-gráfica">
+                <img src="img/logo-ozono.png" alt="logo ozono">
+                <div id="texto-indicador">
+                    <p>Ozono 53 µg/m</p>
+                    <p>Calidad excelente</p>
+                </div>
+                <img src="img/carita-excelente.png" alt="calidad aire">
+            </div>
+            <div id="chart">
+                <canvas id="ozoneChart"></canvas>
+            </div>
+        </div>-->
+        <div id="panel-contenedor">
+            <button onclick="togglePanelPersonalizar()" class="">Personalizar Mapa</button>
+            <div id="panel-personalizar-mapa">
+            <!--<h3>Personalizar vista del mapa</h3>-->
+            <div id="opciones-personalización">
+                <!-- Checkbox para mostrar u ocultar estaciones -->
+                <label for="check-estaciones">
+                    <input type="checkbox" checked id="check-estaciones">
+                    Estaciones de medida oficiales
+                </label>
+
+                <!-- Selector para cambiar las capas del mapa -->
+                <label for="capas-mapa">Capa del mapa:</label>
+                <select id="capas-mapa">
+                    <option value="Callejero">Callejero</option>
+                    <option value="Satélite">Satélite</option>
+                    <option value="Topográfico">Topográfico</option>
+                    <option value="Claro">Claro</option>
+                    <option value="Minimalista">Minimalista</option>
+                </select>
+
+                <!-- Controles de rango temporal -->
+                <div id="rango-temporal">
+                    <label for="fecha-inicio">Fecha de inicio:</label>
+                    <input type="date" id="fecha-inicio">
+
+                    <label for="fecha-fin">Fecha de fin:</label>
+                    <input type="date" id="fecha-fin">
+
+                    <label for="slider-temporal">Rango de tiempo:</label>
+                    <input type="range" id="slider-temporal" min="0" max="100" step="1" value="50">
+                    <span id="slider-valor">Tiempo real</span>
+                    <button onclick="obtenerMedicionesPorIntervalo()">Consultar Mediciones</button>
+                </div>
+            </div>
+        </div>
+        </div>
+
+        <div id="botones-mapa">
+        <button id="centrar-ubicacion"><i class="bi bi-crosshair"></i></button>
+        <!--<button id="consultar-medición" onclick="verMedidasEnUbicacion()" class="button-primary">Ver medición</button>
+        <button id="cancelar-consulta" class="button-primary">Cancelar Consulta</button>-->
+        </div>
+        <div id="botones-mapa-complementos">
+            <!--<button onclick=""><i class="bi bi-crosshair"></i></button>-->
+            <!--<button class="button-primary">Cancelar Consulta</button>-->
+        </div>
+        <div id="mapa">
+            <!--<button class="toggle-routing">Mostrar Ruta</button>-->
+        </div>
+    </div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="/js/mis-medidas-movil.js"></script>
+<script src="/js/freeMap.js"></script> <!-- Archivo JavaScript para cargar mapa básico-->
+<script src="/js/premiumMap.js"></script>
+<script src="/js/apiAemet.js"></script>
+<script src="/js/grafica-chart.js"></script>
+<!--Calidad aire-->
+</body>
+</html>

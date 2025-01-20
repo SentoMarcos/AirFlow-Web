@@ -1,0 +1,113 @@
+h3{
+    font-size: 48px;
+    font-family: Poppins-light;
+}
+button{
+    height: 45px;
+    border-radius: 10px;
+    border: none;
+    width: 10vw;
+    box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
+}
+#tienda-container{
+    padding-top: 15vh;
+    padding-inline: 2vw;
+    display: flex;
+    flex-direction: row;
+    height: 100vh;
+    gap: 10px;
+    font-family: Poppins-light, sans-serif;
+}
+#tienda-container #tienda-producto{
+    height: 100%;
+    border-radius: 48px;
+    width: 60%;
+    padding: 25px;
+    background-image: url("../img/sensor.png");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    color: var(--v3-blanco);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+#tienda-container #tienda-producto button:nth-child(1){
+    background: var(--v3-azul);
+    color: var(--v3-blanco);
+}
+#tienda-container #tienda-producto button:nth-child(2){
+    background: var(--v3-verde);
+    color: var(--v3-blanco);
+}
+#tienda-container #tienda-producto #producto-bottom{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+#tienda-container #tienda-producto #producto-bottom #precio-producto{
+    position: relative; /* Define el contenedor como referencia */
+    text-align: right;
+}
+#tienda-container #tienda-producto #producto-bottom #producto-botones div{
+    display: flex;
+    gap: 10px;
+}
+#tienda-container #membresías{
+    height: 100%;
+    width: 40%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+}
+#tienda-container #membresías>div{
+    background: var(--v3-blanco);
+    border-radius: 48px;
+    padding: 25px;
+    height: 50%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+}
+#tienda-container #membresías>div>div{
+    display: flex;
+    gap: 10px;
+}
+#tienda-container #membresías>div>div button:nth-child(2){
+    background: var(--cuadratica);
+    color: var(--v3-blanco);
+}
+#tienda-container #membresías>div:nth-child(1) span{
+    color: var(--v3-azul);
+}
+#tienda-container #membresías>div:nth-child(1) h2{
+    color: var(--v3-azul);
+}
+#tienda-container #membresías>div:nth-child(1)>div button:nth-child(1){
+    background: var(--v3-azul);
+    color: var(--v3-blanco);
+}
+#tienda-container #membresías>div:nth-child(2){
+    background: var(--v3-azul);
+}
+#tienda-container #membresías>div:nth-child(2) span{
+    color: var(--v3-blanco);
+}
+.aytoVlc{
+    height: 36px;
+    width: 36px;
+    margin-right: 20px;
+}
+.tachado{
+    text-decoration: line-through;
+    font-size: 20px;
+}
+.separacion{
+    margin-top: 60px;
+}
+button{
+    font-family: "IBM Plex Mono", sans-serif;
+}

@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Retrofit | Tienda</title>
+    <!-- Favicon para navegadores -->
+        <link rel="icon" href="img/favicon.png" type="image/png" sizes="16x16">
+        <link rel="icon" href="img/favicon.png" type="image/png" sizes="32x32">
+        <!-- Favicon para iOS -->
+        <link rel="apple-touch-icon" href="img/favicon.png">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/tienda.css">
+</head>
+<body>
+<div id="header-container"></div>
+
+<script>  
+  function seleccionarProducto(nombre, rebaja, precio) {
+      localStorage.setItem('productoNombre', nombre);
+      localStorage.setItem('productoRebaja', rebaja);
+      localStorage.setItem('productoPrecio', precio);
+      window.location.href = 'pasarela.html';
+    }
+</script>
+
+<div id="tienda-container">
+  <div id="tienda-producto">
+    <div>
+    <p>Sensor portátil V01</p>
+    <h2>Sensor AF1</h2>
+    <p>Mide y monitorea la calidad del aire a su alrededor
+    </div>
+    <div id="producto-bottom">
+      <div id="producto-botones">
+        <p class="separacion">+Membresía de por vida</p>
+        <div>
+          <button onclick="seleccionarProducto('Sensor AF1 + Membresía de por vida', '29.99€', '9.99€')">Comprar<i class="bi bi-cart"></i></button>
+          <button>Detalles</button>
+        </div>
+      </div>
+      <div id="precio-producto">
+        <p>Patroc. Ayto. Valencia</p>
+        <div class="precio-original">
+          <img src="/img/aytoVlc.png" alt="Logo Ayuntamiento Valencia" class="aytoVlc">
+          <span class="tachado">29.99€</span>
+        </div>
+        <h3>9.99€</h3>
+      </div>
+    </div>
+  </div>
+  <div id="membresías">
+    <div id="membresía-mensual">
+        <h2>Membresía 1 mes</h2>
+        <p>Acceso a las funciones premium por <span>1 mes</span></p>
+                <div class="precio-original">
+                  <img src="/img/aytoVlc.png" alt="Logo Ayuntamiento Valencia" class="aytoVlc">
+                  <span class="tachado">5.99€</span>
+                </div>
+        <h3>2.99€</h3>
+        <div>
+          <button onclick="seleccionarProducto('Membresía 1 mes', '5.99€', '2.99€')">Comprar<i class="bi bi-cart"></i></button>
+          <button>Detalles</button>
+        </div>
+    </div>
+    <div id="membresía-anual">
+        <h2>Membresía 1 año</h2>
+        <p>Acceso a las funciones premium por <span>1 año</span></p>
+                <div class="precio-original">
+                  <img src="/img/aytoVlc.png" alt="Logo Ayuntamiento Valencia" class="aytoVlc">
+                  <span class="tachado">19.99€</span>
+                </div>
+        <h3>7.99€</h3>
+        <div>
+          <button onclick="seleccionarProducto('Membresía 1 año', '19.99€', '7.99€')">Comprar <i class="bi bi-cart"></i></button>
+          <button>Detalles</button>
+        </div>
+    </div>
+  </div>
+</div>
+<script src="js/header.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+<script>
+  cargarHeader('header.html', 'header3')
+</script>
+</body>
+</html>

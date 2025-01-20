@@ -1,0 +1,140 @@
+li{width: fit-content;}
+p{width: fit-content;}
+h3{width: fit-content;}
+h2{width: fit-content;}
+
+#section-especificaciones{
+    padding-top: 17vh; /* Espacio superior con un porcentaje de la altura de la ventana */
+    padding-inline: 2vw; /* Espaciado lateral (izquierda y derecha) con un porcentaje del ancho */
+    padding-bottom: 2vw; /* Espacio inferior */
+    height: 100vh; /* Altura completa de la ventana */
+}
+
+/* Estilos para el contenedor de especificaciones */
+#section-especificaciones #especificaciones{
+    position: relative;
+    width: 100%; /* Abarca todo el ancho disponible */
+    height: 100%; /* Abarca toda la altura disponible */
+    background: var(--v3-blanco); /* Color de fondo blanco */
+    border-radius: 48px; /* Bordes redondeados */
+    padding: 40px; /* Espaciado interno */
+    display: flex;
+    flex-direction: column; /* Organiza los elementos de forma vertical */
+    color: var(--v3-gris-oscuro); /* Color del texto */
+}
+
+/* Estilos para el título */
+#section-especificaciones #especificaciones h2{
+    font-size: calc(1rem + .6vw) * (36 / 28); /* Tamaño de fuente responsive */
+    font-weight: 600; /* Peso de fuente SemiBold */
+    color: var(--v3-gris-oscuro); /* Color del texto */
+    margin-bottom: 50px; /* Margen inferior */
+}
+
+/* Estilos para los subtítulos */
+#section-especificaciones #especificaciones h3{
+    font-size: calc(1rem + .6vw); /* Tamaño de fuente responsive */
+    font-weight: 600; /* Peso de fuente SemiBold */
+    color: var(--v3-gris-oscuro); /* Color del texto */
+}
+
+/* Estilos para el contenedor de las columnas */
+#section-especificaciones #especificaciones #especificaciones-container {
+    display: flex; /* Alinea las columnas en una fila */
+    justify-content: space-between; /* Distribuye el espacio entre las columnas */
+    gap: 20px; /* Espacio entre las columnas */
+    width: 100%; /* Asegura que el contenedor ocupe todo el ancho disponible */
+    height: 100%;
+}
+
+/* Estilos para la primera columna */
+#section-especificaciones #especificaciones #especificaciones-container .colum {
+    display: flex;
+    flex-direction: column; /* Organiza los elementos de forma vertical */
+    width: fit-content; /* Asigna aproximadamente un 32% del ancho al  asegurando que quepan tres columnas */
+}
+
+
+
+/* Ajuste adicional si el tamaño de las columnas en .grid necesita modificar su tamaño */
+#section-especificaciones #especificaciones #especificaciones-container .grid div {
+    width: 100%; /* Asegura que los elementos dentro de la grid ocupen todo el ancho */
+}
+
+/* Estilos para la tercera columna (si tienes una columna adicional similar a .colum) */
+#section-especificaciones #especificaciones #especificaciones-container .colum-3 {
+    display: flex;
+    flex-direction: column; /* Organiza los elementos de forma vertical */
+    width: 32%; /* Asegura que haya un 32% de ancho disponible */
+}
+
+
+/* Estilos para las listas */
+.list{
+    list-style-type: disc; /* Estilo de lista con círculos */
+    padding-left: 20px; /* Espaciado interno para las listas */
+    width: fit-content;
+}
+
+/* Estilos del botón "Volver" */
+.label {
+    width: 74px;
+    height: 36px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--v3-blanco); /* Fondo blanco */
+    border-radius: 5px; /* Bordes redondeados */
+    transition: background-color 0.3s ease, color 0.3s ease; /* Transiciones suaves */
+}
+
+/* Estilo del texto dentro del botón "Volver" */
+.label .text-wrapper {
+    font-family: "Poppins-Medium", Helvetica; /* Tipo de fuente */
+    font-weight: 500; /* Peso de la fuente */
+    color: var(--v3-verde); /* Color del texto */
+    font-size: 24px;
+    letter-spacing: 0; /* Espaciado entre letras */
+    line-height: normal;
+}
+
+/* Efecto hover para el botón */
+.label:hover {
+    background-color: var(--v3-blanco); /* Cambia el fondo al pasar el ratón */
+}
+
+.label:hover .text-wrapper {
+    color: var(--v3-verde); /* Cambia el color del texto al pasar el ratón */
+}
+
+a{
+    text-decoration: none; /* Elimina el subrayado en los enlaces */
+}
+
+/* CSS para el div que contiene la imagen */
+.atras {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    display: block;
+    width: 69px;
+    height: 70px;
+    border-radius: 0px 48px 0px 0px;
+    cursor: pointer;
+    background-image: url('img/verde.svg'); /* Imagen inicial */
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    transition: background-image 0.3s ease; /* Transición para cambiar el fondo */
+}
+
+/* Hover: cambio de imagen */
+.atras:hover {
+    background-image: url('img/verdeHover.svg'); /* Imagen al hacer hover */
+}
+
+
+
+
+
+

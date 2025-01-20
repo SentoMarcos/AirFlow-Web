@@ -1,0 +1,412 @@
+/* Estilo de los encabezados */
+h3 {
+    font-size: 24px;
+    font-family: Poppins, sans-serif;
+}
+
+h5 {
+    font-size: 20px;
+}
+button{
+    font-family: "IBM Plex Mono",sans-serif;
+    font-size: 14px;
+}
+p,th,td,h4{
+    font-family: Poppins, sans-serif;
+    margin-bottom: unset;
+}
+/* Contenedor principal del perfil */
+.container-perfil {
+    padding-top: 13vh;
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    padding-inline: 2vw;
+    padding-bottom: 2vw;
+    max-width: 100vw;
+}
+
+/* Grid principal */
+.grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Dos columnas iguales */
+    grid-template-rows: 1fr 1fr;
+    gap: 10px; /* Ajusta el espacio entre los elementos si lo necesitas */
+    flex: 1;
+}
+/* Elemento en la segunda columna */
+.grid #leaderboard {
+    grid-row: 1 / 3; /* Hace que el elemento ocupe desde la fila 1 hasta la fila 2 */
+    grid-column: 2 / 3; /* Coloca el elemento en la segunda columna */
+    align-self: stretch; /* Asegura que ocupe todo el alto */
+}
+.grid > div {
+    background: var(--v3-blanco);
+    border-radius: 48px;
+    padding: 25px;
+}
+
+/* Contenedor de columna */
+.colum {
+    display: flex;
+    flex-direction: column;
+    background: var(--v3-blanco);
+    border-radius: 48px;
+    flex: 0.30;
+    justify-content: space-between;
+    gap: 20px;
+}
+/* Datos envío */
+#datos-envio{
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    padding-inline: 25px;
+    padding-bottom: 25px;
+}
+
+#datos-envio p{
+    font-size: 20px;
+    color: var(--gris-texto);
+}
+
+#datos-envio button{
+    border: none;
+}
+/* Notificaciones */
+#notificaciones{
+    padding: 25px;
+    position: relative;
+    color: var(--gris-texto);
+    display: none;
+}
+
+#notificaciones h3{
+    color: var(--v3-negro);
+}
+
+#notificaciones>img{
+    position: absolute;
+    top: 0;
+    right: 0;
+    max-width: 90px;
+}
+
+#notificaciones div{
+    display: flex;
+    flex-direction: column;
+}
+
+#notificaciones div ul{
+    display: flex;
+    flex-direction: row;
+    margin: unset;
+    gap: 20px;
+}
+
+#notificaciones div ul li{
+    width: fit-content;
+}
+
+#notificaciones ul{
+    list-style: none;
+    padding: unset;
+}
+
+#notificaciones ul li{
+    display: flex;
+    flex-direction: row;
+    max-height: 33px;
+    align-items: center;
+    gap: 20px;
+}
+
+#notificaciones ul li img{
+    max-height: 30px;
+}
+
+#notificaciones ul li p{
+    margin-bottom: unset;
+    font-size: 20px;
+    width: 90px;
+}
+
+#historial-compra>div{
+    display: flex;
+    flex-direction: row;
+    padding: 10px;
+}
+#historial-compra>div>div{
+    display: flex;
+    flex-direction: column;
+    padding-inline: 10px;
+}
+#historial-compra>div img{
+    max-width: 140px;
+    border-radius: 48px;
+    height: fit-content;
+}
+#historial-compra>div>div p{
+    margin-bottom: unset;
+}
+#historial-compra>div>div h4{
+    margin-bottom: unset;
+}
+#mis-sensores .scroll-y>div{
+    display: flex;
+    flex-direction: row;
+    max-height: 55px;
+    gap: 15px;
+    justify-content: space-between;
+}
+
+#mis-sensores .scroll-y>div div{
+    display: flex;
+    flex-direction: column;
+}
+
+#mis-sensores .scroll-y>div .mini-foto-sensor {
+    width: 20%;
+    font-size: 40px;
+}
+
+#mis-sensores .scroll-y>div .bateria-icon{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Datos del perfil */
+#datos-perfil {
+    height: 50%;
+    padding-inline: 25px;
+    padding-top: 25px;
+}
+#datos-perfil .botones-perfil{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 10px;
+}
+#datos-perfil .botones-perfil button{
+    font-size: 12px;
+}
+#datos-perfil h3 {
+    margin-bottom: unset;
+}
+
+#datos-perfil #datos-perfil-child {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#datos-perfil #datos-perfil-child #foto-perfil {
+    background: #444444;
+    border-radius: 100px;
+    height: 120px;
+    width: 120px;
+}
+#datos-perfil #datos-perfil-child table thead tr{
+    width: 100%;
+}
+#datos-perfil #datos-perfil-child table tbody{
+    width: 100%;
+}
+#datos-perfil #datos-perfil-child table thead tr th:nth-child(1) {
+    width: 30%;
+}
+#datos-perfil #datos-perfil-child table thead tr th:nth-child(2) {
+    width: 100%;
+}
+#datos-perfil #datos-perfil-child table {
+    margin-top: unset;
+    border: none;
+    width: 100%;
+}
+
+#datos-perfil #datos-perfil-child table td,
+#datos-perfil #datos-perfil-child table th {
+    padding: unset;
+    background: none;
+    border: none;
+}
+
+/* Scroll y leaderboard */
+.scroll-y {
+    max-height: 20vh; /* Ajusta según el tamaño que necesites */
+    overflow-y: auto;
+}
+
+.scroll-y{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.grid #leaderboard {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    position: relative;
+    padding-inline: 25px;
+    padding-bottom: 25px;
+}
+.grid #leaderboard .scroll-y{
+    max-height: 75vh;
+}
+.grid #leaderboard h3 {
+    margin-bottom: unset;
+}
+.grid #leaderboard div p{
+    font-size: 15px;
+}
+
+.grid #leaderboard #tu {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    background: var(--v3-azul);
+    border-radius: 48px;
+    padding: 6px; /* Añadido padding para mejor visualización */
+}
+
+.grid #leaderboard .scroll-y > div {
+    display: flex;
+    flex-direction: row;
+    max-height: 55px;
+    gap: 15px;
+    justify-content: space-between;
+}
+
+.grid #leaderboard > div .mini-perfil-leaderboard {
+    width: 20%;
+    font-size: 40px;
+}
+
+.grid #leaderboard > div .leaderboard-nombres {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: -webkit-fill-available;
+}
+
+.grid #leaderboard > div .leaderboard-nombres h5 {
+    margin-bottom: unset;
+}
+
+.grid #leaderboard > div .leaderboard-nombres p {
+    margin-bottom: unset;
+}
+
+.grid #leaderboard > div .leaderboard-rank {
+    width: 20%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.grid #leaderboard > div .leaderboard-rank p{
+    margin-bottom: unset;
+}
+
+.grid #leaderboard > div .leaderboard-rank img {
+    max-height: 20px;
+}
+/* Estilos de la barra de scroll */
+/* Estilo general para la scrollbar */
+.scroll-y::-webkit-scrollbar {
+    width: 10px; /* Ancho de la scrollbar */
+}
+
+/* Estilo del fondo de la scrollbar */
+.scroll-y::-webkit-scrollbar-track {
+    background: #f1f1f1; /* Color del fondo */
+    border-radius: 10px; /* Bordes redondeados */
+}
+
+/* Estilo de la barra */
+.scroll-y::-webkit-scrollbar-thumb {
+    background: var(--v3-azul); /* Color de la barra */
+    border-radius: 10px; /* Bordes redondeados */
+}
+
+/* Estilo de la barra al pasar el cursor por encima */
+.scroll-y::-webkit-scrollbar-thumb:hover {
+    background: #555; /* Color de la barra al pasar el cursor por encima */
+}
+#editForm{
+    width: 100%;
+}
+#editForm input{
+    height: fit-content;
+}
+#editForm h4{
+    font-size: 16px;
+    font-weight: bold;
+}
+#editForm #id-user{
+    display: none;
+}
+#editForm>div{
+    display: flex;
+    flex-direction: row;
+}
+#editForm>div label{
+    width: 30%;
+}
+#editPassword{
+    width: 100%;
+}
+#editPassword input{
+    height: fit-content;
+    border: 1px solid var(--v3-negro);
+}
+#editPassword h4{
+    font-size: 16px;
+    font-weight: bold;
+}
+#editPassword #id-user{
+    display: none;
+}
+#editPassword>div{
+    display: flex;
+    flex-direction: row;
+}
+#editPassword>div label{
+    width: 70%;
+}
+
+@media (max-width: 1236px) {
+
+    #notificaciones div{
+        flex-direction: row;
+    }
+    #notificaciones div ul {
+        flex-direction: column;
+        gap: 5px;
+        font-size: 13px;
+    }
+}
+@media (max-width: 780px) {
+    .container-perfil{
+        flex-direction: column;
+        gap: 10px;
+    }
+    .container-perfil .colum{
+        flex: 1;
+    }
+    .container-perfil .grid{
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        order: 2;
+    }
+   .container-perfil #datos-perfil #datos-perfil-child #foto-perfil{
+       height: 80px;
+       width: 80px;
+   }
+}

@@ -1,0 +1,698 @@
+/* Estilo para el video */
+.background-video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Esto asegura que el video cubra toda el área */
+    z-index: -1; /* Esto coloca el video en el fondo, detrás del contenido */
+}
+
+/* Asegurándote de que la sección 'Bienvenida' tenga suficiente altura para ver el video */
+.Bienvenida {
+    position: relative;
+    width: 100%;
+    height: 100vh; /* Esto asegura que la sección tenga el 100% de la altura de la ventana */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(0,0,0,0);
+}
+.Bienvenida .container #texto-bienvenida{
+    width: fit-content;
+}
+.Bienvenida .container #texto-bienvenida p,
+.Bienvenida .container #texto-bienvenida span{
+    font-size: 3vw;
+    font-family: Poppins, serif;
+}
+.Bienvenida .container #texto-bienvenida span{
+    display: block;
+}
+.Bienvenida .container #texto-bienvenida span{
+    font-weight: bold;
+}
+
+.main-text .AireLimpio{
+    color:var(--v3-gris);
+    font-family: "Poppins-light";
+    font-weight: 400;
+    font-size: 16px;
+}
+#botones-bienvenida{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+#botones-bienvenida a{
+    height: 52px;
+    margin-right: 10px;
+    font-family: "IBM Plex Mono", sans-serif;
+
+}
+#botones-bienvenida .mapa{
+    width: 52px;
+    height: 52px;
+    /*font-size: 1.2vw;*/
+}
+#botones-bienvenida .info{
+    width: 52px;
+    height: 52px;
+    /*font-size: 1.2vw;*/
+}
+#botones-bienvenida .mapa i{
+    color: white;
+}
+#botones-bienvenida .mapa:hover{
+    background: white;
+}
+#botones-bienvenida .mapa:hover::before{
+    border: 3px solid var(--v3-azul);
+}
+#botones-bienvenida .mapa:hover i{
+    animation: saltoYVolteo 1s linear;
+    color: var(--v3-azul);
+}
+.servicio {
+    display: flex;
+    justify-content: center;
+    padding-top: 15vh;
+    padding-inline: 2vw;
+    height: 100vh;
+    padding-bottom: 2vw;
+}
+
+.servicio .container {
+    display: flex;
+    max-width: 100vw;
+    align-items: center;
+    gap: 8px;
+    height: 100%;
+    margin: 0;
+}
+
+/* Main Text Section */
+.servicio .main-text {
+    display: flex;
+    flex-direction: column;
+    flex: 1.5;
+    background-color: var(--v3-negro);
+    border-radius: 48px;
+    text-align: left;
+    position: relative;
+    height: 100%;
+    justify-content: space-between;
+    width: 100%;
+    background-image: url("../img/sensor.png");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    padding-top: 60px;
+    padding-left: 40px;
+    padding-right: 40px;
+    padding-bottom: 30px;
+}
+
+.main-text h1 {
+    font-size: 64px;
+    margin: 0;
+    color: var(--v3-blanco);
+    font-family: "Poppins-light";
+    font-weight: 300;
+}
+
+.main-text p {
+    font-size: 1.5vw;
+    margin: 10px 0;
+    color: white;
+    font-family: Poppins, sans-serif;
+    font-weight: 200;
+}
+.shop-button {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: var(--v3-azul);
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-transform: uppercase;
+    font-family: "IBM Plex Mono", sans-serif;
+    font-weight: 400;
+    box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
+}
+
+/* Sidebar Section */
+.aside {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    height: 100%;
+}
+
+#comentarios {
+    background-color: var(--v3-blanco);
+    color: var(--v3-negro);
+    padding-top: 50px;
+    padding-left: 48px;
+    padding-right: 48px;
+    padding-bottom: 50px;
+    border-radius: 48px;
+    font-size: 14px;
+    height: max-content;
+    max-height: 100%; /* Ajusta el tamaño según tus necesidades */
+    overflow: hidden; /* Esconde el scroll */
+    border: 1px solid #ddd; /* Opcional: un borde para diferenciar */
+    font-family: Poppins, sans-serif;
+}
+/* Ocultar la barra de scroll solo en navegadores Webkit (Chrome, Safari) */
+/*#comentarios::-webkit-scrollbar {
+    display: flex;
+}*/
+.scroll-x::-webkit-scrollbar {
+    width: 10px; /* Ancho de la barra */
+}
+
+.scroll-x::-webkit-scrollbar-track {
+    background: #f1f1f1; /* Fondo de la barra */
+    border-radius: 10px;
+}
+
+.scroll-x::-webkit-scrollbar-thumb {
+    background: var(--v3-azul); /* Color de la barra */
+    border-radius: 10px;
+}
+
+#comentarios p {
+    margin: 10px 0;
+}
+.servicio .container #comentarios .scroll-x {
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    gap: 10px; /* Espaciado entre elementos */
+    height: 100%; /* Asegúrate de usar todo el espacio disponible */
+    max-height: 100%; /* Limita la altura para que no desborde su contenedor padre */
+}
+
+.servicio .container #comentarios .comentario {
+    display: flex;
+    flex-direction: row;
+    border-radius: 48px;
+    /*min-height: 100px; /* Asegura que cada comentario tenga una altura mínima */
+    max-height: 100%;
+    margin-bottom: 10px;
+    margin-right: 10px;
+    height: auto;
+}
+
+.servicio .container #comentarios .comentario .imagen-comentario{
+    width: 20%;
+    font-size: 2vw;
+}
+.row {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+    padding: 0 12px;
+}
+#funcionalidades, #especificaciones {
+    flex: 1;
+    background-color: var(--v3-blanco);
+    color: #333;
+    border-radius: 48px;
+    text-align: center;
+    font-size: 14px;
+    position: relative;
+    height: 25vh;
+    align-content: center;
+    padding-inline: 25px;
+    padding-top: 25px;
+    font-family: Poppins, sans-serif;
+    font-weight: 500;
+}
+
+#funcionalidades {
+    background-color: var(--v3-blanco);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding-inline: unset;
+    padding-bottom: unset;
+}
+
+#especificaciones {
+    color: var(--v3-negro);
+    background-color: var(--v3-blanco);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding-inline: unset;
+    padding-bottom: unset;
+}
+
+#funcionalidades a{
+    width: 100%;
+    height: 40%;
+    border-radius: 48px;
+    align-content: center;
+    text-decoration: none;
+    background: var(--cuadratica);
+    font-size: 2vw;
+    color: white;
+    font-size: 24px;
+}
+#funcionalidades a:hover{
+    background: white;
+    border: 3px solid var(--cuadratica);
+    color: var(--cuadratica);
+}
+#especificaciones a {
+    width: 100%;
+    height: 40%;
+    border-radius: 48px;
+    align-content: center;
+    text-decoration: none;
+    background: var(--v3-verde);
+    font-size: 2vw;
+    color: white;
+    font-size: 24px;
+}
+#especificaciones a:hover {
+    background: white;
+    border: 3px solid var(--v3-verde);
+    color: var(--v3-verde);
+}
+.empresa{
+    display: flex;
+    justify-content: center;
+    padding-top: 15vh;
+    padding-inline: 2vw;
+    height: 100vh;
+    padding-bottom: 1vw;
+}
+.empresa .container {
+    display: flex;
+    max-width: 100vw;
+    align-items: center;
+    gap: 8px;
+    height: 100%;
+    margin: 0;font-family: Poppins, sans-serif;
+}
+.empresa .container .aside{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.empresa .container .aside .row{
+    height: 33%;
+    width: 100%;
+}
+.empresa .container .aside .row1{
+    width: 100%;
+    height: 33%;
+}
+.empresa .container .aside .row1 #airflow{
+    background: var(--v3-azul);
+    display: flex;
+    flex-direction: row;
+    flex: 1;
+    padding: 25px;
+    border-radius: 48px;
+    text-align: left;
+    font-size: 14px;
+    position: relative;
+    height: 100%;
+    align-content: center;
+}
+.empresa .container .aside .row1 #airflow #texto-airflow{
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    justify-content: start;
+}
+.empresa .container .aside .row1 #airflow #texto-airflow h3{
+    color: var(--gris-claro);
+    font-size: 1.5vw;
+}
+.monitorea{
+    color: var(--gris-claro);
+}
+.texto-bento{
+    top: 0;
+    left: 0;
+    font-family: "Poppins" ;
+    line-height: 1.2;
+    font-weight: 400;
+    color: var(--v-3grisoscuro);
+    font-size: 15px;
+    letter-spacing: 0;
+}
+
+.empresa .container .aside .row1 #airflow #texto-airflow #botones-airflow{
+    flex: 1;
+    height: 10px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: start;
+    gap: 20px;
+}
+.empresa .container .aside .row1 #airflow #texto-airflow #botones-airflow>a {
+    font-size: 25px;
+    color: var(--v3-negro);
+}
+.empresa .container .aside .row1 #airflow #telefono-airflow{
+    display: flex;
+    flex-direction: row;
+    justify-content: end;
+}
+.empresa .container .aside .row1 #airflow #telefono-airflow img{
+    width: auto;
+    height: 100%;
+    max-height: 227px;
+}
+.empresa .container .aside .row{
+    padding: unset;
+}
+.empresa .container .aside .row div{
+    display: flex;
+    flex-direction: column;
+    /*justify-content: space-between;*/
+    flex: 1;
+    background-color: var(--v3-blanco);
+    color: #333;
+    padding-top: 24px;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-bottom: 30px;
+    border-radius: 48px;
+    text-align: left;
+    font-size: 14px;
+    position: relative;
+    height: 100%;
+}
+.empresa .container .aside .row div a{
+    text-decoration: none;
+    font-size: 24px;
+    color: var(--v3-gris-oscuro);
+    position: absolute;
+    bottom: 10px;
+    left: 20px;
+}
+.empresa .container .aside .row div#objetivos p{
+    margin: unset;
+}
+.empresa .container .aside .row div#contactanos{
+    background: var(--v3-gris);
+}
+.empresa .container .aside .row div#contactanos p{
+    margin: unset;
+}
+.empresa .container .aside .row div#contactanos i{
+    margin-right: 0.5vw;
+}
+.empresa .container .main-text{
+    display: flex;
+    flex-direction: column;
+    flex: 1.5;
+    background-color: var(--v3-blanco);
+    padding: 45px;
+    border-radius: 48px;
+    text-align: left;
+    position: relative;
+    height: 100%;
+    justify-content: end;
+    width: 100%;
+}
+.empresa .container .main-text h1{
+    color: var(--v3-azul);
+}
+.empresa .container .main-text p{
+    color: var(--v3-negro);
+    width: 60%;
+}
+footer{
+    border-radius: 48px;
+    background: var(--v3-blanco);
+    margin-inline: 2vw;
+    padding: 22px;
+}
+#info-adicional{
+    color: var(--v3-azul);
+}
+#info-adicional:hover{
+    color: var(--v3-negro);
+}
+@media (max-width: 1200px) {
+    .empresa .container{
+        width: 100%;
+    }
+    .empresa{
+        width: 100%;
+    }
+    .aside{
+        width: 50%;
+    }
+}
+@media (max-width: 776px) {
+    .Bienvenida .container{
+        align-items: center;
+        justify-content: center;
+        padding-bottom: unset;
+    }
+    .Bienvenida .container #texto-bienvenida{
+        align-items: center;
+        justify-content: center;
+    }
+    .Bienvenida .container #botones-bienvenida{
+        justify-content: center;
+    }
+    .Bienvenida .container #botones-bienvenida>a{
+        width: 100%;
+    }
+    .Bienvenida .container #botones-bienvenida>a:nth-child(2){
+        width: auto;
+    }
+    .Bienvenida .container #texto-bienvenida p,
+    .Bienvenida .container #texto-bienvenida span{
+        font-size: 8vw;
+    }
+    .servicio .container {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .servicio .container .main-text {
+        height: 33%;
+        top: 0;
+        flex: 1;
+    }
+
+    .servicio .container .aside {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+    }
+    .servicio .container .aside .row {
+        display: flex;
+        flex-direction: row;
+    }
+    .servicio .container .aside #comentarios{
+        height: fit-content;
+        overflow-y: unset;
+        overflow-x: auto;
+        padding: 15px;
+    }
+    .servicio .container .aside #comentarios .scroll-x{
+        display: flex;
+        flex-direction: row;
+        height: 100%;
+    }
+    .servicio .container .aside #comentarios .scroll-x .comentario{
+        margin-bottom: unset;
+        width: 100%;
+        margin-right: 5px;
+        height: fit-content;
+    }
+    .servicio .container #comentarios .scroll-x .comentario .imagen-comentario{
+        font-size: 6vw;
+        height: fit-content;
+        width: fit-content;
+    }
+    .servicio .container .aside #comentarios .scroll-x .texto-comentario{
+        width: 90vw;
+    }
+    .servicio .container .aside #comentarios .scroll-x .texto-comentario p{
+        height: 100%;
+        width: 100%;
+    }
+    .servicio .container .aside .row div{
+        width: 50%;
+    }
+    .servicio #funcionalidades a, .servicio #especificaciones a{
+        font-size: 4vw;
+    }
+    .empresa .container {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .empresa .container .main-text {
+        height: 33%;
+        top: 0;
+        flex: 1;
+    }
+
+    .empresa .container .aside {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+    }
+    .empresa .container .aside .row1{
+        padding: unset;
+    }
+    .empresa .container .aside .row1 div{
+        width: 100%;
+    }
+
+    .empresa .container .aside .row {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        padding: unset;
+    }
+    .empresa .container .aside .row div{
+        width: 50%;
+    }
+}
+@media (max-width: 555px){
+    .servicio .container .aside #comentarios .scroll-x .comentario .imagen-comentario{
+        height: fit-content;
+    }
+    .servicio .container .aside #comentarios .scroll-x .comentario p{
+        font-size: 2.5vw;
+        height: 10vh;
+    }
+}
+
+#SomosUnaEmpresa{
+    width: 653px;
+    height: 216px;
+    font-family: 'Poppins-light';
+    font-weight: 300;
+    font-size: 36px;
+}
+
+.mi-animacion {
+    width: 200px;  /* Ajusta el tamaño */
+    height: auto;  /* Mantén la relación de aspecto */
+    display: block; /* Evita el espacio debajo de la imagen */
+    margin: 20px auto;  /* Centra la animación */
+    padding: 0%;
+    margin: 0%;
+    
+}
+
+.empresa .container .aside .row div.bentoLanding {
+    padding-top: 24px;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-bottom: 30px;
+}
+
+.nombre{
+font-family: "Poppins";
+font-size: 12px;
+}
+
+.valoracion{
+font-family: "Poppins-light";
+font-size: 12px;
+}
+
+.imagen-avatar{
+    margin: 10px;
+}
+
+:root {
+  --v-3azul: #007bff; /* Azul base */
+  --v-3grisclaro: #b0b0b0; /* Gris claro */
+  --v-3blanco: #ffffff; /* Blanco */
+}
+/*Cta comprar*/
+.shop-button {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    transition: all 0.3s ease; /* Añadido para transición suave */
+  }
+  
+  .cta {
+    display: flex; 
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 0;
+    position: relative;
+    background-color: var(--v3-azul);
+    border-radius: 8px;
+    width: 278px;
+    transition: all 0.3s ease; /* Añadido para transición suave */
+  }
+  
+  .cta:hover {
+    background-color: var(--v3-negro); 
+  }
+  
+  .cta .frame {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 0 30px;
+    position: relative;
+  }
+  
+  .cta .text-wrapper {
+    position: relative;
+    align-self: flex-start;
+    margin: 0;
+    padding: 0;
+    font-family: "IBM Plex Mono-Regular", Helvetica, Arial, sans-serif;
+    font-weight: 400;
+    color: var(--gris-claro);
+    font-size: 11px;
+    letter-spacing: 0;
+    line-height: normal;
+    text-align: left;
+  }
+  
+  .cta .text-wrapper-2 {
+    position: relative;
+    align-self: center;
+    font-family: "IBM Plex Mono-Regular", Helvetica, Arial, sans-serif;
+    font-weight: 400;
+    color: var(--v-3blanco);
+    font-size: 32px;
+    letter-spacing: 0;
+    line-height: normal;
+    text-align: center;
+  }
+  
+  .cta .img {
+    position: relative;
+    width: 24.56px;
+    height: auto;
+    transform: translateY(7px);
+  }
+  
+.rutas{
+margin-left: 20px;    
+text-align: left;  /* Asegura que el texto esté alineado a la izquierda dentro del contenedor */
+}
