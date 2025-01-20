@@ -94,20 +94,24 @@ header .navbar-brand{
 .navbar-nav .nav-link.active, .navbar-nav .nav-link.show{
     color: var(--v3-azul);
 }
-header .botones-header{
+header .botones-header {
     display: flex;
-    flex-direction: row;
-    align-items: end;
-    justify-content: end;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: flex-end;
+    position: relative;
 }
+
 header .show .botones-header,
-header .collapsing .botones-header{
+header .collapsing .botones-header {
     align-items: start;
     justify-content: start;
 }
-header .navbar-collapse{
+
+header .navbar-collapse {
     justify-content: space-between;
 }
+
 header .botones-header #login-button {
     background: var(--v3-blanco);
     padding: 10px 24px;
@@ -120,15 +124,21 @@ header .botones-header #login-button {
     line-height: normal;
     text-decoration: none;
     cursor: pointer;
-    transition: background 0.3s ease, color 0.3s ease; /* Agregado para una transición suave */
+    transition: background 0.3s ease, color 0.3s ease;
 }
 
+/* Hover solo para el login */
 header .botones-header #login-button:hover {
     border-radius: 100px;
-    background: var(--V3_Azul, #52CCD7); /* Color de fondo al hacer hover */
-    color: white; /* Cambiar el color del texto si lo deseas */
+    background: var(--V3_Azul, #52CCD7);
+    color: white;
+    border: 4px var(--v3-azul);
 }
 
+/* Hover para el contenedor .botones-header, solo cambia el color */
+header .botones-header:hover {
+    color: var(--v3-azul);
+}
 
 header #logout-button {
     background: #ff4b4b;
@@ -143,7 +153,8 @@ header #logout-button {
     text-decoration: none;
     cursor: pointer;
 }
-header .botones-header #mas-button{
+
+header .botones-header #mas-button {
     background: black;
     width: 38px;
     height: 38px;
@@ -154,6 +165,56 @@ header .botones-header #mas-button{
     text-decoration: none;
     align-content: center;
 }
+
+/* Contenedor general */
+.menu-container {
+    position: relative;
+    width: 38px;
+    height: 38px;
+    cursor: pointer;
+}
+
+/* Estilos generales para las imágenes del menú */
+.menu-icon {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    transition: opacity 0.3s ease;
+    opacity: 0; /* Ocultar todas las imágenes inicialmente */
+    pointer-events: none;
+}
+
+/* Imagen por defecto visible */
+.menu-icon.default {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* Hover */
+.menu-container:hover .menu-icon.default {
+    opacity: 0;  /* Ocultar el ícono default */
+}
+
+.menu-container:hover .menu-icon.hover {
+    opacity: 1;  /* Mostrar el ícono hover */
+}
+
+/* Click: este ícono se maneja con JavaScript */
+.menu-icon.click {
+    pointer-events: auto;
+}
+
+
+
+
+
+
+
+
+
+
 .button-primary{
     background: var(--v3-negro);
     border-radius: 48px;
@@ -293,4 +354,5 @@ label{
         padding-left: unset;
     }
 }
+
 

@@ -1,5 +1,10 @@
+const Usuario = require('../modelos/usuario');
+const Sensor = require('../modelos/sensor');
 const Medicion = require('../modelos/medicion');
-const { Op } = require('sequelize');
+const UsuarioSensor = require('../modelos/usuario-sensor');
+const { Sequelize, Op } = require('sequelize');
+const sequelize = require('../config/database'); // Instancia de la base de datos
+
 
 /**
  * @module MedicionController
@@ -215,6 +220,118 @@ exports.getMedicionesPorIntervaloFecha = async (req, res) => {
     } catch (error) {
         console.error("Error al obtener las mediciones:", error);
         res.status(500).json({ error: "Error al obtener las mediciones.", detalles: error.message });
+    }
+};
+
+
+/**
+ * Obtener la media de las mediciones de todos los sensores de un usuario.
+ * @function getMediaMedicionesUsuario
+ * @async
+ * @param {Object} req - Objeto de solicitud de Express.
+ * @param {Object} res - Objeto de respuesta de Express.
+ * @description Este método calcula la media de los valores de medición para los sensores asociados a un usuario específico.
+ */
+exports.getMediaMedicionesUsuario = async (req, res) => {
+    const { idUsuario } = req.params;
+
+    try {
+        // Verificar que el usuario existe
+        const usuario = await Usuario.findByPk(idUsuario);
+        if (!usuario) {
+            return res.status(404).json({ error: 'Usuario no encontrado.' });
+        }
+
+        // Obtener los sensores asociados al usuario
+        const sensores = await UsuarioSensor.findAll({
+            where: { id_usuario: idUsuario },
+            include: [
+                {
+                    model: Sensor,
+                    attributes: ['id_sensor']
+                }
+            ]
+        });
+
+        if (sensores.length === 0) {
+            return res.status(404).json({ error: 'No se encontraron sensores asociados al usuario.' });
+        }
+
+        // Extraer los IDs de los sensores
+        const sensorIds = sensores.map(sensor => sensor.id_sensor);
+
+        // Calcular la media de las mediciones de estos sensores
+        const mediciones = await Medicion.findAll({
+            where: {
+                id_sensor: { [Op.in]: sensorIds }
+            },
+            attributes: [
+                [sequelize.fn('DATE', sequelize.col('fecha')), 'fecha_dia'], // Agrupar por día
+                [sequelize.fn('AVG', sequelize.col('valor')), 'valor_promedio'] // Calcular la media
+            ],
+            group: ['fecha_dia'], // Agrupar por la fecha en días
+            order: [[sequelize.col('fecha_dia'), 'ASC']] // Ordenar cronológicamente
+        });
+
+
+        // Verificar si hay resultados
+        if (mediciones.length === 0) {
+            return res.status(404).json({ error: 'No se encontraron mediciones para los sensores del usuario.' });
+        }
+
+        res.status(200).json(mediciones);
+    } catch (error) {
+        console.error('Error al calcular la media de las mediciones:', error);
+        res.status(500).json({ error: 'Error al calcular la media de las mediciones.' });
+    }
+};
+
+//allMediciones of user
+exports.getAllMedicionesUsuario = async (req, res) => {
+    const { idUsuario } = req.params;
+
+    try {
+        // Verificar que el usuario existe
+        const usuario = await Usuario.findByPk(idUsuario);
+        if (!usuario) {
+            return res.status(404).json({ error: 'Usuario no encontrado.' });
+        }
+
+        // Obtener los sensores asociados al usuario
+        const sensores = await UsuarioSensor.findAll({
+            where: { id_usuario: idUsuario },
+            include: [
+                {
+                    model: Sensor,
+                    attributes: ['id_sensor']
+                }
+            ]
+        });
+
+        if (sensores.length === 0) {
+            return res.status(404).json({ error: 'No se encontraron sensores asociados al usuario.' });
+        }
+
+        // Extraer los IDs de los sensores
+        const sensorIds = sensores.map(sensor => sensor.id_sensor);
+
+        // Calcular la media de las mediciones de estos sensores
+        const mediciones = await Medicion.findAll({
+            where: {
+                id_sensor: { [Op.in]: sensorIds }
+            },
+            order: [[sequelize.col('fecha'), 'DESC']] // Ordenar cronológicamente
+        });
+
+        // Verificar si hay resultados
+        if (mediciones.length === 0) {
+            return res.status(404).json({ error: 'No se encontraron mediciones para los sensores del usuario.' });
+        }
+
+        res.status(200).json(mediciones);
+    } catch (error) {
+        console.error('Error al obtener las mediciones del usuario:', error);
+        res.status(500).json({ error: 'Error al obtener las mediciones del usuario.' });
     }
 };
 
